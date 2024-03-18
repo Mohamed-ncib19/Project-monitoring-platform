@@ -1,0 +1,4 @@
+.button-custom-css:hover{
+    background-color: rgba(8, 143, 196, .7);
+    transition: all 500ms;
+}

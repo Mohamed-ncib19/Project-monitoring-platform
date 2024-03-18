@@ -1,0 +1,25 @@
+.login-section-background {
+    background-image: url('../../../public/login-wave-background.svg');
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: right;
+}
+
+.login-success-animation {
+    background-size: cover;
+    animation: success-color 2.3s ease-in;
+}
+
+@keyframes success-color {
+    0% {
+        background-size:  100%;
+        background-position: 60% 80%;
+    }
+    50% {
+        background-position: calc(100% -  20%) 90%;
+    }
+    100% {
+        background-size: 400%;
+        background-position: 90% 100%;
+    }
+}

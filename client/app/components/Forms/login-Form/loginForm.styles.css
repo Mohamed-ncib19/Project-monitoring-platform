@@ -1,0 +1,22 @@
+
+#forget-password {
+    line-height: 2;
+    position: relative;
+  }
+
+#forget-password::before {
+    content: '';
+    width: 0;
+    height: 1.5px;
+    border-radius: 2px;
+    background-color: #6898c3;
+    position: absolute;
+    bottom: -.25rem;
+    right: 0;
+    transition: right .4s, width .4s, left .4s;
+  }
+  
+  #forget-password:hover::before {
+    width: 100%;
+    left: 0;
+  }
