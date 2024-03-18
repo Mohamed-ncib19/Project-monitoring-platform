@@ -21,10 +21,11 @@ const loginSchema = {
           ok: { type: "boolean", description: "Operation status" },
           message: { type: "string", description: "Operation message" },
           token: { type: "string", description: "Authentication token" },
-          newUser: {
+          exists: {
             type: "boolean",
             description: "User is already registred in the database",
           },
+          email: { type: "string", description: "user Email" },
         },
       },
       400: {

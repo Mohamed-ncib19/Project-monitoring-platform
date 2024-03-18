@@ -1,9 +1,8 @@
 const jwt = require("jsonwebtoken");
-const config = require("../../config");
 
 function generateToken(email) {
   try {
-    const secretKey = config.JWT_SECRET;
+    const secretKey = process.env.JWT_SECRET;
     const payload = {
       email: email,
     };

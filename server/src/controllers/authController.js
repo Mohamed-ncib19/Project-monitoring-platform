@@ -11,7 +11,6 @@ const authController = {
       }
 
       const response = await userAuthenticate(email, password);
-      console.log("\nresponse from controller : ", response, "\n");
       if (response.ok) {
         reply.status(200).send(response);
       } else {
