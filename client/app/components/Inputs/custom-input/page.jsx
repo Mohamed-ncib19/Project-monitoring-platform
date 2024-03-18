@@ -13,6 +13,10 @@ return (
        {errors[name] && <p className="invalid-feedback">{errors[name].message}</p>}
      </div>
   );
+
+
+
+  
   
 };
 
