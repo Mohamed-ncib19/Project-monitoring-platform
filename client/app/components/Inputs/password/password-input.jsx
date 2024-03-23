@@ -2,7 +2,7 @@ import { IconEyeOff, IconEye } from "@tabler/icons-react";
 import "./password-input.styles.css";
 import { useState } from "react";
 
-const PasswordInput = ({ register, errors,isValid }) => {
+const PasswordInput = ({ register, errors,isValid ,placeholder}) => {
   const [visible, setVisible] = useState(false);
 
   const handleShowPassword = () => {
@@ -15,7 +15,7 @@ const PasswordInput = ({ register, errors,isValid }) => {
       <input
   type={visible ? "text" : "password"}
   className={`form-control focus-blue-bottom-border rounded p-2 ${(errors.password || !isValid) ? "is-invalid" : ""}`}
-  placeholder="password"
+  placeholder={placeholder}
   name="password"
   {...register}
 />

@@ -4,7 +4,7 @@ const DecodeToken = (session) =>{
 try {
     const token = session?.token;
     const decodedToken = jwtDecode(token);
-    return decodedToken.email;
+    return decodedToken.username;
 } catch (error) {
     throw error;
 }

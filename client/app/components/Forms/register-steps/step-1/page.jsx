@@ -1,44 +1,47 @@
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import Input from '@/app/components/Inputs/custom-input/page';
-import PhoneInput from '@/app/components/Inputs/phone/page';
-import EmailInput from '@/app/components/Inputs/email/email-input';
-import SubmitButton from '@/app/components/buttons/submit-button/submit-button';
+import Button from '@/app/components/buttons/simple-button/page';
 
 const Schema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
-  phoneNumber: Yup.number().required('Phone number is required'),
+  phoneNumber: Yup.string().min(8,"phone number must have 8 digits ")
+    .matches(/^\d+$/, 'Phone number must contain only numeric characters') // Ensure only numeric characters
+    .required('Phone number is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
 });
 
-const FirstStep = ({ onSubmit }) => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors }
-    } = useForm({
-      resolver: yupResolver(Schema) // Add the resolver to useForm
-    });
-  
-    const onSubmitHandler = (data) => {
-      onSubmit(data); 
-    };
-  
-    return (
-      <FormProvider {...{ register, errors }}>
-        <form className="w-auto" onSubmit={handleSubmit(onSubmitHandler)}>
-          <div className="d-flex flex-row justify-content-center align-items-center gap-5">
-            <Input register={register('firstName')} name="firstName" errors={errors} placeholder={"First Name"} />
-            <Input register={register('lastName')} name="lastName" errors={errors} placeholder={"Last Name"} /> {/* Corrected */}
-          </div>
-          <PhoneInput register={register('phoneNumber')} placeholder={"Phone number"} /> {/* Corrected */}
-          <Input register={register('email')} name={"email"} placeholder={"Email"} /> {/* Corrected */}
-          <SubmitButton content={"Continue"} />
-        </form>
-      </FormProvider>
-    );
-  }
-  
-  export default FirstStep;
+
+const FirstStep = ({onSubmit}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    resolver: yupResolver(Schema) 
+  });
+
+
+
+  return (
+    <div className='w-100 m-auto d-flex flex-column gap-5' >
+    <FormProvider  register={register} errors={errors} >
+    <p className=" w-100 align-middle m-auto fw-thin h5 light-text-custom-color ">Welcome! Please fill out the form below to create your account</p>
+    <form className="w-100 d-flex flex-column gap-4" >
+        <div className="d-flex flex-row justify-content-between align-items-center gap-2">
+          <Input register={register('firstName')} name="firstName" errors={errors} placeholder={"First Name"} type={"text"} />
+          <Input register={register('lastName')} name="lastName" errors={errors} placeholder={"Last Name"} type={"text"} />
+        </div>
+        <Input register={register('phoneNumber')} name={"phoneNumber"} placeholder={"Phone number"} errors={errors} type={"number"} />
+        <Input register={register('email')} name={"email"} placeholder={"Email"} errors={errors} type={"email"} />
+        <Button onClick={handleSubmit(onSubmit)} content={"Continue"} />
+      </form>
+    </FormProvider>
+    </div>
+  );
+}
+
+export default FirstStep;

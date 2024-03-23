@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { LoginRoute } from "../../routes/LoginRoute";
+import { LoginRoute } from "../../routes/routesEndpoints";
 
 const handler = NextAuth({
     providers:[
@@ -8,10 +8,11 @@ const handler = NextAuth({
           name: 'Credentials',
     
           credentials: {
-            email: { label: "email", type: "email" },
+            username: { label: "username", type: "username" },
             password: { label: "password", type: "password" }
           },
           async authorize(credentials) {
+            console.log(credentials)
             const user = await LoginRoute(credentials);
             console.log(user)
             if(user.ok){
@@ -32,6 +33,7 @@ const handler = NextAuth({
       },
       callbacks: {
         async jwt({ token, user }) {
+          console.log(user)
           if (user) {
             if (user.exists) {
               token.exists = user.exists;
@@ -62,6 +64,7 @@ const handler = NextAuth({
             session.token = token.AccessToken;
 
           }
+
           return session;
         },
       },      

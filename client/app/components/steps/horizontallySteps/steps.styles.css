@@ -201,13 +201,21 @@
     color: inherit;
     text-align: center;
     cursor: default;
-    padding-top: calc(var(--tblr-steps-dot-size))
+    padding-top: calc(var(--tblr-steps-dot-size));
 }
 
 
 
 .step-item:after,.step-item:before {
-    background: var(--tblr-steps-color)
+    background: var(--tblr-steps-color);
+    transition: background-color 0.5s ease;
+    cursor: pointer;
+}
+.step-item:hover::before {
+    content: "";
+    background-color: var(--tblr-teal);
+    scale:  1.4;
+    transition: all 500ms ease-in-out;
 }
 
 .step-item:not(:last-child):after {
@@ -228,7 +236,6 @@
     position: absolute;
     top: 0;
     left: 50%;
-    z-index: 1;
     box-sizing: content-box;
     display: flex;
     align-items: center;

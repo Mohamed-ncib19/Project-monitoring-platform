@@ -1,0 +1,11 @@
+#skills-list {
+    border: 2px solid #DCE1E7; 
+    background-color: rgba(193, 244, 255, 10%);
+}
+
+#skills-list:focus {
+    border-color: #DCE1E7;
+    background-color: rgba(243, 243, 243, 0.721);
+    border-bottom-color: #088FC4;
+    outline: none;
+}

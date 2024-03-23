@@ -9,7 +9,7 @@ const PhoneInput = ({register,errors,isValid,placeholder}) => {
             type="number" 
             className={`form-control focus-blue-bottom-border rounded p-2 mb-3 `}  
             placeholder={placeholder}
-           /*  {...register} */
+            {...register}
             />
       {/* {errors.email && <p className="invalid-feedback">{errors.email.message}</p>} */}
 
