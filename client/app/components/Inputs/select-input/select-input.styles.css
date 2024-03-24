@@ -8,21 +8,9 @@
     background-color: rgba(243, 243, 243, 0.721);
     border-bottom-color: #088FC4;
     outline: none;
-    transition: all 500ms   ;
 }
 
 .form-control:focus {
     box-shadow: none;
 }
 
-.show-hide-password{
-    color: #3D3D3D;
-    background-color: transparent;
-}
-
-
-
-.show-hide-password:hover{
-    background-color:rgb(204, 229, 235) ;
-    color: black;
-}
