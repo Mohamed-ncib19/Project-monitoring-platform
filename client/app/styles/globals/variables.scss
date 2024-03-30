@@ -9,6 +9,11 @@ $secondary-color : #83C4D2;
     background-color: rgba($color: $secondary-color, $alpha: .8);
 }
 
+$soft-gray : #ECECEC;
+.bg-soft-gray{
+    background-color: $soft-gray;
+}
+
 $z-index-999 : 999;
 .z-index-999{
     z-index: $z-index-999;

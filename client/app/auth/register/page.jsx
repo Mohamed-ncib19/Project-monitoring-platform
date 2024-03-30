@@ -3,7 +3,7 @@ import "./register.styles.css";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { DecodeToken } from "@/app/utils/decode-jwt-token/DecodeToken";
+import { DecodeToken } from "@/app/utils/auth/DecodeToken";
 import WelcomeBackComponent from "@/app/components/welcomeBack/page";
 import StepsBar from "@/app/components/steps/horizontallySteps/page";
 import FirstStep from "@/app/components/Forms/register-steps/step-1/page";
@@ -17,6 +17,7 @@ const Register = () => {
   const [userName, setUserName] = useState('');
   const [loading,setLoading] = useState(true);
   const [userData,setUserData] = useState({
+    username:userName,
     step1:{},
     step2:{},
     step3:{}
@@ -72,15 +73,17 @@ const Register = () => {
     setStepsVerifier((step)=>[
       {...step[0],step3:true},
      ])
-    setStepsDone(false)
+    setStepsDone(true)
    }
  
  useEffect(()=>{
-
   const CreateUser = async() =>{
     if(stepsDone){
       const res = await registerRoute(userData,session.token);
       console.log(res)
+      if(res.ok){
+        router.push('/auth/pending');
+      }
      }
   }
   CreateUser();
@@ -97,8 +100,12 @@ const Register = () => {
   useEffect(() => {
     const decodeToken = async (session) => {
       if (session) {
-        const decodedUsername = await DecodeToken(session);
-        setUserName(decodedUsername);
+        const decodedUsername = await DecodeToken(session.token);
+        setUserName(decodedUsername.username);
+        setUserData(prevUserData => ({
+          ...prevUserData,
+          username: decodedUsername
+        }));
         setLoading(false);
       }
     };
@@ -115,8 +122,8 @@ const Register = () => {
 
   return (
     <section className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <button onClick={handleSignOut}>Sign out</button>
 
+      <button onClick={handleSignOut}>Sign out</button>
       <StepsBar StepsVerifier={StepsVerifier} nextStep={nextStep} previousStep={previousStep} currentStep={currentStep} listNmbers={3} StepsNames={['Informations', 'Company', 'Stack']} />
       {loading && <Loader />}
       <div class="row col-md-12 col-lg-9 col-12 h-75 m-auto d-flex flex-row justify-content-between shadow rounded-4">

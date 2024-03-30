@@ -1,10 +1,14 @@
 const { jwtDecode } = require("jwt-decode");
 
-const DecodeToken = (session) =>{
+const DecodeToken = (token) =>{
 try {
-    const token = session?.token;
     const decodedToken = jwtDecode(token);
-    return decodedToken.username;
+    return {
+       username: decodedToken.username,
+       role : decodedToken.role,
+       exp: decodedToken.exp,
+    
+    };
 } catch (error) {
     throw error;
 }

@@ -45,7 +45,7 @@ const LoginForm = () => {
     return ( 
         
         <FormProvider  register={register} errors={errors} >
-            <form className="login-form col-12 col-md-8 col-lg-10 col-xl-10 mx-auto " onSubmit={handleSubmit(onSubmit)}>
+            <form className="login-form col-12 col-md-8 col-lg-10 col-xl-10 mx-auto d-flex flex-column gap-4  " onSubmit={handleSubmit(onSubmit)}>
                 <Input register={register('username')} errors={errors} isValid={isValid} name={'username'} type={'text'} placeholder={"LDAP Username"}   />
                 <PasswordInput register={register('password')}  errors={errors} isValid={isValid} placeholder={"Password"}  />
                 { !isValid && <div className='text-danger d-flex flex-row gap-2' >

@@ -10,8 +10,15 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (session && !session.user.exists) {
-      router.push('/auth/welcome');
+    
+    const RedirectUser = (session)=>{
+
+      if (!session.user.exists) {
+        router.push('/auth/welcome');
+      }
+    }
+    if(session){
+      RedirectUser(session);
     }
   }, [session, router]);
 

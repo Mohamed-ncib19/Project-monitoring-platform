@@ -4,6 +4,7 @@ import "./styles/globals/variables.scss";
 import 'animate.css';
 import AuthProvider from "./lib/authProvider/authProvider"
 import { Inter } from 'next/font/google'
+import TokenExpiration from "./lib/tokenExpiration/tokenExpiration";
 
 
 
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className} >
       <AuthProvider>
+        <TokenExpiration>
         {children}
+        </TokenExpiration>
       </AuthProvider>
         </body>
     </html>

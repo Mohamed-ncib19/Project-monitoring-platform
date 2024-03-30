@@ -21,50 +21,55 @@ const handler = NextAuth({
                 
                 return null
             }
-            return user;
           }
         })
       ],
     secret:process.env.NEXTAUTH_SECRET,
       session:{
         strategy: "jwt",
-        maxAge:30 * 24 * 60 *60,
+        maxAge:30 * 24 * 60 ,
         updateAge:24*60*60,
       },
       callbacks: {
         async jwt({ token, user }) {
           console.log(user)
           if (user) {
+            console.log(user)
             if (user.exists) {
+              token.AccessToken = user.tokens.token;
+              token.refreshToken = user.tokens.refreshToken;
               token.exists = user.exists;
-              token.AccessToken = user.token;
-              token.email = user.email;
+              token.pending = user.pending;
+
+              
               /* 
               Add other user properties to the token if needed
               */ 
             }else {
               token.exists = user.exists;
-              token.AccessToken = user.token;
+              token.AccessToken = user.tokens.token;
              
           } 
           }
           return token;
         },
         async session({ session, token }) {
+          console.log(token)
           if (token.exists) {
-            session.user.exists = token.exists;
             session.token = token.AccessToken;
-            session.user.username = token.username;
-            session.user.fullName = token.fullName;
+            session.refreshToken = token.refreshToken;
+            session.user.exists = token.exists;
+            session.user.pending = token.pending;
             /* 
             Add other user properties to the session if needed
             */ 
           } else {
-            session.user.exists = token.exists;
             session.token = token.AccessToken;
+            session.user.exists = token.exists;
+
 
           }
-
+          console.log(session)
           return session;
         },
       },      

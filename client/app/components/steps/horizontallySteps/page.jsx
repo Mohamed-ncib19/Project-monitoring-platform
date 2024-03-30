@@ -17,7 +17,7 @@ const StepsBar = ({ listNmbers, StepsNames, currentStep, nextStep, previousStep,
   }, [currentStep, StepsVerifier]);
 
   return (
-    <div className="w-100 ">
+    <div className="w-100 z-0" >
       <ul className="steps steps-green steps-counter my-4 ">
         {steps.map((stepNumber, index) => (
           <li

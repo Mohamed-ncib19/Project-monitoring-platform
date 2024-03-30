@@ -1,7 +1,7 @@
 'use client'
 import Button from "@/app/components/buttons/simple-button/page";
 import WelcomeBackComponent from "@/app/components/welcomeBack/page";
-import { DecodeToken } from "@/app/utils/decode-jwt-token/DecodeToken";
+import { DecodeToken } from "@/app/utils/auth/DecodeToken";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"; 
@@ -13,14 +13,16 @@ const Welcome = () => {
 
     useEffect(()=>{
        const decodeToken = async (session) =>{
-        if (session) {
-            const decodedUsername = await DecodeToken(session);
-            setUserName(decodedUsername);
-            if(session && session.user.exists){
-                setNavLLink('/')
-            }else{
-                setNavLLink('/auth/register');
-            }
+        console.log(session)
+        if (session && !session.user.exists ) {
+            const decoded = await DecodeToken(session.token);
+            setUserName(decoded.username);
+             setNavLLink('/auth/register');
+            
+        }else if(session.user.pending) {
+            router.push('/auth/pending');
+        }else{
+            router.push('/')
         }
        };
        if(session){
