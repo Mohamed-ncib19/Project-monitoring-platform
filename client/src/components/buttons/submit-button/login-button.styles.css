@@ -1,0 +1,4 @@
+.login-button-custom-css:hover{
+    background-color: rgb(77, 130, 207);
+    transition: all 500ms;
+}

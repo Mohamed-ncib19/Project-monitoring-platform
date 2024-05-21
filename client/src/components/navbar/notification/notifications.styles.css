@@ -1,0 +1,14 @@
+.notification-button:hover{
+    background-color: rgba(231, 231, 231, 0.845);
+}
+.notifications-dropdown{
+    right: 9rem;
+    min-height: 200px
+}
+@media screen and (max-width:800px) {
+    .dropdown-menu {
+         right: 0;
+         overflow-y: scroll;
+     }
+ }
+ 
