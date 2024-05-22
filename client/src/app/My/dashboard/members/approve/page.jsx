@@ -1,13 +1,15 @@
 'use client';
-import './approve.styles.css';
 import React, { useEffect, useState } from 'react';
-import UserRoute from '../../../../api/routes/user/userRoute';
+
 import ToggleDropdown from '../../../../../components/dropdown/toggle-dropdown';
-import Table from '../../../../../layout/table/table';
-import EditDotsIcon from '../../../../../public/icons/edit-dots-icon';
+import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
 import Loader from '../../../../../components/loader/page';
 import CustomModal from '../../../../../components/rightside-modal/modal';
-import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
+import Table from '../../../../../layout/table/table';
+import EditDotsIcon from '../../../../../public/icons/edit-dots-icon';
+import UserRoute from '../../../../api/routes/user/userRoute';
+
+import './approve.styles.css';
 
 const Approve = () => {
   const [users, setUsers] = useState([]);

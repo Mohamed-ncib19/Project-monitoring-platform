@@ -1,13 +1,15 @@
 'use client';
-import './login.styles.css';
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DecodeToken } from '../../../utils/auth/DecodeToken';
+import { useSession } from 'next-auth/react';
+
 import LoginForm from '../../../components/Forms/login-Form/loginForm';
-import LoginRegistationLayout from '../../../layout/login-registartion/page';
-import WelcomeBackComponent from '../../../components/welcomeBack/page';
 import RegistrationForm from '../../../components/Forms/register-Form/page';
+import WelcomeBackComponent from '../../../components/welcomeBack/page';
+import LoginRegistationLayout from '../../../layout/login-registartion/page';
+import { DecodeToken } from '../../../utils/auth/DecodeToken';
+
+import './login.styles.css';
 
 const Login = () => {
   const { data: session } = useSession();

@@ -1,4 +1,5 @@
 import { color } from 'framer-motion';
+
 import './avatar.styles.css';
 const Avatar = ({ name, background, rounded, textColor }) => {
   const initials = name

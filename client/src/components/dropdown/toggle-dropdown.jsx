@@ -1,6 +1,7 @@
-import './toggle-dropdown.styles.css';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+
+import './toggle-dropdown.styles.css';
 
 const ToggleDropdown = ({
   button,
@@ -8,6 +9,7 @@ const ToggleDropdown = ({
   lastItemDivide,
   nbItemsAfterDivide,
 }) => {
+
   /*
     items = [
         { content: "item content", onclick: function },

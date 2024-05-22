@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+
 import AuthRoute from '../../routes/auth/authRoute';
 
 const handler = NextAuth({
@@ -54,6 +55,7 @@ const handler = NextAuth({
         session.refreshToken = token.refreshToken;
         session.user.exists = token.exists;
         session.user.pending = token.pending;
+
         /* 
             Add other user properties to the session if needed
             */

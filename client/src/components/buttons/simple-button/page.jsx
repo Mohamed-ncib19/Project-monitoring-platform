@@ -1,7 +1,8 @@
 'use client';
-import './button.styles.css';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+
+import './button.styles.css';
 
 const Button = ({ content, link, onClick, disabled, background }) => {
   console.log(background);

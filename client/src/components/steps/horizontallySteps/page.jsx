@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import './steps.styles.css';
 const StepsBar = ({
   listNmbers,

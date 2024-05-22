@@ -1,9 +1,10 @@
 'use client';
-import { GetNewToken } from '../../utils/auth/GetNewToken';
-import { DecodeToken } from '../../utils/auth/DecodeToken';
-import { signOut, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+
 import { CheckTokenExp } from '../../utils/auth/CheckTokenExp';
+import { DecodeToken } from '../../utils/auth/DecodeToken';
+import { GetNewToken } from '../../utils/auth/GetNewToken';
 
 const TokenExpiration = ({ children }) => {
   const { data: session } = useSession();
@@ -17,9 +18,7 @@ const TokenExpiration = ({ children }) => {
         console.log(decodedToken);
         if (!CheckTokenExp(decodedToken.exp, currentTimestamp)) {
           if (sessionData.user && sessionData.user.exists) {
-            const decodedRefreshToken = await DecodeToken(
-              sessionData.refreshToken,
-            );
+            const decodedRefreshToken = DecodeToken(sessionData.refreshToken);
             console.log(decodedRefreshToken);
             if (!CheckTokenExp(decodedRefreshToken.exp, currentTimestamp)) {
               await signOut();

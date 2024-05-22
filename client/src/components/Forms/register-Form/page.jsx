@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+
 import { yupResolver } from '@hookform/resolvers/yup';
+
 import AuthRoute from '../../../app/api/routes/auth/authRoute';
-import Input from '../../Inputs/custom-input/page';
 import Button from '../../buttons/simple-button/page';
+import Input from '../../Inputs/custom-input/page';
 
 const nameRegex = /^[A-Za-z]+$/;
 
@@ -22,6 +24,7 @@ const Schema = Yup.object().shape({
     .matches(/^\d+$/, 'Phone number must contain only numeric characters')
     .required('Phone number is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
+
   /*   position: Yup.string().required('Position is required'),
   skills: Yup.array().of(Yup.string()).min(1, 'At least one skill is required').required('Skills are required') */
 });
@@ -50,6 +53,7 @@ const RegistrationForm = ({ userName, loading }) => {
           bio: '',
           phone: data.phoneNumber,
           email: data.email,
+
           /*       position: data.position,
         skills: data.skills */
         },

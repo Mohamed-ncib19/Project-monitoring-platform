@@ -1,20 +1,22 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useSession } from 'next-auth/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import ReadOnlyInput from '../../../components/Inputs/read-only-input/page';
-import SubmitButton from '../../../components/buttons/submit-button/submit-button';
-import logo from '../../../public/Logo.png';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Textarea from '../../../components/Inputs/textarea/page';
+import { useSession } from 'next-auth/react';
+import { FormProvider, useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import * as Yup from 'yup';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import SubmitButton from '../../../components/buttons/submit-button/submit-button';
 import Input from '../../../components/Inputs/custom-input/page';
+import ReadOnlyInput from '../../../components/Inputs/read-only-input/page';
 import SelectInput from '../../../components/Inputs/select-input/page';
+import Textarea from '../../../components/Inputs/textarea/page';
+import Loader from '../../../components/loader/page';
+import logo from '../../../public/Logo.png';
 import { DecodeToken } from '../../../utils/auth/DecodeToken';
 import UserRoute from '../../api/routes/user/userRoute';
-import Swal from 'sweetalert2';
-import Loader from '../../../components/loader/page';
 const Profile = () => {
   const Schema = Yup.object().shape({
     bio: Yup.string(),

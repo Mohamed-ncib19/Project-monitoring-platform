@@ -1,8 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import NotificationIcon from '../../../public/icons/notification-icons';
-import './notifications.styles.css';
 import Avatar from '../../avatar/page';
+
 import NotificationItem from './notification-item/page';
+
+import './notifications.styles.css';
 
 const ToggleNotification = () => {
   const [isOpen, setIsOpen] = useState(false);

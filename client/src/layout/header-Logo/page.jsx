@@ -1,4 +1,5 @@
 import Image from 'next/image';
+
 import Logo from '../../public/Logo.svg';
 //import './header-logo.styles.css';
 

@@ -1,9 +1,11 @@
 'use client';
 import { useState } from 'react';
-import SelectInput from '../Inputs/select-input/page';
-import Button from '../buttons/simple-button/page';
-import './pm-group.styles.css';
 import { Modal } from 'react-bootstrap';
+
+import Button from '../buttons/simple-button/page';
+import SelectInput from '../Inputs/select-input/page';
+
+import './pm-group.styles.css';
 
 const PmGroupHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);

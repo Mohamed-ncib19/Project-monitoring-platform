@@ -1,9 +1,11 @@
 import { Modal } from 'react-bootstrap';
-import './modal.styles.css';
+
+import WarningIcon from '../../public/icons/warning-icon';
 import Avatar from '../avatar/page';
 import Button from '../buttons/simple-button/page';
-import WarningIcon from '../../public/icons/warning-icon';
 import SubmitButton from '../buttons/submit-button/submit-button';
+
+import './modal.styles.css';
 
 const CustomModal = ({
   show,

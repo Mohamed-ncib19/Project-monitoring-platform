@@ -1,8 +1,10 @@
 'use client';
-import './login-registarion.styles.css';
-import LoginSquares from '../../public/login-squares.svg';
 import Image from 'next/image';
+
+import LoginSquares from '../../public/login-squares.svg';
 import HeaderLogo from '../header-Logo/page';
+
+import './login-registarion.styles.css';
 
 const LoginRegistationLayout = ({ children }) => {
   return (

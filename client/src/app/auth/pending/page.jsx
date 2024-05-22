@@ -1,13 +1,15 @@
 'use client';
-import './pending.styles.css';
+import { useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+
+import Button from '../../../components/buttons/simple-button/page';
 import HeaderLogo from '../../../layout/header-Logo/page';
 import { CheckIcon } from '../../../public/icons/check-icon';
 import submitedIllustration from '../../../public/registration-submited-illustration.svg';
-import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import Button from '../../../components/buttons/simple-button/page';
+
+import './pending.styles.css';
 
 const Pending = () => {
   const { data: session } = useSession();

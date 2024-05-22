@@ -1,18 +1,20 @@
 'use client';
-import './program.styles.css';
 import { Suspense, useEffect, useState } from 'react';
-import PmGroupHeader from '../../../components/pm-group-header/page';
-import { getPrograms } from '../../api/routes/routesEndpoints';
-import Loading from '../../loading';
-import Avatar from '../../../components/avatar/page';
-import EditDotsIcon from '../../../public/icons/edit-dots-icon';
-import ToggleDropdown from '../../../components/dropdown/toggle-dropdown';
-import EmptyProgramSVG from '../../../public/icons/empty-program';
 import Link from 'next/link';
 import { Modal } from 'react-bootstrap';
-import Button from '../../../components/buttons/simple-button/page';
 import Swal from 'sweetalert2';
+
+import Avatar from '../../../components/avatar/page';
+import Button from '../../../components/buttons/simple-button/page';
+import ToggleDropdown from '../../../components/dropdown/toggle-dropdown';
+import PmGroupHeader from '../../../components/pm-group-header/page';
 import ArrowIcons from '../../../public/icons/arrows/arrow-icon';
+import EditDotsIcon from '../../../public/icons/edit-dots-icon';
+import EmptyProgramSVG from '../../../public/icons/empty-program';
+import { getPrograms } from '../../api/routes/routesEndpoints';
+import Loading from '../../loading';
+
+import './program.styles.css';
 
 const Programs = () => {
   const [programs, setPrograms] = useState([]);

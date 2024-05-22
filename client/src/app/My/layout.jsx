@@ -1,11 +1,12 @@
 'use client';
-import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+
+import Loader from '../../components/loader/page';
 import NavbarSideBarLayout from '../../layout/navbar-sidebar/page';
 import { DecodeToken } from '../../utils/auth/DecodeToken';
-import { useState, useEffect } from 'react';
 import UserRoute from '../api/routes/user/userRoute';
-import Loader from '../../components/loader/page';
 
 const Layout = ({ children }) => {
   const { data: session, status } = useSession();

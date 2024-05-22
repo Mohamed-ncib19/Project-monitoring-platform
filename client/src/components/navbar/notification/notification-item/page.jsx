@@ -1,6 +1,8 @@
-import './nnotification-items.styles.css';
 import { useState } from 'react';
+
 import Avatar from '../../../avatar/page';
+
+import './nnotification-items.styles.css';
 
 const NotificationItem = ({ isread, name, type, background }) => {
   const [notificationType] = useState({

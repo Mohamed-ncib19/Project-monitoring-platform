@@ -1,13 +1,16 @@
 'use client';
 
-import 'semantic-ui-css/semantic.min.css';
-import ToogleNotification from './notification/toggle-notication';
-import ToggleDropdown from '../dropdown/toggle-dropdown';
-import Avatar from '../avatar/page';
-import { signOut, useSession } from 'next-auth/react';
 import { use, useEffect, useState } from 'react';
-import { DecodeToken } from '../../utils/auth/DecodeToken';
+import { signOut, useSession } from 'next-auth/react';
+
 import UserRoute from '../../app/api/routes/user/userRoute';
+import { DecodeToken } from '../../utils/auth/DecodeToken';
+import Avatar from '../avatar/page';
+import ToggleDropdown from '../dropdown/toggle-dropdown';
+
+import ToogleNotification from './notification/toggle-notication';
+
+import 'semantic-ui-css/semantic.min.css';
 const Navbar = ({ user }) => {
   console.log(user);
   const handlleSignOut = async () => {

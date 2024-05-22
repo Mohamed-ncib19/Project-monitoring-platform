@@ -1,5 +1,7 @@
-import 'core-js/stable/atob';
 import { decode } from 'base-64';
+
+import 'core-js/stable/atob';
+
 const { jwtDecode } = require('jwt-decode');
 
 const DecodeToken = (token) => {

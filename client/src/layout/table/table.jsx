@@ -1,7 +1,9 @@
-import './table.styles.css';
-import React, { useState, useEffect } from 'react';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import React, { useEffect, useState } from 'react';
+import { usePagination, useSortBy, useTable } from 'react-table';
+
 import ArrowIcons from '../../public/icons/arrows/arrow-icon';
+
+import './table.styles.css';
 
 const Table = ({
   columns,

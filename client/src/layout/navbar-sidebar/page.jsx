@@ -1,6 +1,7 @@
-import './navbar-sidebar.styles.css';
 import Navbar from '../../components/navbar/page';
 import SideBar from '../../components/sidebar/page';
+
+import './navbar-sidebar.styles.css';
 
 const NavbarSideBarLayout = ({ children, user }) => {
   return (

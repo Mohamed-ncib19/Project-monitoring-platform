@@ -1,14 +1,16 @@
 'use client';
-import './sidebar.styles.css';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+
+import ArrowIcons from '../../public/icons/arrows/arrow-icon';
+import SibebarIcons from '../../public/icons/sidebar-icons/sidebar-icons';
 import Logo from '../../public/Logo.svg';
 import LogoIcon from '../../public/Logo-icon.svg';
-import Image from 'next/image';
 import { DecodeToken } from '../../utils/auth/DecodeToken';
-import { Suspense, useRef, useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import SibebarIcons from '../../public/icons/sidebar-icons/sidebar-icons';
-import ArrowIcons from '../../public/icons/arrows/arrow-icon';
+
+import './sidebar.styles.css';
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { DecodeToken } from '../../../utils/auth/DecodeToken';
-import LoginRegistationLayout from '../../../layout/login-registartion/page';
-import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+
+import LoginRegistationLayout from '../../../layout/login-registartion/page';
+import { DecodeToken } from '../../../utils/auth/DecodeToken';
 
 const Register = () => {
   const { data: session } = useSession();

@@ -1,14 +1,17 @@
-import './loginForm.styles.css';
-import { FormProvider, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import PasswordInput from '../../Inputs/password/password-input';
-import { IconInfoCircle } from '@tabler/icons-react';
-import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { FormProvider, useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+import { IconInfoCircle } from '@tabler/icons-react';
+
 import SubmitButton from '../../buttons/submit-button/submit-button';
 import Input from '../../Inputs/custom-input/page';
+import PasswordInput from '../../Inputs/password/password-input';
 import Loader from '../../loader/page';
+
+import './loginForm.styles.css';
 
 const Schema = Yup.object().shape({
   username: Yup.string().required('LDAP username is required'),
@@ -17,7 +20,7 @@ const Schema = Yup.object().shape({
 
 const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
-  const [loginLoader, setLoginLoder] = useState(false);
+  const [loginLoader, setLoginLoader] = useState(false);
   const {
     register,
     formState: { errors },
@@ -28,7 +31,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      setLoginLoder(true);
+      setLoginLoader(true);
       const response = await signIn('credentials', {
         redirect: false,
         ...data,
@@ -39,10 +42,10 @@ const LoginForm = () => {
       } else {
         setIsValid((isValid) => !isValid);
       }
-      setLoginLoder(false);
+      setLoginLoader(false);
     } catch (error) {
       console.error('Error during signIn:', error);
-      setLoginLoder(false);
+      setLoginLoader(false);
     }
   };
 

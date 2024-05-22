@@ -1,6 +1,8 @@
-import { IconEyeOff, IconEye } from '@tabler/icons-react';
-import './password-input.styles.css';
 import { useState } from 'react';
+
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
+
+import './password-input.styles.css';
 
 const PasswordInput = ({ register, errors, isValid, placeholder }) => {
   const [visible, setVisible] = useState(false);

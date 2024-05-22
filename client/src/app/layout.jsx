@@ -1,9 +1,11 @@
+import { Inter } from 'next/font/google';
+
+import AuthProvider from '../lib/authProvider/authProvider';
+import TokenExpiration from '../lib/tokenExpiration/tokenExpiration';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals/variables.scss';
 import 'animate.css';
-import AuthProvider from '../lib/authProvider/authProvider';
-import { Inter } from 'next/font/google';
-import TokenExpiration from '../lib/tokenExpiration/tokenExpiration';
 
 export const metadata = {
   title: 'PixelBoard',

@@ -14,6 +14,48 @@
     "react"
   ],
   "rules": {
+    "simple-import-sort/imports": [
+      "error",
+      // Marks unsorted imports as an error
+      {
+        "groups": [
+          // Import sorting rules are defined below:
+          // - Group 1: Import `react` first, then `next`, followed by other packages starting with a lowercase letter.
+          [
+            "^react$",
+            "^next",
+            "^[a-z]"
+          ],
+          // - Group 2: Packages starting with `@`
+          [
+            "^@"
+          ],
+          // - Group 3: Packages starting with `~`
+          [
+            "^~"
+          ],
+          // - Group 4: Relative imports going up the folder structure (`../`)
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
+          // - Group 5: Relative imports within the same or child folders (`./`)
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          // - Group 6: Style (CSS/SCSS) imports
+          [
+            "^.+\\.s?css$"
+          ],
+          // - Group 7: Side effect imports (imports that are included for their side effects and do not export anything)
+          [
+            "^\\u0000"
+          ]
+        ]
+      }
+    ],
     "max-len": [
       "error",
       {

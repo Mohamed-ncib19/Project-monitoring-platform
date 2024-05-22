@@ -1,8 +1,9 @@
 'use client';
-import './select-input.styles.css';
-import { Select } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
 import { useState } from 'react';
+import { Select } from 'semantic-ui-react';
+
+import './select-input.styles.css';
+import 'semantic-ui-css/semantic.min.css';
 const SelectInput = ({
   errors,
   content,

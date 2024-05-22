@@ -1,11 +1,13 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import SelectInput from '../../Inputs/select-input/page';
+import * as Yup from 'yup';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import Input from '../../Inputs/custom-input/page';
+import SelectInput from '../../Inputs/select-input/page';
 
 const SetupEditForm = ({ user }) => {
   const Schema = Yup.object().shape({
