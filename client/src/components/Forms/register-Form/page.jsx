@@ -104,7 +104,7 @@ const RegistrationForm = ({ userName, loading }) => {
       
       ]
     } /> */}
-         <Button  onClick={handleSubmit(onSubmit)} content={"Continue"}  />
+         <Button  onClick={handleSubmit(onSubmit)} content={"Submit"}  />
        </form>
     </FormProvider>
     </div>

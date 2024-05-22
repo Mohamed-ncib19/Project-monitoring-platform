@@ -9,7 +9,7 @@ const AuthRoute = {
       console.log(userData)
       const { username, password } = userData;
       const userLoginInfo = { username, password };
-      const res = await axios.post("https://a65d-197-244-121-167.ngrok-free.app/login", userLoginInfo);
+      const res = await axios.post("http://localhost:5000/login", userLoginInfo);
       return res.data
     } catch (error) {
       throw error;
@@ -19,7 +19,7 @@ const AuthRoute = {
   async registerRoute(userData, token) {
     try {
       
-       const res = await axios.post("https://a65d-197-244-121-167.ngrok-free.app/register", userData, {
+       const res = await axios.post("http://localhost:5000/register", userData, {
         headers: { 'Authorization': token }
       });
       console.log(res)
@@ -31,8 +31,8 @@ const AuthRoute = {
 
   async refreshToken(refreshToken){
     try {  
-     const refreshRes = await axios.post("https://a65d-197-244-121-167.ngrok-free.app/refresh_token", { refreshToken });
-     const newToken = refreshRes.data.accessToken;
+     const refreshRes = await axios.post("http://localhost:5000/refresh_token", { refreshToken });
+     const newToken = refreshRes.data.data.accessToken;
      return newToken;
     } catch (error) {
      return {ok:false,msg:error}

@@ -2,7 +2,7 @@ import './navbar-sidebar.styles.css';
 import Navbar from "../../components/navbar/page";
 import SideBar from "../../components/sidebar/page";
 
-const NavbarSideBarLayout = ({ children }) => {
+const NavbarSideBarLayout = ({ children,user }) => {
     return ( 
         <div className="vh-100 d-flex overflow-hidden"  >
             <div className=" sidebar " >
@@ -10,7 +10,7 @@ const NavbarSideBarLayout = ({ children }) => {
             </div>
               
             <div className="main-content  ">
-                    <Navbar />
+                    <Navbar user={user} />
                 
                 <div className='' >
                     {children}

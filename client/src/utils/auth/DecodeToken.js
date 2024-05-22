@@ -4,7 +4,6 @@ const { jwtDecode } = require("jwt-decode");
 
 const DecodeToken = (token) =>{
     try {
-        console.log(token)
     global.atob = decode;
     const decodedToken = jwtDecode(token);
     return {

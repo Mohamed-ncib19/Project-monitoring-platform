@@ -7,7 +7,7 @@ const userController = {
   async getUser(request, reply) {
     try {
       const { username } = request.params;
-      const response = await userServices.userExists(id);
+      const response = await userServices.userExists(username);
       if (response.ok) {
         return reply.status(200).send({ error: null, data: response.user });
       } else {

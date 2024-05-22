@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import NavbarSideBarLayout from "../../../layout/navbar-sidebar/page";
 import { useSession } from "next-auth/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -11,7 +10,6 @@ import logo from "../../../public/Logo.png"
 import Image from "next/image";
 import Textarea from "../../../components/Inputs/textarea/page";
 import Input from "../../../components/Inputs/custom-input/page";
-import SelectMultiple from "../../../components/Inputs/select-multiple/page";
 import SelectInput from "../../../components/Inputs/select-input/page";
 import {DecodeToken} from "../../../utils/auth/DecodeToken";
 import UserRoute from "../../api/routes/user/userRoute";
@@ -22,49 +20,46 @@ const Profile = () => {
     bio: Yup.string(),
     firstname: Yup.string(),
     lastname: Yup.string(),
-    phone: Yup.string()
-    .matches(/^[0-9]+$/, 'Phone number is not valid')
+    phone: Yup.string().matches(/^[0-9]+$/, 'Phone number is not valid')
   });
 
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, setValue, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(Schema),
   });
-  const [loading,setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const { data: session } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
-      const decoded = await DecodeToken(session?.token)
-      const res = await UserRoute.getUserInfo(decoded.username,session?.token);
-      console.log(res)
-      if(res.ok){
-      setUserData(res.data);
-      setLoading(false);
-      }else{
-        alert('not found');
-      }
-      if (res.data?.skills && Array.isArray(res.data.skills)) {
-        const skillsAsObjects = res.data.skills.map((skill) => ({
-          key: skill,
-          text: skill.charAt(0).toUpperCase() + skill.slice(1),
-          value: skill,
-        }));
-        setUserSkillsAsObjects(skillsAsObjects);
-      } else {
-        console.error("userSkills is null or not an array.");
-      }
+      try {
+        const decoded = await DecodeToken(session?.token);
+        const res = await UserRoute.getUserInfo(decoded.username, session?.token);
 
-      if (res.data) {
-        setValue("bio", res.data.bio || "");
-        setValue("initialFirstname", res.data.firstname || "");
-        setValue("lastname", res.data.lastname || "");
-        setValue("phone", res.data.phone || "");
+        if (res.ok) {
+          setUserData(res.data);
+          setLoading(false);
+
+          if (res.data?.skills && Array.isArray(res.data.skills)) {
+            const skillsAsObjects = res.data.skills.map((skill) => ({
+              key: skill,
+              text: skill.charAt(0).toUpperCase() + skill.slice(1),
+              value: skill,
+            }));
+          } else {
+            console.error("userSkills is null or not an array.");
+          }
+
+          setValue("bio", res.data.bio || "");
+          setValue("firstname", res.data.firstname || "");
+          setValue("lastname", res.data.lastname || "");
+          setValue("phone", res.data.phone || "");
+        } else {
+          alert('User not found');
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     };
 
@@ -72,61 +67,50 @@ const Profile = () => {
       fetchData();
     }
   }, [session, setValue]);
-
-
+console.log(userData)
   const onSubmit = async (data) => {
     try {
       const { firstname, lastname, bio, phone } = data;
       const cleanData = {};
-  
+
       if (firstname && firstname !== userData.firstname) {
         cleanData.firstname = firstname;
       }
-  
+
       if (lastname && lastname !== userData.lastname) {
         cleanData.lastname = lastname;
       }
-  
+
       if (bio && bio !== userData.bio) {
         cleanData.bio = bio;
       }
-  
+
       if (phone && phone !== userData.phone) {
         cleanData.phone = phone;
       }
-  
-      console.log(cleanData)
-    if(Object.keys(cleanData).length>0){
-      const resUpdateUser = await UserRoute.editUserInfo(cleanData, userData?.username, session?.token);
-  
-      if (resUpdateUser.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Profile information updated successfully',
-        });
-      } else {
-        if (resUpdateUser.status === 404) {
+
+      if (Object.keys(cleanData).length > 0) {
+        const resUpdateUser = await UserRoute.editUserInfo(cleanData, userData?.username, session?.token);
+
+        if (resUpdateUser.ok) {
           Swal.fire({
-            icon: 'error',
-            title: 'Failed to update',
-            text: 'Resource not found',
+            icon: 'success',
+            title: 'Profile information updated successfully',
           });
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Failed to update',
-            text: 'Server error',
+            text: resUpdateUser.status === 404 ? 'Resource not found' : 'Server error',
           });
         }
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: 'No Changes',
+          text: 'You did not make any updates.',
+        });
       }
-    }else{
-      Swal.fire({
-        icon: 'info',
-        title: 'No Changes',
-        text: 'You did not make any updates.',
-      });
-    }
-      
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -137,9 +121,7 @@ const Profile = () => {
     }
   };
   
-
   return (
-    <NavbarSideBarLayout>
       <div className="px-3 d-flex flex-column gap-2 col-11 m-auto">
         <div className="" >
           <h1 className="fs-1" >Profile</h1>
@@ -278,7 +260,6 @@ const Profile = () => {
         </FormProvider>
     )}
       </div>
-    </NavbarSideBarLayout>
   );
 };
 

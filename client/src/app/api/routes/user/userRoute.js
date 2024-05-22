@@ -4,10 +4,8 @@ const UserRoute = {
 
     async  getUserInfo(username,token){
         try {
-          const res = await axios.get(`https://a65d-197-244-121-167.ngrok-free.app/users/${username}`, {
-            headers: { 'Authorization': token,
-            "ngrok-skip-browser-warning":"any"
-             }
+          const res = await axios.get(`http://localhost:5000/users/${username}`, {
+            headers: { 'Authorization': token}
           });
           console.log(res)
           if(res.status){
@@ -24,7 +22,7 @@ const UserRoute = {
         try {
               
           
-          const res = await axios.put(`https://a65d-197-244-121-167.ngrok-free.app/users/me`, userData, {
+          const res = await axios.put(`http://localhost:5000/users/me`, userData, {
             headers: { 'Authorization': token },
           });
           
@@ -42,12 +40,10 @@ const UserRoute = {
       async getPendingUsers(){
         const users=[];
         try {
-            const res = await axios.get("https://a65d-197-244-121-167.ngrok-free.app/users?pending=true", {
+            const res = await axios.get("http://localhost:5000/users?pending=true", {
               headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json',
-                "ngrok-skip-browser-warning":"any"
-      
+                'Content-Type': 'application/json',      
               }
             });
             console.log(res.data);

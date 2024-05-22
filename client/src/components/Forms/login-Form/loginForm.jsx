@@ -57,7 +57,7 @@ const LoginForm = () => {
                     <i ><IconInfoCircle /></i>
                     <p >Login failed. Please verify if your account exists in LDAP</p> 
                 </div> }
-                <SubmitButton  content={"Explore progress"} />
+                <SubmitButton  content={"Log in"} />
                 {loginLoader && <Loader />}
             </form>
         </FormProvider>

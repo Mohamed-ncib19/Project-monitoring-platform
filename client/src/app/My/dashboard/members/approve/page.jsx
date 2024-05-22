@@ -1,7 +1,6 @@
 'use client'
 import './approve.styles.css'
 import React, { useEffect, useState } from "react";
-import NavbarSideBarLayout from "../../../../../layout/navbar-sidebar/page";
 import UserRoute from "../../../../api/routes/user/userRoute";
 import ToggleDropdown from "../../../../../components/dropdown/toggle-dropdown";
 import Table from "../../../../../layout/table/table";
@@ -11,7 +10,6 @@ import CustomModal from '../../../../../components/rightside-modal/modal';
 import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
 
 const Approve = () => {
-  const [disabledButton, setDisabledButton] = useState(true);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests');
@@ -31,7 +29,6 @@ const Approve = () => {
         if (res.ok) {
           setUsers(res.data);
           setLoading(false);
-          console.log(res);
         } else {
           console.log(res);
         }
@@ -96,7 +93,6 @@ const Approve = () => {
   );
 
   return (
-    <NavbarSideBarLayout>
       <div className="vh-100 p-4">
         <div className='pb-4'>
           <p className='light-text-custom-color'>Users</p>
@@ -135,7 +131,6 @@ const Approve = () => {
           edit={false}
         />
       </div>
-    </NavbarSideBarLayout>
   );
 }
 

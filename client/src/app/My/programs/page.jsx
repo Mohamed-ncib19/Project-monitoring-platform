@@ -2,7 +2,6 @@
 import "./program.styles.css";
 import { Suspense, useEffect, useState } from "react";
 import PmGroupHeader from "../../../components/pm-group-header/page";
-import NavbarSideBarLayout from "../../../layout/navbar-sidebar/page";
 import { getPrograms } from "../../api/routes/routesEndpoints";
 import Loading from "../../loading";
 import Avatar from "../../../components/avatar/page";
@@ -42,7 +41,7 @@ const Programs = () => {
   }, []);
 
   return (
-    <NavbarSideBarLayout>
+    <>
       <div>
         <Suspense fallback={<Loading />}>
           <PmGroupHeader color={"success"} name={"Program"} />
@@ -148,7 +147,7 @@ const Programs = () => {
           <Button content={"Close"} onClick={handleClose} />
         </Modal.Footer>
       </Modal>
-    </NavbarSideBarLayout>
+      </>
   );
 };
 

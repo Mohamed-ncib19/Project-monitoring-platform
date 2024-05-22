@@ -1,35 +1,24 @@
 'use client'
 import './pending.styles.css'
 import HeaderLogo from '../../../layout/header-Logo/page';
-import { DecodeToken } from '../../../utils/auth/DecodeToken';
 import { CheckIcon } from '../../../public/icons/check-icon';
 import submitedIllustration from '../../../public/registration-submited-illustration.svg';
 import { signOut, useSession } from "next-auth/react";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Button from '../../../components/buttons/simple-button/page';
 
 const Pending = () => {
     const {data : session} = useSession();
-    const [username,setUserName] = useState('');
     const router = useRouter();
     
-    useEffect(()=>{
-      const decodeToken = (session)=>{
-        const decoded = DecodeToken(session?.token)
-        if(decoded){
-          setUserName(decoded.username);
-        }else{
-          router.push('/auth/login');
-        }
+    useEffect(() => {
+      if (!session) {
+          router.push(`/auth/login?callbackUrl=${encodeURIComponent(router.asPath)}`);
       }
-
-      if(session /*  && session.user.exists */){
-        decodeToken(session);
-      }
-
-    },[session])
+  }, []);
+  
 
   const handleSignOut = async () => {
     await signOut();

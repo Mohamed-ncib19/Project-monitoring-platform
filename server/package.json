@@ -13,9 +13,11 @@
     "ldapjs": "^3.0.7",
     "ldapjs-client": "^0.1.2",
     "mongodb": "6.3",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.0"
   },
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon server.js"
   }
 }
