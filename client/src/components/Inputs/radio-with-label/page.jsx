@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const RadioWithLabel = ({register,label}) => {
+const RadioWithLabel = ({ register, label }) => {
   const [isDarkMode, setDarkMode] = useState(false);
 
   const handleCheckboxChange = () => {
@@ -9,7 +9,11 @@ const RadioWithLabel = ({register,label}) => {
 
   return (
     <div className="form-check form-switch form-group">
-      <label className="form-check-label" htmlFor="mySwitch" onClick={handleCheckboxChange}>
+      <label
+        className="form-check-label"
+        htmlFor="mySwitch"
+        onClick={handleCheckboxChange}
+      >
         <input
           className="form-check-input"
           type="checkbox"

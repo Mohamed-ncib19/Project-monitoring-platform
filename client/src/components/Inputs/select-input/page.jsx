@@ -1,9 +1,18 @@
-'use client'
-import "./select-input.styles.css";
-import { Select } from 'semantic-ui-react'
+'use client';
+import './select-input.styles.css';
+import { Select } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
-import { useState } from "react";
-const SelectInput = ({ errors, content, name, placeholder, setValue, search, hookForm ,disabled}) => {
+import { useState } from 'react';
+const SelectInput = ({
+  errors,
+  content,
+  name,
+  placeholder,
+  setValue,
+  search,
+  hookForm,
+  disabled,
+}) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState(null);
 
@@ -21,18 +30,19 @@ const SelectInput = ({ errors, content, name, placeholder, setValue, search, hoo
 
   return (
     <div className=" form-group">
-      <Select 
-      disabled={disabled}
+      <Select
+        disabled={disabled}
         placeholder={placeholder}
-        className={`form-control focus-blue-bottom-border rounded ${hookForm ? (errors[name] ? "is-invalid" : "") : ''}`}
+        className={`form-control focus-blue-bottom-border rounded ${hookForm ? (errors[name] ? 'is-invalid' : '') : ''}`}
         id={placeholder + '-list'}
         search={search}
         options={content}
         value={selectedOptions}
         onChange={hookForm ? handleChange : getData}
       />
-      {hookForm && errors[name] && <p className="invalid-feedback">{errors[name].message}</p>}
-      
+      {hookForm && errors[name] && (
+        <p className="invalid-feedback">{errors[name].message}</p>
+      )}
     </div>
   );
 };

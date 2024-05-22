@@ -1,11 +1,11 @@
-import PmGroupHeader from "../../../components/pm-group-header/page";
+import PmGroupHeader from '../../../components/pm-group-header/page';
 
 const Projects = () => {
-    return ( 
-            <div>
-                <PmGroupHeader color={'warning'} name={'Project'} />
-            </div>
-     );
-}
- 
+  return (
+    <div>
+      <PmGroupHeader color={'warning'} name={'Project'} />
+    </div>
+  );
+};
+
 export default Projects;

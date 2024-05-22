@@ -1,0 +1,37 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "root": true,
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@next/next/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "simple-import-sort",
+    "react"
+  ],
+  "rules": {
+    "max-len": [
+      "error",
+      {
+        "code": 700
+      }
+    ],
+    "operator-linebreak": 1,
+    "no-console": 1,
+    "object-curly-newline": 0,
+    "import/no-unresolved": 0,
+    "import/extensions": 0,
+    "implicit-arrow-linebreak": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-wrap-multilines": 0,
+    "react/require-default-props": 0,
+    "react/jsx-props-no-spreading": 0,
+    "import/prefer-default-export": 1,
+    "lines-around-comment": 1,
+    "react/jsx-closing-bracket-location": 0
+  }
+}

@@ -1,14 +1,13 @@
 .user-dropdown:hover {
-    box-shadow: 0 0 5px 4px rgb(64, 134, 255);
+  box-shadow: 0 0 5px 4px rgb(64, 134, 255);
 }
 
 .user-dropdown:focus {
-    box-shadow: 0 0 5px 4px rgb(97, 155, 255);
+  box-shadow: 0 0 5px 4px rgb(97, 155, 255);
 }
-.user-dropdown-item:hover{
-    cursor: pointer;
+.user-dropdown-item:hover {
+  cursor: pointer;
 }
-
 
 /* .user-dropdown-card{
     right: 3rem;

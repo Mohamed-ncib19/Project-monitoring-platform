@@ -1,10 +1,10 @@
-'use client'
-import './approve.styles.css'
-import React, { useEffect, useState } from "react";
-import UserRoute from "../../../../api/routes/user/userRoute";
-import ToggleDropdown from "../../../../../components/dropdown/toggle-dropdown";
-import Table from "../../../../../layout/table/table";
-import EditDotsIcon from "../../../../../public/icons/edit-dots-icon";
+'use client';
+import './approve.styles.css';
+import React, { useEffect, useState } from 'react';
+import UserRoute from '../../../../api/routes/user/userRoute';
+import ToggleDropdown from '../../../../../components/dropdown/toggle-dropdown';
+import Table from '../../../../../layout/table/table';
+import EditDotsIcon from '../../../../../public/icons/edit-dots-icon';
 import Loader from '../../../../../components/loader/page';
 import CustomModal from '../../../../../components/rightside-modal/modal';
 import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
@@ -33,7 +33,7 @@ const Approve = () => {
           console.log(res);
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error('Error fetching users:', error);
       }
     };
     getUsers();
@@ -58,9 +58,21 @@ const Approve = () => {
         accessor: 'joinedAt',
         Cell: ({ value }) => {
           const date = new Date(value);
-          const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-          const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-          return <span>{formattedDate} {formattedTime}</span>;
+          const formattedDate = date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          });
+          const formattedTime = date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          });
+          return (
+            <span>
+              {formattedDate} {formattedTime}
+            </span>
+          );
         },
       },
       {
@@ -87,51 +99,49 @@ const Approve = () => {
             />
           </div>
         ),
-      }
+      },
     ],
-    []
+    [],
   );
 
   return (
-      <div className="vh-100 p-4">
-        <div className='pb-4'>
-          <p className='light-text-custom-color'>Users</p>
-          <p className='fs-2 fw-bold'>Permission</p>
-        </div>
-        <div id="nav-links" className="mb-5">
-          <button
-            className={`${activeTab === 'requests' ? 'requests' : ''} border-0 px-4`}
-            onClick={() => setActiveTab('requests')}
-          >
-            Requests <span>1</span>
-          </button>
-          <button
-            className={`${activeTab === 'users' ? 'users' : ''} border-0 px-4`}
-            onClick={() => setActiveTab('users')}
-          >
-            Users <span>3</span>
-          </button>
-          <button
-            className={`${activeTab === 'bannedUsers' ? 'banned-user' : ''} border-0 px-4`}
-            onClick={() => setActiveTab('bannedUsers')}
-          >
-            Banned User <span>5</span>
-          </button>
-        </div>
-
-        {loading ? <Loader /> : (
-          <Table columns={Requestcolumns} data={users} />
-        )}
-
-        <CustomModal
-          form={<SetupEditForm user={selectedUser} />}
-          headerTitle={'Account setup'}
-          show={isModalOpen}
-          handleClose={handleClose}
-          edit={false}
-        />
+    <div className="vh-100 p-4">
+      <div className="pb-4">
+        <p className="light-text-custom-color">Users</p>
+        <p className="fs-2 fw-bold">Permission</p>
       </div>
+      <div id="nav-links" className="mb-5">
+        <button
+          className={`${activeTab === 'requests' ? 'requests' : ''} border-0 px-4`}
+          onClick={() => setActiveTab('requests')}
+        >
+          Requests <span>1</span>
+        </button>
+        <button
+          className={`${activeTab === 'users' ? 'users' : ''} border-0 px-4`}
+          onClick={() => setActiveTab('users')}
+        >
+          Users <span>3</span>
+        </button>
+        <button
+          className={`${activeTab === 'bannedUsers' ? 'banned-user' : ''} border-0 px-4`}
+          onClick={() => setActiveTab('bannedUsers')}
+        >
+          Banned User <span>5</span>
+        </button>
+      </div>
+
+      {loading ? <Loader /> : <Table columns={Requestcolumns} data={users} />}
+
+      <CustomModal
+        form={<SetupEditForm user={selectedUser} />}
+        headerTitle={'Account setup'}
+        show={isModalOpen}
+        handleClose={handleClose}
+        edit={false}
+      />
+    </div>
   );
-}
+};
 
 export default Approve;

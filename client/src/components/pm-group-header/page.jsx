@@ -1,9 +1,9 @@
-"use client";
-import { useState } from "react";
-import SelectInput from "../Inputs/select-input/page";
-import Button from "../buttons/simple-button/page";
-import "./pm-group.styles.css";
-import { Modal } from "react-bootstrap";
+'use client';
+import { useState } from 'react';
+import SelectInput from '../Inputs/select-input/page';
+import Button from '../buttons/simple-button/page';
+import './pm-group.styles.css';
+import { Modal } from 'react-bootstrap';
 
 const PmGroupHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);
@@ -24,14 +24,12 @@ const PmGroupHeader = ({ color, name }) => {
         <SelectInput
           hookForm={false}
           content={[
-            { text: "filter1", value: "filter1" },
-            { text: "filter2", value: "filter2" },
-            { text: "filter3", value: "filter3" },
+            { text: 'filter1', value: 'filter1' },
+            { text: 'filter2', value: 'filter2' },
+            { text: 'filter3', value: 'filter3' },
           ]}
         />
       </div>
-
-      
 
       <Modal show={show} onHide={handleClose} backdrop={false} size="xl">
         <div className="bg-soft-gray w-100 my-2 px-4  rounded-2">
@@ -46,8 +44,8 @@ const PmGroupHeader = ({ color, name }) => {
           <div>add program</div>
         </Modal.Body>
         <Modal.Footer>
-          <Button content={"Add"} onClick={handleClose} />
-          <Button content={"Close"} onClick={handleClose} />
+          <Button content={'Add'} onClick={handleClose} />
+          <Button content={'Close'} onClick={handleClose} />
         </Modal.Footer>
       </Modal>
     </div>

@@ -1,9 +1,9 @@
-const CheckTokenExp = (tokenExp,currentDate) =>{
-    if(tokenExp <= currentDate){
-        return false;
-    }else{
-        return true;
-    }
+const CheckTokenExp = (tokenExp, currentDate) => {
+  if (tokenExp <= currentDate) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
-module.exports = {CheckTokenExp}
+module.exports = { CheckTokenExp };
