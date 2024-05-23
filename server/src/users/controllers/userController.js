@@ -25,7 +25,6 @@ const userController = {
   async getCurrentUser(request, reply) {
     try {
       const { username } = request.user;
-      console.log(username);
       const response = await userServices.userExists(username);
       if (response.ok) {
         return reply.status(200).send({ error: null, data: response.user });
