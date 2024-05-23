@@ -13,7 +13,7 @@ const CustomModal = ({ show, handleClose, headerTitle, userData, form,edit }) =>
           <Modal.Title>{headerTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {edit &&(
+          {edit &&(r
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex gap-3">
               <Avatar name={userData?.fullname || 'user name'} background="primary" rounded="1" textColor="white" />
