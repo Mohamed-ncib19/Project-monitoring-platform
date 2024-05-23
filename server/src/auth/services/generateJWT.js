@@ -1,17 +1,30 @@
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const jwt = require("jsonwebtoken");
+
 function generateToken(username, role = null) {
-  let payload = "";
   try {
     const secretKey = process.env.JWT_SECRET;
-    payload = {
+    const payload = {
       username: username,
       role: role,
     };
 
-    const token = jwt.sign(payload, secretKey, { expiresIn: "10m" });
-    return { token };
+    const expiresIn = "10m"; // Set the expiration time
+
+    // Calculate the expiration date
+    const now = new Date();
+    const expirationDate = new Date(
+      now.getTime() + parseInt(expiresIn) * 60 * 1000
+    );
+
+    // Sign the token with expiration date
+    const token = jwt.sign(
+      { ...payload, exp: Math.floor(expirationDate.getTime() / 1000) },
+      secretKey
+    );
+
+    return { token, expiresIn: expirationDate }; // Include expiresIn in the response
   } catch (error) {
     console.error("Error generating token:", error);
     return { ok: false };
