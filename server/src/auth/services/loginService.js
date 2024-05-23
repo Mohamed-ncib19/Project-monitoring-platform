@@ -14,7 +14,7 @@ async function loginService(username, password) {
         message: userBind.message,
       };
     }
-    
+
     const userExistsResponse = await userServices.userExists(username);
     const tokenObject = generateToken(
       username,
@@ -27,16 +27,28 @@ async function loginService(username, password) {
       userExistsResponse.exists ? userExistsResponse.user.role : null
     );
     const refreshToken = refreshTokenObject.refreshToken;
-
-    return {
-      ok: true,
-      statusCode: httpStatus.OK,
-      tokens: { token, refreshToken },
-      exists: userExistsResponse.exists,
-      pending: userExistsResponse.exists
-        ? userExistsResponse.user.pending
-        : null,
-    };
+    if (!userExistsResponse.exists) {
+      return {
+        ok: true,
+        statusCode: httpStatus.UNPROCESSABLE_ENTITY,
+        tokens: { token, refreshToken },
+        status: "unregistred",
+      };
+    } else if (userExistsResponse.user.status == "approved") {
+      return {
+        ok: true,
+        statusCode: httpStatus.OK,
+        tokens: { token, refreshToken },
+        status: "approved",
+      };
+    } else {
+      return {
+        ok: true,
+        statusCode: httpStatus.UNPROCESSABLE_ENTITY,
+        tokens: { token, refreshToken },
+        status: "pending",
+      };
+    }
   } catch (error) {
     console.error("LDAP authentication error:", error);
     return {
