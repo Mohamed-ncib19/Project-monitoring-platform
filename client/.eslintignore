@@ -1,4 +1,10 @@
 package.json
 node_modules
+s
 .next
+src/styles
+src/*.css
+src/*.scss
+*.css
+*.scss
 

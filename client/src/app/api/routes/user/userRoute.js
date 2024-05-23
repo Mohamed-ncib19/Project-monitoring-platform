@@ -3,7 +3,7 @@ import axios from 'axios';
 const UserRoute = {
   async getUserInfo(username, token) {
     try {
-      const res = await axios.get(`http://localhost:5000/users/${username}`, {
+      const res = await axios.get(`http://0.0.0.0:4000/users/${username}`, {
         headers: { Authorization: token },
       });
       console.log(res);
@@ -19,7 +19,7 @@ const UserRoute = {
 
   async editUserInfo(userData, username, token) {
     try {
-      const res = await axios.put(`http://localhost:5000/users/me`, userData, {
+      const res = await axios.put(`http://0.0.0.0:4000/users/me`, userData, {
         headers: { Authorization: token },
       });
 
@@ -37,7 +37,7 @@ const UserRoute = {
   async getPendingUsers() {
     const users = [];
     try {
-      const res = await axios.get('http://localhost:5000/users?pending=true', {
+      const res = await axios.get('http://0.0.0.0:4000/users?pending=true', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -45,6 +45,7 @@ const UserRoute = {
       });
       console.log(res.data);
       if (res.status === 200) {
+
         /*     res.data.data.map((user)=>{
                users.push({
                 id:user._id,

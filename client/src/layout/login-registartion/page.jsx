@@ -1,7 +1,8 @@
 'use client';
 import Image from 'next/image';
 
-import LoginSquares from '../../public/login-squares.svg';
+import LoginSquares from '@/public/login-squares.svg';
+
 import HeaderLogo from '../header-Logo/page';
 
 import './login-registarion.styles.css';

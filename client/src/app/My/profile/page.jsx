@@ -6,6 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
 
+import logo from '@/public/Logo.png';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import SubmitButton from '../../../components/buttons/submit-button/submit-button';
@@ -14,9 +15,9 @@ import ReadOnlyInput from '../../../components/Inputs/read-only-input/page';
 import SelectInput from '../../../components/Inputs/select-input/page';
 import Textarea from '../../../components/Inputs/textarea/page';
 import Loader from '../../../components/loader/page';
-import logo from '../../../public/Logo.png';
 import { DecodeToken } from '../../../utils/auth/DecodeToken';
 import UserRoute from '../../api/routes/user/userRoute';
+
 const Profile = () => {
   const Schema = Yup.object().shape({
     bio: Yup.string(),

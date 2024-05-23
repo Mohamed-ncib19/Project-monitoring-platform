@@ -75,5 +75,15 @@
     "import/prefer-default-export": 1,
     "lines-around-comment": 1,
     "react/jsx-closing-bracket-location": 0
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.jsx",
+        "*.js",
+        "*.ts",
+        "*.tsx"
+      ]
+    }
+  ]
 }

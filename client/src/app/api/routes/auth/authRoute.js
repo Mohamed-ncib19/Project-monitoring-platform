@@ -9,10 +9,7 @@ const AuthRoute = {
       console.log(userData);
       const { username, password } = userData;
       const userLoginInfo = { username, password };
-      const res = await axios.post(
-        'http://localhost:5000/login',
-        userLoginInfo,
-      );
+      const res = await axios.post('http://0.0.0.0:4000/login', userLoginInfo);
       return res.data;
     } catch (error) {
       throw error;
@@ -21,7 +18,7 @@ const AuthRoute = {
 
   async registerRoute(userData, token) {
     try {
-      const res = await axios.post('http://localhost:5000/register', userData, {
+      const res = await axios.post('http://0.0.0.0:4000/register', userData, {
         headers: { Authorization: token },
       });
       console.log(res);
@@ -33,10 +30,9 @@ const AuthRoute = {
 
   async refreshToken(refreshToken) {
     try {
-      const refreshRes = await axios.post(
-        'http://localhost:5000/refresh_token',
-        { refreshToken },
-      );
+      const refreshRes = await axios.post('http://0.0.0.0:4000/refresh_token', {
+        refreshToken,
+      });
       const newToken = refreshRes.data.data.accessToken;
       return newToken;
     } catch (error) {

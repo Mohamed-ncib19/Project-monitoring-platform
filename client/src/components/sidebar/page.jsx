@@ -4,10 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
-import ArrowIcons from '../../public/icons/arrows/arrow-icon';
-import SibebarIcons from '../../public/icons/sidebar-icons/sidebar-icons';
-import Logo from '../../public/Logo.svg';
-import LogoIcon from '../../public/Logo-icon.svg';
+import ArrowIcons from '@/public/icons/arrows/arrow-icon';
+import SibebarIcons from '@/public/icons/sidebar-icons/sidebar-icons';
+import Logo from '@/public/Logo.svg';
+import LogoIcon from '@/public/Logo-icon.svg';
+
 import { DecodeToken } from '../../utils/auth/DecodeToken';
 
 import './sidebar.styles.css';
