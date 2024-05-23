@@ -4,10 +4,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
+import { CheckIcon } from '@/public/icons/check-icon';
+import submitedIllustration from '@/public/registration-submited-illustration.svg';
+
 import Button from '../../../components/buttons/simple-button/page';
 import HeaderLogo from '../../../layout/header-Logo/page';
-import { CheckIcon } from '../../../public/icons/check-icon';
-import submitedIllustration from '../../../public/registration-submited-illustration.svg';
 
 import './pending.styles.css';
 

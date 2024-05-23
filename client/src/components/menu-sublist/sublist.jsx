@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-import ArrowIcons from '../../public/icons/arrows/arrow-icon';
+import ArrowIcons from '@/public/icons/arrows/arrow-icon';
 
 import './sublist.styles.css';
 

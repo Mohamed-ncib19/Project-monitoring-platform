@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import NotificationIcon from '../../../public/icons/notification-icons';
-import Avatar from '../../avatar/page';
+import NotificationIcon from '@/public/icons/notification-icons';
 
 import NotificationItem from './notification-item/page';
 

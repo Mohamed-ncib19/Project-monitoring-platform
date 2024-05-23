@@ -1,4 +1,4 @@
-import PmGroupHeader from '../../../components/pm-group-header/page';
+import PmGroupHeader from '@/src/components/pm-group-header/page';
 
 const Groups = () => {
   return (

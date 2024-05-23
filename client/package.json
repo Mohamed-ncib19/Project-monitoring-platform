@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint-fix": "eslint ./src/**  -c .eslintrc --fix --ext js,jsx,css,scss"
+    "lint-fix": "eslint ./src/**  -c .eslintrc --fix --ext js,jsx --no-error-on-unmatched-pattern"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

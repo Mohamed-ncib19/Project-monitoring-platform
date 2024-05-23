@@ -1,8 +1,8 @@
 import { Modal } from 'react-bootstrap';
 
-import WarningIcon from '../../public/icons/warning-icon';
+import WarningIcon from '@/public/icons/warning-icon';
+
 import Avatar from '../avatar/page';
-import Button from '../buttons/simple-button/page';
 import SubmitButton from '../buttons/submit-button/submit-button';
 
 import './modal.styles.css';

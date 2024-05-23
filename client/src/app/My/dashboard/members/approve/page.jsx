@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 
+import EditDotsIcon from '@/public/icons/edit-dots-icon';
+
 import ToggleDropdown from '../../../../../components/dropdown/toggle-dropdown';
 import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
 import Loader from '../../../../../components/loader/page';
 import CustomModal from '../../../../../components/rightside-modal/modal';
 import Table from '../../../../../layout/table/table';
-import EditDotsIcon from '../../../../../public/icons/edit-dots-icon';
 import UserRoute from '../../../../api/routes/user/userRoute';
 
 import './approve.styles.css';
