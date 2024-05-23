@@ -21,14 +21,6 @@ module.exports = loginSchema = {
           data: {
             type: "object",
             properties: {
-              ok: {
-                type: "boolean",
-                description: "Indicates if login was successful",
-              },
-              statusCode: {
-                type: "integer",
-                description: "Status code of the response",
-              },
               tokens: {
                 type: "object",
                 properties: {
@@ -39,19 +31,15 @@ module.exports = loginSchema = {
                   },
                 },
               },
-              exists: {
-                type: "boolean",
-                description: "Indicates if the user exists",
-              },
-              pending: {
-                type: ["null", "boolean"],
-                description: "Indicates if the user is pending",
+              status: {
+                type: "string",
               },
             },
           },
           error: { type: "null", description: "Error message" },
         },
       },
+
       400: {
         description: "Bad request",
         type: "object",
@@ -78,6 +66,32 @@ module.exports = loginSchema = {
           },
         },
       },
+      422: {
+        description: "Valid credentials, but access is currently restricted",
+        type: "object",
+        properties: {
+          data: {
+            type: "object",
+            properties: {
+              tokens: {
+                type: "object",
+                properties: {
+                  token: { type: "string", description: "Access token" },
+                  refreshToken: {
+                    type: "string",
+                    description: "Refresh token",
+                  },
+                },
+              },
+              status: {
+                type: "string",
+              },
+            },
+          },
+          error: { type: "null", description: "Error message" },
+        },
+      },
+
       500: {
         description: "Internal server error",
         type: "object",

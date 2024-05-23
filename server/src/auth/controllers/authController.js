@@ -24,8 +24,11 @@ const authController = {
           data: null,
         });
       }
-      return reply.status(httpStatus.OK).send({
-        data: response,
+      return reply.status(response.statusCode).send({
+        data: {
+          tokens: response.tokens,
+          status: response.status,
+        },
         error: null,
       });
     } catch (error) {
