@@ -2,18 +2,18 @@ const authController = require("../controllers/authController");
 const loginSchema = require("../schemas/loginSchema");
 const registerSchema = require("../schemas/registrationSchema");
 const autheticate = require("../../core/middlewares/autheticate");
+const refreshTokenSchema = require("../schemas/refreshTokenSchema");
 require("dotenv").config();
 
 async function routes(fastify, options) {
-  fastify.post("/login", authController.login);
+  fastify.post("/login", loginSchema, authController.login);
 
+  fastify.post("/register", registerSchema, authController.register);
   fastify.post(
-    "/register",
-    { preHandler: autheticate },
-    authController.register
+    "/refresh_token",
+    refreshTokenSchema,
+    authController.refreshToken
   );
-
-  fastify.post("/refresh_token", authController.refreshToken);
 }
 
 module.exports = routes;
