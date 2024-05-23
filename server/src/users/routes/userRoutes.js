@@ -1,15 +1,16 @@
 require("dotenv").config();
 const userController = require("../controllers/userController");
 const autheticate = require("../../core/middlewares/autheticate");
+const getCurrentUserSchema = require("../schemas/getCurrentUserSchema");
 async function routes(fastify, options) {
   //get user data
   fastify.get("/users/:username", userController.getUser);
 
-  fastify.get(
-    "/users/me",
-    { preHandler: autheticate },
-    userController.getCurrentUser
-  );
+  fastify.get("/users/me", {
+    schema: getCurrentUserSchema,
+    preHandler: autheticate,
+    handler: userController.getCurrentUser,
+  });
 
   //Set up user profile [Manager]
   fastify.put("/users/:username", userController.setUpAccount);
