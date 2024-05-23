@@ -5,6 +5,12 @@ async function routes(fastify, options) {
   //get user data
   fastify.get("/users/:username", userController.getUser);
 
+  fastify.get(
+    "/users/me",
+    { preHandler: autheticate },
+    userController.getCurrentUser
+  );
+
   //Set up user profile [Manager]
   fastify.put("/users/:username", userController.setUpAccount);
 
@@ -16,9 +22,6 @@ async function routes(fastify, options) {
 
   //get users
   fastify.get("/users", userController.getUsers);
-
-  //update user status
-  fastify.put("/users/:id/approve", userController.approve);
 
   fastify.delete("/requests/:username", userController.deleteRequest);
 }

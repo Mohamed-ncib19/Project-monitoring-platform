@@ -21,8 +21,31 @@ module.exports = loginSchema = {
           data: {
             type: "object",
             properties: {
-              response: {
+              ok: {
+                type: "boolean",
+                description: "Indicates if login was successful",
+              },
+              statusCode: {
+                type: "integer",
+                description: "Status code of the response",
+              },
+              tokens: {
                 type: "object",
+                properties: {
+                  token: { type: "string", description: "Access token" },
+                  refreshToken: {
+                    type: "string",
+                    description: "Refresh token",
+                  },
+                },
+              },
+              exists: {
+                type: "boolean",
+                description: "Indicates if the user exists",
+              },
+              pending: {
+                type: ["null", "boolean"],
+                description: "Indicates if the user is pending",
               },
             },
           },
