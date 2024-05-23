@@ -22,6 +22,25 @@ const userController = {
       });
     }
   },
+  async getCurrentUser(request, reply) {
+    try {
+      const { username } = request.user;
+      console.log(username);
+      const response = await userServices.userExists(username);
+      if (response.ok) {
+        return reply.status(200).send({ error: null, data: response.user });
+      } else {
+        return reply
+          .status(404)
+          .send({ error: { message: "User not found" }, data: null });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        error: { message: "Internal server error", details: error.message },
+        data: null,
+      });
+    }
+  },
   async getUsers(request, reply) {
     try {
       let response;
