@@ -21,12 +21,14 @@ async function loginService(username, password) {
       userExistsResponse.exists ? userExistsResponse.user.role : null
     );
     const token = tokenObject.token;
+    const expiresIn = tokenObject.expiresIn;
 
     const refreshTokenObject = generateRefreshToken(
       username,
       userExistsResponse.exists ? userExistsResponse.user.role : null
     );
     const refreshToken = refreshTokenObject.refreshToken;
+
     if (!userExistsResponse.exists) {
       return {
         ok: true,
@@ -38,7 +40,7 @@ async function loginService(username, password) {
       return {
         ok: true,
         statusCode: httpStatus.OK,
-        tokens: { token, refreshToken },
+        tokens: { token, refreshToken, expiresIn },
         status: "approved",
       };
     } else {
