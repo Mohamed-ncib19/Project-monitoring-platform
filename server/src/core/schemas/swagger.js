@@ -36,6 +36,7 @@ const swaggerUiDescription = {
     "media-src": "'self'",
     "frame-src": "'self'",
   },
+  exposeRoute: true,
 };
 
 module.exports = {
