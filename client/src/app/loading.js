@@ -1,9 +1,7 @@
-import Loader from "../components/loader/page";
+import Loader from '../components/loader/page';
 
 const Loading = () => {
-    return ( 
-        <Loader />
-     );
-}
- 
+  return <Loader />;
+};
+
 export default Loading;

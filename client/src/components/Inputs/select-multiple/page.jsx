@@ -1,10 +1,19 @@
-'use clients'
+'use clients';
+import { useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
+
 import 'semantic-ui-css/semantic.min.css';
 import './select-multiple.styles.css';
-import { useState, useEffect } from 'react';
 
-const SelectMultiple = ({ options, errors, name, setValue, placeholder, disabled, defaultValue }) => {
+const SelectMultiple = ({
+  options,
+  errors,
+  name,
+  setValue,
+  placeholder,
+  disabled,
+  defaultValue,
+}) => {
   const [selectedOptions, setSelectedOptions] = useState(defaultValue || []);
 
   const handleChange = (event, data) => {
@@ -21,7 +30,7 @@ const SelectMultiple = ({ options, errors, name, setValue, placeholder, disabled
       <Dropdown
         disabled={disabled}
         placeholder={placeholder}
-        className={`form-control focus-blue-bottom-border rounded p-2 mb-3 ${errors[name] ? "is-invalid" : ""}`}
+        className={`form-control focus-blue-bottom-border rounded p-2 mb-3 ${errors[name] ? 'is-invalid' : ''}`}
         id={placeholder + '-list'}
         fluid
         multiple
@@ -31,9 +40,11 @@ const SelectMultiple = ({ options, errors, name, setValue, placeholder, disabled
         value={selectedOptions}
         onChange={handleChange}
       />
-      {errors[name] && <p className="invalid-feedback">{errors[name].message}</p>}
+      {errors[name] && (
+        <p className="invalid-feedback">{errors[name].message}</p>
+      )}
     </div>
   );
-}
+};
 
 export default SelectMultiple;

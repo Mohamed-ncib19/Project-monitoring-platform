@@ -1,73 +1,71 @@
-$soft-tertiary-color : #51A7B9;
+$soft-tertiary-color: #51a7b9;
 
-.bg-soft-tertiary-color{
-    background-color: rgba($color: $soft-tertiary-color, $alpha: .11);
+.bg-soft-tertiary-color {
+  background-color: rgba($color: $soft-tertiary-color, $alpha: 0.11);
 }
 
-$secondary-color : #83C4D2;
-.soft-bg-secondary-color{
-    background-color: rgba($color: $secondary-color, $alpha: .8);
+$secondary-color: #83c4d2;
+.soft-bg-secondary-color {
+  background-color: rgba($color: $secondary-color, $alpha: 0.8);
 }
 
-$soft-gray : #ECECEC;
-.bg-soft-gray{
-    background-color: $soft-gray;
+$soft-gray: #ececec;
+.bg-soft-gray {
+  background-color: $soft-gray;
 }
 
-$z-index-999 : 999;
-.z-index-999{
-    z-index: $z-index-999 !important;
+$z-index-999: 999;
+.z-index-999 {
+  z-index: $z-index-999 !important;
 }
 
-.border-none{
-    border:none;
+.border-none {
+  border: none;
 }
 
-$primary-color : #275EBD;
+$primary-color: #275ebd;
 
-.custom-bg-primary{
-    background-color: $primary-color;
-}
-.text-custom-primary{
-    color: $primary-color;
+.custom-bg-primary {
+  background-color: $primary-color;
 }
 
-.btn-primary-custom{
-background-color: $primary-color;
+.text-custom-primary {
+  color: $primary-color;
 }
 
-$bold-primary-color:#6898C3;
-.text-bold-primary-color{
-color: $bold-primary-color;
+.btn-primary-custom {
+  background-color: $primary-color;
 }
 
-$text-custom-color : #303030;
-.text-custom-color{
-    color: $text-custom-color;
+$bold-primary-color: #6898c3;
+.text-bold-primary-color {
+  color: $bold-primary-color;
 }
 
-$light-text-custom-color: #5A5A5A;
-.light-text-custom-color{
-    color: $light-text-custom-color;
+$text-custom-color: #303030;
+.text-custom-color {
+  color: $text-custom-color;
 }
 
+$light-text-custom-color: #5a5a5a;
+.light-text-custom-color {
+  color: $light-text-custom-color;
+}
 
 /* $very-light-text-custom-color: #f0f0f0;
 .very-light-text-custom-color{
     color: $very-light-text-custom-color;
 } */
 
-.custom-rotate-180{
-    rotate: 180deg;
+.custom-rotate-180 {
+  rotate: 180deg;
 }
 
-.custom-letter-spacing-wider{
-    letter-spacing: 0.1em;
+.custom-letter-spacing-wider {
+  letter-spacing: 0.1em;
 }
 
-$sidebar-background : #FBFAFD;
-.custom-sidebar-background{
-    background-color: $sidebar-background;
+$sidebar-background: #fbfafd;
+.custom-sidebar-background {
+  background-color: $sidebar-background;
 }
-
-

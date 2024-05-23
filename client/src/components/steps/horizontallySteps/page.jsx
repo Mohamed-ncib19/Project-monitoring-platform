@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
-import "./steps.styles.css";
-const StepsBar = ({ listNmbers, StepsNames, currentStep, nextStep, previousStep, StepsVerifier }) => {
+import { useEffect, useState } from 'react';
+
+import './steps.styles.css';
+const StepsBar = ({
+  listNmbers,
+  StepsNames,
+  currentStep,
+  nextStep,
+  previousStep,
+  StepsVerifier,
+}) => {
   const steps = Array.from({ length: listNmbers }, (_, index) => index + 1);
   const [passCondition, setPassCondition] = useState(false);
 
@@ -8,7 +16,7 @@ const StepsBar = ({ listNmbers, StepsNames, currentStep, nextStep, previousStep,
     function checkStep() {
       if (StepsVerifier[0][`step${currentStep}`]) {
         setPassCondition(true);
-      } else if(StepsVerifier[0][`step${currentStep-currentStep+1}`]) {
+      } else if (StepsVerifier[0][`step${currentStep - currentStep + 1}`]) {
         setPassCondition(false);
       }
     }
@@ -17,27 +25,27 @@ const StepsBar = ({ listNmbers, StepsNames, currentStep, nextStep, previousStep,
   }, [currentStep, StepsVerifier]);
 
   return (
-    <div className="w-100 z-0" >
+    <div className="w-100 z-0">
       <ul className="steps steps-green steps-counter my-4 ">
         {steps.map((stepNumber, index) => (
           <li
             key={stepNumber}
             id={`step-${stepNumber}`}
             className={`step-item ${
-              currentStep === stepNumber ? "active" : ""
+              currentStep === stepNumber ? 'active' : ''
             }   `}
             onClick={() => {
-              if(!passCondition && currentStep === 1){
-                alert('you need to complete registartion on thta form')
-              }else{
-              if (stepNumber !== currentStep) {
-                if (stepNumber > currentStep && passCondition) {
-                  nextStep();
-                } else if(stepNumber < currentStep && !passCondition) {
-                  previousStep();
+              if (!passCondition && currentStep === 1) {
+                alert('you need to complete registartion on thta form');
+              } else {
+                if (stepNumber !== currentStep) {
+                  if (stepNumber > currentStep && passCondition) {
+                    nextStep();
+                  } else if (stepNumber < currentStep && !passCondition) {
+                    previousStep();
+                  }
                 }
               }
-            }
             }}
           >
             {StepsNames[index]}

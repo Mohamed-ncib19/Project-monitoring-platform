@@ -1,0 +1,79 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "root": true,
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@next/next/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "simple-import-sort",
+    "react"
+  ],
+  "rules": {
+    "simple-import-sort/imports": [
+      "error",
+      // Marks unsorted imports as an error
+      {
+        "groups": [
+          // Import sorting rules are defined below:
+          // - Group 1: Import `react` first, then `next`, followed by other packages starting with a lowercase letter.
+          [
+            "^react$",
+            "^next",
+            "^[a-z]"
+          ],
+          // - Group 2: Packages starting with `@`
+          [
+            "^@"
+          ],
+          // - Group 3: Packages starting with `~`
+          [
+            "^~"
+          ],
+          // - Group 4: Relative imports going up the folder structure (`../`)
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
+          // - Group 5: Relative imports within the same or child folders (`./`)
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          // - Group 6: Style (CSS/SCSS) imports
+          [
+            "^.+\\.s?css$"
+          ],
+          // - Group 7: Side effect imports (imports that are included for their side effects and do not export anything)
+          [
+            "^\\u0000"
+          ]
+        ]
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 700
+      }
+    ],
+    "operator-linebreak": 1,
+    "no-console": 1,
+    "object-curly-newline": 0,
+    "import/no-unresolved": 0,
+    "import/extensions": 0,
+    "implicit-arrow-linebreak": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-wrap-multilines": 0,
+    "react/require-default-props": 0,
+    "react/jsx-props-no-spreading": 0,
+    "import/prefer-default-export": 1,
+    "lines-around-comment": 1,
+    "react/jsx-closing-bracket-location": 0
+  }
+}

@@ -1,23 +1,25 @@
-"use client";
-import "./program.styles.css";
-import { Suspense, useEffect, useState } from "react";
-import PmGroupHeader from "../../../components/pm-group-header/page";
-import { getPrograms } from "../../api/routes/routesEndpoints";
-import Loading from "../../loading";
-import Avatar from "../../../components/avatar/page";
-import EditDotsIcon from "../../../public/icons/edit-dots-icon";
-import ToggleDropdown from "../../../components/dropdown/toggle-dropdown";
-import EmptyProgramSVG from "../../../public/icons/empty-program";
-import Link from "next/link";
-import { Modal } from "react-bootstrap";
-import Button from "../../../components/buttons/simple-button/page";
-import Swal from "sweetalert2";
-import ArrowIcons from "../../../public/icons/arrows/arrow-icon";
+'use client';
+import { Suspense, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+
+import Avatar from '../../../components/avatar/page';
+import Button from '../../../components/buttons/simple-button/page';
+import ToggleDropdown from '../../../components/dropdown/toggle-dropdown';
+import PmGroupHeader from '../../../components/pm-group-header/page';
+import ArrowIcons from '../../../public/icons/arrows/arrow-icon';
+import EditDotsIcon from '../../../public/icons/edit-dots-icon';
+import EmptyProgramSVG from '../../../public/icons/empty-program';
+import { getPrograms } from '../../api/routes/routesEndpoints';
+import Loading from '../../loading';
+
+import './program.styles.css';
 
 const Programs = () => {
   const [programs, setPrograms] = useState([]);
   const [show, setShow] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState('');
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -27,13 +29,13 @@ const Programs = () => {
       if (res.ok && res.status === 200) {
         setPrograms(res.data);
       } else if (!res.ok && res.status === 500) {
-        await setErrorMsg("System Error!");
+        await setErrorMsg('System Error!');
         Swal.fire({
-          icon: "error",
-          title: "System Error",
+          icon: 'error',
+          title: 'System Error',
         });
       } else {
-        await setErrorMsg("No Program Found");
+        await setErrorMsg('No Program Found');
       }
     };
 
@@ -44,7 +46,7 @@ const Programs = () => {
     <>
       <div>
         <Suspense fallback={<Loading />}>
-          <PmGroupHeader color={"success"} name={"Program"} />
+          <PmGroupHeader color={'success'} name={'Program'} />
         </Suspense>
         <div className="mx-5 ">
           <div className="row justify-content-start  px-5 gap-4 ">
@@ -63,8 +65,8 @@ const Programs = () => {
                           </button>
                         }
                         items={[
-                          { content: "edit", onclick: handleShow },
-                          { content: "Delete", onclick: "deleteProgram" },
+                          { content: 'edit', onclick: handleShow },
+                          { content: 'Delete', onclick: 'deleteProgram' },
                         ]}
                         lastItemDivide={false}
                       />
@@ -73,27 +75,27 @@ const Programs = () => {
                   <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
                     <Avatar
                       name={program.name}
-                      background={"lightgreen"}
-                      rounded={"1"}
-                      textColor={"dark"}
+                      background={'lightgreen'}
+                      rounded={'1'}
+                      textColor={'dark'}
                     />
                     <p className="fw-bold fs-5 text-dark ">{program.name}</p>
                   </div>
                   <div className="d-flex flex-column px-4 py-3">
                     <p className="text-dark-gray">
-                      {program.desc.split(" ").length > 15
-                        ? `${program.desc.split(" ").slice(0, 15).join(" ")}...`
+                      {program.desc.split(' ').length > 15
+                        ? `${program.desc.split(' ').slice(0, 15).join(' ')}...`
                         : program.desc}
                     </p>
                     <p className="fw-bolder fs-6 text-dark">
-                      Created At {program.begin}{" "}
+                      Created At {program.begin}{' '}
                     </p>
                   </div>
                   <div className="d-flex flex-column px-4">
                     <p>
                       <span className="text-dark-gray fw-semibold">
                         Number of Products :
-                      </span>{" "}
+                      </span>{' '}
                       <span className="fw-bolder text-dark">
                         {program.products}
                       </span>
@@ -102,7 +104,7 @@ const Programs = () => {
                     <p>
                       <span className="text-dark-gray fw-semibold">
                         Number of Projects :
-                      </span>{" "}
+                      </span>{' '}
                       <span className="fw-bolder text-dark">
                         {program.projects}
                       </span>
@@ -127,9 +129,6 @@ const Programs = () => {
         </div>
       </div>
 
-
-      
-
       <Modal show={show} onHide={handleClose} backdrop={false} size="xl">
         <div className="bg-soft-gray w-100 my-2 px-4  rounded-2">
           <Modal.Header closeButton>
@@ -143,11 +142,11 @@ const Programs = () => {
           <div>add program</div>
         </Modal.Body>
         <Modal.Footer>
-          <Button content={"Add"} onClick={handleClose} />
-          <Button content={"Close"} onClick={handleClose} />
+          <Button content={'Add'} onClick={handleClose} />
+          <Button content={'Close'} onClick={handleClose} />
         </Modal.Footer>
       </Modal>
-      </>
+    </>
   );
 };
 

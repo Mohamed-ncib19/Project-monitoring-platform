@@ -1,23 +1,23 @@
-*{
-    transition: all 300ms ease-in-out;
+* {
+  transition: all 300ms ease-in-out;
 }
 .edit svg {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
-.edit{
-    background-color: rgb(255, 255, 255);
+.edit {
+  background-color: rgb(255, 255, 255);
 }
-.edit:hover{
-    background-color: rgb(220, 220, 220);
-}
-
-.requests:focus{
-    background-color: #689F63;
-}
-.users:focus{
-    background-color: #3573C7;
+.edit:hover {
+  background-color: rgb(220, 220, 220);
 }
 
-.banned-user:focus{
-    background-color: #D63939;
+.requests:focus {
+  background-color: #689f63;
+}
+.users:focus {
+  background-color: #3573c7;
+}
+
+.banned-user:focus {
+  background-color: #d63939;
 }

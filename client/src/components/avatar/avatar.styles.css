@@ -1,8 +1,7 @@
-.avatar{
-    
-    color: #616876;
-    box-shadow: inset rgba( 29, 39, 59 , 0.04) 0 0 0 1px;
+.avatar {
+  color: #616876;
+  box-shadow: inset rgba(29, 39, 59, 0.04) 0 0 0 1px;
 }
-.bg-lightgreen{
-    background-color: #67CFCF;
+.bg-lightgreen {
+  background-color: #67cfcf;
 }
