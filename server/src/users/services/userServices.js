@@ -26,9 +26,11 @@ const userServices = {
         status: "pending",
         joinedAt: new Date(),
       });
-      if (result.acknowledged) return { ok: true, status: httpStatus.CREATED };
+      if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
     } catch (error) {
-      console.error("Error creating user:", error);
       return { ok: false, status: httpStatus.CONFLICT };
     }
   },
