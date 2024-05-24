@@ -6,7 +6,7 @@ const refreshTokenSchema = require("../schemas/refreshTokenSchema");
 require("dotenv").config();
 
 async function routes(fastify, options) {
-  fastify.post("/login", authController.login);
+  fastify.post("/login", loginSchema, authController.login);
 
   fastify.post("/register", registerSchema, authController.register);
   fastify.post(
