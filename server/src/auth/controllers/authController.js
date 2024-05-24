@@ -4,7 +4,7 @@ const registrationService = require("../services/registrationService");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../services/generateJWT");
 const userService = require("../../users/services/userServices");
-
+const ldapServices = require("../../ldap/services/ldapServies");
 require("dotenv").config();
 
 const authController = {
@@ -67,20 +67,51 @@ const authController = {
           error: { message: "Missing User data" },
         });
       }
-      userData.username = request.user.username;
-      const registerResponse = await registrationService(userData);
-      if (!registerResponse.ok) {
-        return reply.status(httpStatus.FORBIDDEN).send({
-          error: { message: "Failed to register the user" },
+      const validLdapUser = await ldapServices.checkUserExists(
+        userData.username
+      );
+      if (!validLdapUser.ok) {
+        return reply.status(httpStatus.UNAUTHORIZED).send({
+          error: { message: "The user does not exist in the LDAP" },
         });
       }
-      return reply
-        .status(httpStatus.OK)
-        .send({ error: null, data: response.user });
-    } catch (e) {
+      const registerResponse = await registrationService(userData);
+      console.log(registerResponse);
+      if (!registerResponse.ok) {
+        return reply.status(httpStatus.FORBIDDEN).send({
+          error: { message: "User Already Exists" },
+        });
+      }
+      const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
+        registerResponse.tokens;
+      return reply.status(httpStatus.OK).send({
+        username: userData.username,
+        accessToken: {
+          token: token,
+          expiresAt: tokenExpiresIn,
+        },
+        refreshToken: {
+          token: refreshToken,
+          expiresAt: refreshTokenExpiresIn,
+        },
+        profile: {
+          firstName: userData.firstname ? userData.firstname : null,
+          lastName: userData.lastname ? userData.lastname : null,
+          email: userData.email ? userData.email : null,
+          bio: userData.bio ? userData.bio : null,
+          businessPosition: userData.businessPosition
+            ? userData.businessPosition
+            : null,
+          role: userData.role ? userData.role : null,
+          avatar: userData.avatar ? userData.avatar : null,
+        },
+        status: registerResponse.status,
+      });
+    } catch (error) {
+      console.log(error);
       return reply
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: { message: "server error" }, data: null });
+        .send({ error: { message: "server error", details: error } });
     }
   },
   async refreshToken(request, reply) {

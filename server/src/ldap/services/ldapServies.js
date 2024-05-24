@@ -57,6 +57,68 @@ const ldapServices = {
       callback(null);
     });
   },
+  async checkUserExists(username) {
+    const client = ldap.createClient({
+      url: process.env.LDAP_URI,
+    });
+    try {
+      // Ensure admin bind is successful before proceeding
+      await new Promise((resolve, reject) => {
+        client.bind(
+          "uid=admin,ou=system",
+          process.env.LDAP_ADMIN_PASSWORD,
+          (err) => {
+            if (err) {
+              return reject(
+                new Error("LDAP admin bind failed: " + err.message)
+              );
+            } else {
+              console.log("Admin connected successfully");
+              resolve();
+            }
+          }
+        );
+      });
+      const searchOptions = {
+        filter: `(uid=${username})`,
+        scope: "sub",
+      };
+      const userFound = await new Promise((resolve, reject) => {
+        client.search(process.env.LDAP_BASE_DN, searchOptions, (err, res) => {
+          if (err) {
+            return reject(new Error("Search operation failed"));
+          }
+
+          let userExists = false;
+
+          res.on("searchEntry", () => {
+            userExists = true;
+          });
+
+          res.on("end", () => {
+            resolve(userExists);
+          });
+
+          res.on("error", (err) => {
+            reject(new Error("Search operation error: " + err.message));
+          });
+        });
+      });
+
+      if (userFound) {
+        return { ok: true, message: "User exists" };
+      } else {
+        return { ok: false, message: "User does not exist" };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        message: "Internal server error",
+        details: error.message,
+      };
+    }
+  },
 };
 
 module.exports = ldapServices;
