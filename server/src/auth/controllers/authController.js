@@ -41,7 +41,7 @@ const authController = {
           token: response.tokens.refreshToken,
           expiresAt: response.tokens.refreshTokenExpiresIn,
         },
-        email: { adresse: user.user.email },
+        email: { address: user.user.email },
         profile: {
           firstName: user.user.firstname,
           lastName: user.user.lastname,
@@ -56,21 +56,23 @@ const authController = {
   },
   async register(request, reply) {
     try {
-      const user = request.body;
-      if (!user) {
+      const userData = request.body;
+      if (!userData) {
         return reply.status(httpStatus.BAD_REQUEST).send({
           error: { message: "Missing User data" },
-          data: null,
         });
       }
-      const response = await registrationService(user);
+      console.log(request.user);
+      userData.username = username;
+      console.log("motherfucker ;", userData);
+      const registerResponse = await registrationService(user);
 
-      if (!response.ok) {
+      if (!registerResponse.ok) {
         return reply.status(httpStatus.FORBIDDEN).send({
           error: { message: "Failed to register the user" },
-          data: null,
         });
       }
+
       return reply
         .status(httpStatus.OK)
         .send({ error: null, data: response.user });

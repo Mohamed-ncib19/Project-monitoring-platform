@@ -14,7 +14,6 @@ async function loginService(username, password) {
         message: userBind.message,
       };
     }
-    console.log(userBind);
     const userExistsResponse = await userServices.userExists(username);
     if (userExistsResponse.exists) {
       const tokenObject = generateToken(
