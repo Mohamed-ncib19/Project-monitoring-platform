@@ -14,41 +14,51 @@ async function loginService(username, password) {
         message: userBind.message,
       };
     }
-
+    console.log(userBind);
     const userExistsResponse = await userServices.userExists(username);
-    const tokenObject = generateToken(
-      username,
-      userExistsResponse.exists ? userExistsResponse.user.role : null
-    );
-    const token = tokenObject.token;
-    const expiresIn = tokenObject.expiresIn;
-
-    const refreshTokenObject = generateRefreshToken(
-      username,
-      userExistsResponse.exists ? userExistsResponse.user.role : null
-    );
-    const refreshToken = refreshTokenObject.refreshToken;
-
-    if (!userExistsResponse.exists) {
-      return {
-        ok: true,
-        statusCode: httpStatus.UNPROCESSABLE_ENTITY,
-        tokens: { token, refreshToken },
-        status: "unregistred",
-      };
-    } else if (userExistsResponse.user.status == "approved") {
-      return {
-        ok: true,
-        statusCode: httpStatus.OK,
-        tokens: { token, refreshToken, expiresIn },
-        status: "approved",
-      };
+    if (userExistsResponse.exists) {
+      const tokenObject = generateToken(
+        username,
+        userExistsResponse.exists ? userExistsResponse.user.role : null
+      );
+      const token = tokenObject.token;
+      const tokenExpiresIn = tokenObject.expiresIn;
+      const refreshTokenObject = generateRefreshToken(
+        username,
+        userExistsResponse.exists ? userExistsResponse.user.role : null
+      );
+      const refreshToken = refreshTokenObject.refreshToken;
+      const refreshTokenExpiresIn = tokenObject.expiresIn;
+      if (userExistsResponse.user.status == "approved") {
+        return {
+          ok: true,
+          statusCode: httpStatus.OK,
+          tokens: {
+            token,
+            tokenExpiresIn,
+            refreshToken,
+            refreshTokenExpiresIn,
+          },
+          status: "approved",
+        };
+      } else {
+        return {
+          ok: true,
+          statusCode: httpStatus.OK,
+          tokens: {
+            token,
+            tokenExpiresIn,
+            refreshToken,
+            refreshTokenExpiresIn,
+          },
+          status: "pending",
+        };
+      }
     } else {
       return {
-        ok: true,
+        ok: false,
         statusCode: httpStatus.UNPROCESSABLE_ENTITY,
-        tokens: { token, refreshToken },
-        status: "pending",
+        status: "unregistred",
       };
     }
   } catch (error) {

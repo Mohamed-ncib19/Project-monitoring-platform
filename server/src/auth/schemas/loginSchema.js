@@ -18,46 +18,56 @@ module.exports = loginSchema = {
         description: "Successful login",
         type: "object",
         properties: {
-          data: {
+          username: { type: "string", description: "User's username" },
+          accessToken: {
             type: "object",
             properties: {
-              tokens: {
-                type: "object",
-                properties: {
-                  token: { type: "string", description: "Access token" },
-                  refreshToken: {
-                    type: "string",
-                    description: "Refresh token",
-                  },
-                },
-              },
-              status: {
+              token: { type: "string", description: "Access token" },
+              expiresAt: {
                 type: "string",
+                format: "date-time",
+                description: "Access token expiration time",
               },
             },
           },
-          error: { type: "null", description: "Error message" },
+          refreshToken: {
+            type: "object",
+            properties: {
+              token: { type: "string", description: "Refresh token" },
+              expiresAt: {
+                type: "string",
+                format: "date-time",
+                description: "Refresh token expiration time",
+              },
+            },
+          },
+          email: {
+            type: "object",
+            properties: {
+              adresse: { type: "string", description: "User's email address" },
+            },
+          },
+          profile: {
+            type: "object",
+            properties: {
+              firstName: { type: "string", description: "User's first name" },
+              lastName: { type: "string", description: "User's last name" },
+            },
+          },
+          status: { type: "string", description: "User's status" },
         },
       },
-
-      400: {
-        description: "Bad request",
+      422: {
+        description: "Unregistered user",
         type: "object",
         properties: {
-          data: { type: "null", description: "Response data" },
-          error: {
-            type: "object",
-            properties: {
-              message: { type: "string", description: "Error message" },
-            },
-          },
+          status: { type: "string", description: "Status of the user" },
         },
       },
       401: {
         description: "Unauthorized",
         type: "object",
         properties: {
-          data: { type: "null", description: "Response data" },
           error: {
             type: "object",
             properties: {
@@ -66,43 +76,11 @@ module.exports = loginSchema = {
           },
         },
       },
-      422: {
-        description: "Valid credentials, but access is currently restricted",
-        type: "object",
-        properties: {
-          data: {
-            type: "object",
-            properties: {
-              tokens: {
-                type: "object",
-                properties: {
-                  token: { type: "string", description: "Access token" },
-                  refreshToken: {
-                    type: "string",
-                    description: "Refresh token",
-                  },
-                },
-              },
-              status: {
-                type: "string",
-              },
-            },
-          },
-          error: { type: "null", description: "Error message" },
-        },
-      },
-
       500: {
         description: "Internal server error",
         type: "object",
         properties: {
-          data: { type: "null", description: "Response data" },
-          error: {
-            type: "object",
-            properties: {
-              message: { type: "string", description: "Error message" },
-            },
-          },
+          error: { type: "string", description: "Error message" },
         },
       },
     },

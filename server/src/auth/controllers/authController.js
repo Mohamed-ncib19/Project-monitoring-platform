@@ -3,6 +3,7 @@ const loginService = require("../services/loginService");
 const registrationService = require("../services/registrationService");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../services/generateJWT");
+const userService = require("../../users/services/userServices");
 
 require("dotenv").config();
 
@@ -13,28 +14,43 @@ const authController = {
       if (!username || !password) {
         return reply.status(httpStatus.BAD_REQUEST).send({
           error: { message: "Missing username or password" },
-          data: null,
         });
       }
 
       const response = await loginService(username, password);
       if (!response.ok) {
+        if (response.status) {
+          return reply.status(httpStatus.UNPROCESSABLE_ENTITY).send({
+            status: "unregistred",
+          });
+        }
         return reply.status(httpStatus.UNAUTHORIZED).send({
           error: { message: "Invalid credentials" },
-          data: null,
         });
       }
+
+      const user = await userService.userExists(username);
+
       return reply.status(response.statusCode).send({
-        data: {
-          tokens: response.tokens,
-          status: response.status,
+        username: username,
+        accessToken: {
+          token: response.tokens.token,
+          expiresAt: response.tokens.tokenExpiresIn,
         },
-        error: null,
+        refreshToken: {
+          token: response.tokens.refreshToken,
+          expiresAt: response.tokens.refreshTokenExpiresIn,
+        },
+        email: { adresse: user.user.email },
+        profile: {
+          firstName: user.user.firstname,
+          lastName: user.user.lastname,
+        },
+        status: response.status,
       });
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -66,25 +82,24 @@ const authController = {
   },
   async refreshToken(request, reply) {
     try {
-      const refreshToken = request.body.refreshToken;
+      const { refreshToken } = request.body || {};
       if (!refreshToken) {
-        reply
+        return reply
           .status(httpStatus.BAD_REQUEST)
-          .send({ error: { message: "missing refresh token" }, data: null });
+          .send({ error: { message: "missing refresh token" } });
       }
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
       const newAccessToken = generateToken(decoded.username, decoded.role);
-      console.log();
       reply.status(httpStatus.CREATED).send({
-        data: {
-          accessToken: newAccessToken.token,
+        accessToken: {
+          token: newAccessToken.token,
+          expiresAt: newAccessToken.expiresIn,
         },
-        error: null,
       });
     } catch (error) {
       reply
         .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({ error: { message: "Invalid refresh token" }, data: null });
+        .send({ error: { message: "Invalid refresh token" } });
     }
   },
 };

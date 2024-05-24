@@ -1,33 +1,37 @@
 module.exports = refreshTokenSchema = {
   schema: {
-    description: "Refresh access token",
     tags: ["Authentication"],
+    summary: "Generate Access Token",
+    description: "Generate a new access token using the provided refresh token",
+    consumes: ["application/json"],
+    produces: ["application/json"],
     body: {
       type: "object",
-      required: ["refreshToken"],
       properties: {
         refreshToken: { type: "string", description: "The refresh token" },
       },
+      required: ["refreshToken"],
     },
     response: {
       201: {
-        description: "Successful Token Generation",
+        description: "Access token generated successfully",
         type: "object",
         properties: {
-          data: {
+          accessToken: {
             type: "object",
             properties: {
-              accessToken: {
+              token: { type: "string", description: "New access token" },
+              expiresAt: {
                 type: "string",
-                description: "The new access token",
+                format: "date-time",
+                description: "Access token expiration time",
               },
             },
           },
-          error: { type: "null" },
         },
       },
       400: {
-        description: "Bad Request",
+        description: "Missing refresh token",
         type: "object",
         properties: {
           error: {
@@ -36,7 +40,6 @@ module.exports = refreshTokenSchema = {
               message: { type: "string", description: "Error message" },
             },
           },
-          data: { type: "null" },
         },
       },
       500: {
@@ -49,7 +52,6 @@ module.exports = refreshTokenSchema = {
               message: { type: "string", description: "Error message" },
             },
           },
-          data: { type: "null" },
         },
       },
     },
