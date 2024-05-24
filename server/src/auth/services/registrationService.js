@@ -1,4 +1,5 @@
 const userServices = require("../../users/services/userServices");
+const { generateToken, generateRefreshToken } = require("./generateJWT");
 
 async function registrationService(user) {
   try {
