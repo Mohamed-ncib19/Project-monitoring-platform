@@ -8,7 +8,10 @@ require("dotenv").config();
 async function routes(fastify, options) {
   fastify.post("/login", loginSchema, authController.login);
 
-  fastify.post("/register", registerSchema, authController.register);
+  fastify.post("/register", {
+    preHandler: autheticate,
+    handler: authController.register,
+  });
   fastify.post(
     "/refresh_token",
     refreshTokenSchema,
