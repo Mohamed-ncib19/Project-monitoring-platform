@@ -9,7 +9,6 @@ async function routes(fastify, options) {
   fastify.post("/login", authController.login);
 
   fastify.post("/register", {
-    preHandler: autheticate,
     handler: authController.register,
   });
   fastify.post(

@@ -23,6 +23,7 @@ function generateToken(username, role = null) {
       { ...payload, exp: Math.floor(expirationDate.getTime() / 1000) },
       secretKey
     );
+    console.log("acces : ", expirationDate);
 
     return { token: token, expiresIn: expirationDate };
   } catch (error) {
@@ -52,7 +53,7 @@ function generateRefreshToken(username, role = null) {
       { ...payload, exp: Math.floor(expirationDate.getTime() / 1000) },
       secretKey
     );
-
+    console.log("Refresh : ", expirationDate);
     return { refreshToken, expiresIn: expirationDate };
   } catch (error) {
     console.error("Error generating refresh token:", error);

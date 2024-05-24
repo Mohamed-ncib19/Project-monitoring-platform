@@ -16,7 +16,6 @@ const authController = {
           error: { message: "Missing username or password" },
         });
       }
-
       const response = await loginService(username, password);
       if (!response.ok) {
         if (response.status) {
@@ -28,18 +27,18 @@ const authController = {
           error: { message: "Invalid credentials" },
         });
       }
-
+      const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
+        response.tokens;
       const { user } = await userService.userExists(username);
-
       return reply.status(response.statusCode).send({
         username: username,
         accessToken: {
-          token: response.tokens.token,
-          expiresAt: response.tokens.tokenExpiresIn,
+          token: token,
+          expiresAt: tokenExpiresIn,
         },
         refreshToken: {
-          token: response.tokens.refreshToken,
-          expiresAt: response.tokens.refreshTokenExpiresIn,
+          token: refreshToken,
+          expiresAt: refreshTokenExpiresIn,
         },
         profile: {
           firstName: user.firstname,
