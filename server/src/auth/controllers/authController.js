@@ -29,7 +29,7 @@ const authController = {
         });
       }
 
-      const user = await userService.userExists(username);
+      const { user } = await userService.userExists(username);
 
       return reply.status(response.statusCode).send({
         username: username,
@@ -41,10 +41,16 @@ const authController = {
           token: response.tokens.refreshToken,
           expiresAt: response.tokens.refreshTokenExpiresIn,
         },
-        email: { address: user.user.email },
         profile: {
-          firstName: user.user.firstname,
-          lastName: user.user.lastname,
+          firstName: user.firstname,
+          lastName: user.lastname,
+          email: user.email,
+          bio: user.bio ? user.bio : null,
+          businessPosition: user.businessPosition
+            ? user.businessPosition
+            : null,
+          role: user.role ? user.role : null,
+          avatar: user.avatar ? user.avatar : null,
         },
         status: response.status,
       });
@@ -62,17 +68,13 @@ const authController = {
           error: { message: "Missing User data" },
         });
       }
-      console.log(request.user);
-      userData.username = username;
-      console.log("motherfucker ;", userData);
-      const registerResponse = await registrationService(user);
-
+      userData.username = request.user.username;
+      const registerResponse = await registrationService(userData);
       if (!registerResponse.ok) {
         return reply.status(httpStatus.FORBIDDEN).send({
           error: { message: "Failed to register the user" },
         });
       }
-
       return reply
         .status(httpStatus.OK)
         .send({ error: null, data: response.user });
