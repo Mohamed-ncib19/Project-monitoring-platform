@@ -1,19 +1,16 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
-import UserRoute from '../../app/api/routes/user/userRoute';
-import { DecodeToken } from '../../utils/auth/DecodeToken';
-import Avatar from '../avatar/page';
+import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+
 import ToggleDropdown from '../dropdown/toggle-dropdown';
 
-import ToogleNotification from './notification/toggle-notication';
+import ToggleNotification from './notification/toggle-notication';
 
-import 'semantic-ui-css/semantic.min.css';
 const Navbar = ({ user }) => {
-  console.log(user);
-  const handlleSignOut = async () => {
+  const { profile } = user;
+  const handleSignOut = async () => {
     await signOut();
   };
 
@@ -26,21 +23,25 @@ const Navbar = ({ user }) => {
       />
 
       <div className="d-flex justify-content-end align-items-center gap-4">
-        <ToogleNotification />
+        <ToggleNotification />
 
         <ToggleDropdown
           button={
             <button className=" user-dropdown px-2 py-4 rounded-circle border-0">
               <Avatar
-                name={(user && user.firstname) + ' ' + (user && user.lastname)}
+                name={
+                  profile
+                    ? `${profile.firstName} ${profile.lastName}`
+                    : 'Pixel Bord'
+                }
                 rounded={'circle'}
               />
             </button>
           }
           items={[
-            { content: 'Profile', link: '/My/profile' },
+            { content: 'Profile', link: '/profile' },
             { content: 'Settings', onclick: 'function' },
-            { content: 'Log out', onclick: handlleSignOut },
+            { content: 'Log out', onclick: handleSignOut },
           ]}
           lastItemDivide={true}
           nbItemsAfterDivide={1}

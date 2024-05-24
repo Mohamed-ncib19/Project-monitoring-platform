@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Avatar from '../../../avatar/page';
+import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 
 import './nnotification-items.styles.css';
 

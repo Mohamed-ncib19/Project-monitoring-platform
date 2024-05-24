@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
-import Button from '../buttons/simple-button/page';
+import CoreButton from '@/components/buttons/CoreButton';
+
 import SelectInput from '../Inputs/select-input/page';
 
 import './pm-group.styles.css';
@@ -22,7 +23,7 @@ const PmGroupHeader = ({ color, name }) => {
         </p>
       </div>
       <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
-        <Button content={`Add ${name}`} onClick={handleShow} />
+        <CoreButton type="button" label={`Add ${name}`} onClick={handleShow} />
         <SelectInput
           hookForm={false}
           content={[
@@ -46,8 +47,8 @@ const PmGroupHeader = ({ color, name }) => {
           <div>add program</div>
         </Modal.Body>
         <Modal.Footer>
-          <Button content={'Add'} onClick={handleClose} />
-          <Button content={'Close'} onClick={handleClose} />
+          <CoreButton type="button" label="Add" onClick={handleClose} />
+          <CoreButton type="button" label={'Close'} onClick={handleClose} />
         </Modal.Footer>
       </Modal>
     </div>

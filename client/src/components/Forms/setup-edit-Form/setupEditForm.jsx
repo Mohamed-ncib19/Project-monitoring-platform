@@ -10,6 +10,7 @@ import Input from '../../Inputs/custom-input/page';
 import SelectInput from '../../Inputs/select-input/page';
 
 const SetupEditForm = ({ user }) => {
+  console.log(user);
   const Schema = Yup.object().shape({
     firstname: Yup.string(),
     lastname: Yup.string(),

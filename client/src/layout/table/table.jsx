@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePagination, useSortBy, useTable } from 'react-table';
 
-import ArrowIcons from '@/public/icons/arrows/arrow-icon';
+import ArrowIcons from '@/../public/icons/arrows/arrow-icon';
 
 import './table.styles.css';
 

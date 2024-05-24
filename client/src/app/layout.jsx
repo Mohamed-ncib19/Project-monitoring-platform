@@ -1,11 +1,8 @@
 import { Inter } from 'next/font/google';
 
-import AuthProvider from '../lib/authProvider/authProvider';
-import TokenExpiration from '../lib/tokenExpiration/tokenExpiration';
+import { AppConfigProvider } from '@/providers/AppConfigProvider';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/globals/variables.scss';
-import 'animate.css';
+import '@/main.scss';
 
 export const metadata = {
   title: 'PixelBoard',
@@ -21,10 +18,8 @@ const inter = Inter({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-soft-gray `}>
-        <AuthProvider>
-          <TokenExpiration>{children}</TokenExpiration>
-        </AuthProvider>
+      <body className={`${inter.className} bg-soft-gray`}>
+        <AppConfigProvider>{children}</AppConfigProvider>
       </body>
     </html>
   );

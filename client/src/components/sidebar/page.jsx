@@ -1,15 +1,13 @@
 'use client';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
-import ArrowIcons from '@/public/icons/arrows/arrow-icon';
-import SibebarIcons from '@/public/icons/sidebar-icons/sidebar-icons';
-import Logo from '@/public/Logo.svg';
-import LogoIcon from '@/public/Logo-icon.svg';
-
-import { DecodeToken } from '../../utils/auth/DecodeToken';
+import ArrowIcons from '@/../public/icons/arrows/arrow-icon';
+import SibebarIcons from '@/../public/icons/sidebar-icons/sidebar-icons';
+import Logo from '@/../public/images/Logo.svg';
+import LogoSvg from '@/../public/images/Logo-icon.svg';
 
 import './sidebar.styles.css';
 
@@ -18,19 +16,6 @@ const SideBar = () => {
 
   const { data: session } = useSession();
   const [userRole, setUserRole] = useState('');
-
-  const decodeToken = useCallback(async (session) => {
-    if (session) {
-      const decoded = await DecodeToken(session.token);
-      setUserRole(decoded.role);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (session && session.user.exists) {
-      decodeToken(session);
-    }
-  }, [session, decodeToken]);
 
   const handleOpenSideBar = () => {
     setIsOpen((isOpen) => !isOpen);
@@ -68,9 +53,9 @@ const SideBar = () => {
         <div className="w-100   ">
           <div className="p-3  w-100">
             <Suspense fallback={<p>laoding</p>}>
-              <Link href="/My/dashboard">
+              <Link href="/dashboard">
                 <Image
-                  src={isOpen ? Logo : LogoIcon}
+                  src={isOpen ? Logo : LogoSvg}
                   width={isOpen ? 100 : 30}
                   alt="logo"
                   layout="responsice"
@@ -84,7 +69,7 @@ const SideBar = () => {
           <div className=" d-flex flex-column gap-1 mt-5 justify-content-center align-items-center m-auto p-2  border-bottom ">
             <div className="sidebar-items px-1 py-1 w-100 rounded-3">
               <Link
-                href="/My/dashboard"
+                href="/dashboard"
                 className={`d-flex text-center justify-content-between ${
                   !isOpen ? 'justify-content-center' : ''
                 } align-items-center gap-2 p-2`}
@@ -106,7 +91,7 @@ const SideBar = () => {
             {userRole === 'manager' && (
               <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
-                  href="/My/programs"
+                  href="/programs"
                   className={`d-flex text-center justify-content-between ${
                     !isOpen ? 'justify-content-center' : ''
                   } align-items-center gap-2 p-2`}
@@ -129,7 +114,7 @@ const SideBar = () => {
             {userRole !== 'developper' && (
               <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
-                  href="/My/products"
+                  href="/products"
                   className={`d-flex text-center justify-content-between ${
                     !isOpen ? 'justify-content-center' : ''
                   } align-items-center gap-2 p-2`}
@@ -151,7 +136,7 @@ const SideBar = () => {
 
             {/*  <div className="sidebar-items px-1 py-1 w-100 rounded-3">
         <Link
-          href="/My/groups"
+          href="/groups"
           className={`d-flex text-center justify-content-between ${
             !isOpen ? "justify-content-center" : ""
           } align-items-center gap-2 p-2`}
@@ -170,7 +155,7 @@ const SideBar = () => {
 
             <div className="sidebar-items px-1 py-1 w-100 rounded-3">
               <Link
-                href="/My/projects"
+                href="/projects"
                 className={`d-flex text-center justify-content-between ${
                   !isOpen ? 'justify-content-center' : ''
                 } align-items-center gap-2 p-2`}
@@ -276,7 +261,7 @@ const SideBar = () => {
 
           <div className="sidebar-items px-3 py-1 w-100 rounded-3">
             <Link
-              href="/My/dashboard/members/approve"
+              href="/dashboard/members/approve"
               className={`d-flex text-center justify-content-between ${
                 !isOpen ? 'justify-content-center' : ''
               } align-items-center gap-2 p-2`}

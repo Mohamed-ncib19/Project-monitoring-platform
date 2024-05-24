@@ -1,9 +1,8 @@
 import { Modal } from 'react-bootstrap';
 
-import WarningIcon from '@/public/icons/warning-icon';
-
-import Avatar from '../avatar/page';
-import SubmitButton from '../buttons/submit-button/submit-button';
+import WarningIcon from '@/../public/icons/warning-icon';
+import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+import CoreButton from '@/components/buttons/CoreButton';
 
 import './modal.styles.css';
 
@@ -58,7 +57,7 @@ const CustomModal = ({
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12 d-flex justify-content-end">
-            <SubmitButton content={'Save'} />
+            <CoreButton type="submit" label={'Save'} />
           </div>
         </Modal.Footer>
       </Modal>
