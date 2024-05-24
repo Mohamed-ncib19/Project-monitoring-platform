@@ -22,12 +22,13 @@ async function loginService(username, password) {
       );
       const token = tokenObject.token;
       const tokenExpiresIn = tokenObject.expiresIn;
+
       const refreshTokenObject = generateRefreshToken(
         username,
         userExistsResponse.exists ? userExistsResponse.user.role : null
       );
       const refreshToken = refreshTokenObject.refreshToken;
-      const refreshTokenExpiresIn = tokenObject.expiresIn;
+      const refreshTokenExpiresIn = refreshTokenObject.expiresIn;
       if (userExistsResponse.user.status == "approved") {
         return {
           ok: true,
