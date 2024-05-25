@@ -261,7 +261,7 @@ const SideBar = () => {
 
           <div className="sidebar-items px-3 py-1 w-100 rounded-3">
             <Link
-              href="/dashboard/members/approve"
+              href="/dashboard/Permissions"
               className={`d-flex text-center justify-content-between ${
                 !isOpen ? 'justify-content-center' : ''
               } align-items-center gap-2 p-2`}
@@ -270,7 +270,7 @@ const SideBar = () => {
                 <div className="d-flex align-items-center gap-2 justify-content-center">
                   <SibebarIcons.PermissionIcon />
                   <span className="h5 text-custom-color mt-2 text-decoration-none">
-                    Permission
+                    Permissions
                   </span>
                 </div>
               ) : (

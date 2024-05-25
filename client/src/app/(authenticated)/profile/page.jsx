@@ -10,7 +10,7 @@ import logo from '@/../public/images/Logo.png';
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import Input from '../../../components/Inputs/custom-input/page';
+import Input from '../../../components/Input/Input';
 import ReadOnlyInput from '../../../components/Inputs/read-only-input/page';
 import SelectInput from '../../../components/Inputs/select-input/page';
 import Textarea from '../../../components/Inputs/textarea/page';

@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
 import AuthRoute from '@/app/api/routes/auth/authRoute';
 import CoreButton from '@/components/buttons/CoreButton';
-import Input from '@/components/Inputs/custom-input/page';
+import {Input} from '@/components/Input';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 export const RegisterForm = ({ userName }) => {

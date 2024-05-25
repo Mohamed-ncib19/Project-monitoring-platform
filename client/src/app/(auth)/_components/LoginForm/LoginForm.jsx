@@ -8,9 +8,10 @@ import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { IconInfoCircle } from '@tabler/icons-react';
 
-import Input from '../../../../components/Inputs/custom-input/page';
 import PasswordInput from '../../../../components/Inputs/password/password-input';
 import Loader from '../../../../components/loader/page';
+
+import Input from '@/components/Input';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
@@ -34,7 +35,6 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
-
       if (JSON.parse(response.error)?.status === 422) {
         push(`/?username=${data.username}`);
       }
@@ -49,7 +49,6 @@ export const LoginForm = () => {
       setLoginLoader(false);
       push('/dashboard');
     } catch (error) {
-      console.log(error.response);
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
       }

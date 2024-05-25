@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import './text-input.styles.css';
-
-const Input = ({
+export const Input = ({
   register,
   errors,
   placeholder,
@@ -54,4 +52,3 @@ const Input = ({
   );
 };
 
-export default Input;

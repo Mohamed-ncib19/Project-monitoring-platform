@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 
 import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 
-import ToggleDropdown from '../../../../../components/dropdown/toggle-dropdown';
-import SetupEditForm from '../../../../../components/Forms/setup-edit-Form/setupEditForm';
-import Loader from '../../../../../components/loader/page';
-import CustomModal from '../../../../../components/rightside-modal/modal';
-import Table from '../../../../../layout/table/table';
-import UserRoute from '../../../../api/routes/user/userRoute';
-
-import './approve.styles.css';
+import ToggleDropdown from '../../_components/Dropdown/Dropdown';
+import Loader from '../../../../components/loader/page';
+import CustomModal from '../../../../components/rightside-modal/modal';
+import Table from '../../../../layout/table/table';
+import UserRoute from '../../../api/routes/user/userRoute';
+import { EditForm } from '@/app/(authenticated)/dashboard/Permissions/_components/EditForm';
 
 const Approve = () => {
   const [users, setUsers] = useState([]);
@@ -137,7 +135,7 @@ const Approve = () => {
       {loading ? <Loader /> : <Table columns={Requestcolumns} data={users} />}
 
       <CustomModal
-        form={<SetupEditForm user={selectedUser} />}
+        form={<EditForm user={selectedUser} />}
         headerTitle={'Account setup'}
         show={isModalOpen}
         handleClose={handleClose}

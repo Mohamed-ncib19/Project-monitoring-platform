@@ -3,10 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 
 const endPoint = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
-
 const authenticate = async (username, password) => {
   let response;
-
   try {
     response = await axios.post(`${endPoint}/login`, {
       username,
@@ -59,6 +57,7 @@ export const authOptions = {
         try {
           const { username, password } = credentials;
           const user = await authenticate(username, password);
+          console.log(user)
           return Promise.resolve(user);
         } catch (e) {
           return Promise.reject(new Error(e.message));

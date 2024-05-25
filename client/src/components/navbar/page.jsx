@@ -4,7 +4,7 @@ import { signOut } from 'next-auth/react';
 
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 
-import ToggleDropdown from '../dropdown/toggle-dropdown';
+import {ToggleDropdown} from '@/app/(authenticated)/_components/Dropdown';
 
 import ToggleNotification from './notification/toggle-notication';
 

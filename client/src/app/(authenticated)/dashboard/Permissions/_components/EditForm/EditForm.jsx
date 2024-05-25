@@ -6,10 +6,10 @@ import * as Yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import Input from '../../Inputs/custom-input/page';
-import SelectInput from '../../Inputs/select-input/page';
+import Input from '../../../../../../components/Input/Input';
+import SelectInput from '../../../../../../components/Inputs/select-input/page';
 
-const SetupEditForm = ({ user }) => {
+export const EditForm = ({ user }) => {
   console.log(user);
   const Schema = Yup.object().shape({
     firstname: Yup.string(),
@@ -220,5 +220,3 @@ const SetupEditForm = ({ user }) => {
     </div>
   );
 };
-
-export default SetupEditForm;

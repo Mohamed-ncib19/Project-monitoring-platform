@@ -11,7 +11,7 @@ import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import { getPrograms } from '@/app/api/routes/routesEndpoints';
 import Loading from '@/app/loading';
 import CoreButton from '@/components/buttons/CoreButton';
-import ToggleDropdown from '@/components/dropdown/toggle-dropdown';
+import ToggleDropdown from '@/app/(authenticated)/_components/Dropdown/Dropdown';
 import PmGroupHeader from '@/components/pm-group-header/page';
 
 const Programs = () => {

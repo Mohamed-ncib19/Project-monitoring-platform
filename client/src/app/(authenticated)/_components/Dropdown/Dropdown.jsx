@@ -1,23 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
-import './toggle-dropdown.styles.css';
-
-const ToggleDropdown = ({
+export const ToggleDropdown = ({
   button,
   items,
   lastItemDivide,
   nbItemsAfterDivide,
 }) => {
-
-  /*
-    items = [
-        { content: "item content", onclick: function },
-        { content: "item content", link: handleShow },
-
-    ]
-    */
-
   const [isOpen, setIsOpen] = useState(false);
   const dropdownContainerRef = useRef(null);
 
@@ -74,7 +63,7 @@ const ToggleDropdown = ({
       : null;
 
   return (
-    <div>
+    <>
       {renderedButton}
       {isOpen && (
         <div
@@ -92,8 +81,6 @@ const ToggleDropdown = ({
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
-
-export default ToggleDropdown;
