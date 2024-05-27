@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { getSession, signIn } from 'next-auth/react';
+import { FormProvider, useForm, Controller } from 'react-hook-form';
 
 import { LoginSchema } from '@/app/(auth)/_schemas/auth.schema';
 import CoreButton from '@/components/buttons/CoreButton';
@@ -32,15 +32,24 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
+      console.log(response)
       if (JSON.parse(response.error)?.status === 422) {
         push(`/?username=${data.username}`);
       }
 
       if (!response.ok) {
+        setIsValid(false);
         return;
       }
+      const user = await getSession();
 
-      push('/dashboard');
+      if(user){
+        if(user.profile.role){
+          push('/dashboard');
+        }else{
+          push('/pending');
+        }
+      }
     } catch (error) {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
@@ -69,13 +78,13 @@ export const LoginForm = () => {
             name={'username'}
             type={'text'}
             placeholder={'LDAP Username'}
+            readOnly={false}
          
             
           />
           <PasswordInput
             register={register('password')}
             errors={errors}
-            isValid={isValid}
             placeholder={'Password'}
           />
           {!isValid && (
