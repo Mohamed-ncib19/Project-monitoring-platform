@@ -9,6 +9,7 @@ async function routes(fastify, options) {
   fastify.post("/login", authController.login);
 
   fastify.post("/register", {
+    
     handler: authController.register,
   });
   fastify.post(

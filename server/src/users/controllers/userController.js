@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const userServices = require("../services/userServices");
-
+const ldapServices = require("../../ldap/services/ldapServies");
 const userController = {
   async getUser(request, reply) {
     try {
@@ -44,31 +44,33 @@ const userController = {
     try {
       let response;
       const { pending } = request.query;
+      const { approved } = request.query;
       if (pending == "true") {
-        response = await userServices.getUsers(true);
+        response = await userServices.getUsers("pending");
+      } else if (approved == "true") {
+        response = await userServices.getUsers("approved");
       } else {
         response = await userServices.getUsers(false);
       }
       console.log(response);
       if (response.ok) {
-        return reply.status(200).send({ error: null, data: response.users });
+        return reply.status(200).send({ users: response.users });
       } else {
         return reply
           .status(404)
-          .send({ error: { message: "Users not found" }, data: null });
+          .send({ error: { message: "Users not found" } });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
-  async setUpAccount(request, reply) {
+  async setUpUser(request, reply) {
     try {
       const { username } = request.params;
       const userUpdates = request.body;
-      const response = await userServices.setUpAccount(username, userUpdates);
+      const response = await userServices.setUpUser(username, userUpdates);
       if (!response.ok) {
         return reply.status(404).send({
           message: "Failed to setup user account",
@@ -130,25 +132,24 @@ const userController = {
       });
     }
   },
-  async deleteRequest(request, reply) {
+  async banUser(request, reply) {
     try {
       const { username } = request.params;
-      const response = await userServices.deleteRequest(username);
-      if (!response.ok) {
-        return reply.status(404).send({
-          error: { message: "Failed to Delete request" },
-          data: null,
+      const blockResponse = await ldapServices.disableUser(username);
+      console.log(blockResponse);
+      const banResponse = await userServices.banUser(username);
+      if (!banResponse.ok) {
+        return reply.status(httpStatus.NOT_MODIFIED).send({
+          error: { message: "Failed to Ban User" },
         });
       } else {
-        return reply.status(200).send({
-          error: null,
-          data: { message: "Request deleted successfuly" },
+        return reply.status(httpStatus.OK).send({
+          error: { message: "User banned successfuly" },
         });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
