@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
 import AuthRoute from '@/app/api/routes/auth/authRoute';
 import CoreButton from '@/components/buttons/CoreButton';
-import {Input} from '@/components/Input';
 import { yupResolver } from '@hookform/resolvers/yup';
+import CoreInput from '@/components/Inputs/CoreInput';
 
 export const RegisterForm = ({ userName }) => {
-  const [registrationDone, setRegistrationDone] = useState(false);
-  const { data: session } = useSession();
-  const router = useRouter();
+
+  const { push } = useRouter();
 
   const form = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -35,17 +32,22 @@ export const RegisterForm = ({ userName }) => {
           bio: '',
           phone: data.phoneNumber,
           email: data.email,
-
-          /*       position: data.position,
-        skills: data.skills */
         },
-        session.token,
       );
+      
+      if(res.msg.response.status === 500){
+        alert('server error')
+        return;
+      }
 
-      if (res.data.ok) {
-        router.push('/auth/pending');
+      if(res.data.status === 'pending'  ){
+        push('/pending');
+      }
+      if (res.ok) {
+        push('/auth/pending');
       } else {
         alert('Error in the system');
+        console.log(res.message)
       }
     } catch (error) {
       console.error('Error creating new user:', error);
@@ -70,14 +72,14 @@ export const RegisterForm = ({ userName }) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center gap-5 pt-5">
-              <Input
+              <CoreInput
                 register={register('firstName')}
                 name="firstName"
                 errors={errors}
                 placeholder={'First Name'}
                 type={'text'}
               />
-              <Input
+              <CoreInput
                 register={register('lastName')}
                 name="lastName"
                 errors={errors}
@@ -85,14 +87,14 @@ export const RegisterForm = ({ userName }) => {
                 type={'text'}
               />
             </div>
-            <Input
+            <CoreInput
               register={register('phoneNumber')}
               name={'phoneNumber'}
               placeholder={'Phone number'}
               errors={errors}
               type={'number'}
             />
-            <Input
+            <CoreInput
               register={register('email')}
               name={'email'}
               placeholder={'Email'}

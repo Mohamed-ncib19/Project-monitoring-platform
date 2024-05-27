@@ -10,12 +10,11 @@ import logo from '@/../public/images/Logo.png';
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import Input from '../../../components/Input/Input';
-import ReadOnlyInput from '../../../components/Inputs/read-only-input/page';
-import SelectInput from '../../../components/Inputs/select-input/page';
-import Textarea from '../../../components/Inputs/textarea/page';
-import Loader from '../../../components/loader/page';
+import Textarea from '../../../components/Inputs/Textarea';
 import UserRoute from '../../api/routes/user/userRoute';
+import CoreInput from '@/components/Inputs/CoreInput';
+import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
+import { Loader } from '@/components/loader/';
 
 const Profile = () => {
   const Schema = Yup.object().shape({
@@ -37,6 +36,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const { data: session } = useSession();
+
 
   const onSubmit = async (data) => {
     try {
@@ -149,10 +149,13 @@ const Profile = () => {
                 <div className="col-lg-6 col-md-7 col-12">
                   <p className="fs-6 mb-2 text-soft-black">username</p>
                   <div className="d-flex align-items-center">
-                    <ReadOnlyInput
-                      disabled={true}
-                      type={'text'}
-                      value={userData?.username}
+                  
+                    <CoreInput
+                    readOnly={true}
+                    type='text'
+                    value={userData?.username}
+                    placeholder='username'
+                    
                     />
                   </div>
                 </div>
@@ -188,9 +191,9 @@ const Profile = () => {
                   <div className="col-4">
                     <p className="fs-6 mb-2 text-soft-black">First Name</p>
                     <div className="d-flex align-items-center">
-                      <Input
+                      <CoreInput
                         value={userData?.firstname}
-                        register={register('firstname')}
+                        register={register}
                         name="firstname"
                         errors={errors}
                         type={'text'}
@@ -201,9 +204,9 @@ const Profile = () => {
                   <div className="col-4">
                     <p className="fs-6 mb-2 text-soft-black">Last Name</p>
                     <div className="d-flex align-items-center">
-                      <Input
+                      <CoreInput
                         value={userData?.lastname}
-                        register={register('lastname')}
+                        register={register}
                         name="lastname"
                         errors={errors}
                         type={'text'}
@@ -222,9 +225,8 @@ const Profile = () => {
                   <div className="col-4">
                     <p className="fs-6 mb-2 text-soft-black">Email</p>
                     <div className="d-flex align-items-center">
-                      <ReadOnlyInput
-                        disabled={true}
-                        type={'email'}
+                      <CoreInput
+                        readOnly={true}
                         value={userData?.email}
                       />
                     </div>
@@ -233,8 +235,8 @@ const Profile = () => {
                   <div className="col-4">
                     <p className="fs-6 mb-2 text-soft-black">Phone number</p>
                     <div className="d-flex align-items-center">
-                      <Input
-                        register={register('phone')}
+                      <CoreInput
+                        register={register}
                         value={userData?.phone}
                         name="phone"
                         errors={errors}
@@ -266,9 +268,8 @@ const Profile = () => {
                   <div className="col-4">
                     <p className="fs-6 mb-2 text-soft-black">User Role</p>
                     <div className="d-flex align-items-center">
-                      <ReadOnlyInput
-                        disabled={true}
-                        type={'text'}
+                      <CoreInput
+                        readOnly={true}
                         value={userData?.role}
                       />
                     </div>

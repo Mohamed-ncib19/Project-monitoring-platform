@@ -8,10 +8,10 @@ import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { IconInfoCircle } from '@tabler/icons-react';
 
-import PasswordInput from '../../../../components/Inputs/password/password-input';
-import Loader from '../../../../components/loader/page';
 
-import Input from '@/components/Input';
+import CoreInput from '@/components/Inputs/CoreInput';
+import PasswordInput from '@/components/Inputs/PasswordInput';
+import { Loader } from '@/components/loader/';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
@@ -40,12 +40,10 @@ export const LoginForm = () => {
       }
 
       if (!response.ok) {
-        setIsValid(false);
         setLoginLoader(false);
         return;
       }
 
-      setIsValid(true);
       setLoginLoader(false);
       push('/dashboard');
     } catch (error) {
@@ -71,13 +69,14 @@ export const LoginForm = () => {
           className="login-form col-12 col-md-8 col-lg-10 col-xl-10 mx-auto d-flex flex-column gap-4   "
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
-            register={register('username')}
+          <CoreInput
+            register={register}
             errors={errors}
-            isValid={isValid}
             name={'username'}
             type={'text'}
             placeholder={'LDAP Username'}
+         
+            
           />
           <PasswordInput
             register={register('password')}

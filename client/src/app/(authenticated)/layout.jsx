@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth';
 
 import ClientLayout from '@/app/(authenticated)/_components/ClientLayout';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import Navbar from '@/components/navbar/page';
-import SideBar from '@/components/sidebar/page';
+import {Sidebar} from '@/app/(authenticated)/_components/Sidebar';
+import {Navbar} from '@/app/(authenticated)/_components/Navbar';
 
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
@@ -12,13 +12,13 @@ const Layout = async ({ children }) => {
 
   return (
     <ClientLayout data={user}>
-      <div className=" sidebar ">
-        <SideBar />
+      <div className=" sidebar">
+        <Sidebar />
       </div>
       <div className="main-content">
         <Navbar user={user} />
       </div>
-      <div className="layout">{children}</div>
+      <div className="layout m-0">{children}</div>
     </ClientLayout>
   );
 };

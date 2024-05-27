@@ -1,9 +1,9 @@
-import PmGroupHeader from '../../../components/pm-group-header/page';
-
+'use client'
+import { ProductHeader } from "@/app/(authenticated)/_components/ProductHeader";
 const Products = () => {
   return (
     <div>
-      <PmGroupHeader color={'danger'} name={'Product'} />
+      <ProductHeader color={'danger'} name={'Product'} />
     </div>
   );
 };

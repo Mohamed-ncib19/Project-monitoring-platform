@@ -1,29 +1,22 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = process.env.URL_ENDPOINTS;
-
-console.log(axios.defaults.baseURL);
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 const AuthRoute = {
   async LoginRoute(userData) {
-    console.log('hello');
     try {
-      console.log(userData);
       const { username, password } = userData;
       const userLoginInfo = { username, password };
-      const res = await axios.post('http://0.0.0.0:4000/login', userLoginInfo);
+      const res = await axios.post('/login', userLoginInfo);
       return res.data;
     } catch (error) {
       throw error;
     }
   },
 
-  async registerRoute(userData, token) {
+  async registerRoute(userData) {
     try {
-      const res = await axios.post('http://0.0.0.0:4000/register', userData, {
-        headers: { Authorization: token },
-      });
-      console.log(res);
-      return res.data;
+      const res = await axios.post('/register', userData);
+     return res.data;
     } catch (error) {
       return { ok: false, msg: error };
     }
@@ -31,7 +24,7 @@ const AuthRoute = {
 
   async refreshToken(refreshToken) {
     try {
-      const refreshRes = await axios.post('http://0.0.0.0:4000/refresh_token', {
+      const refreshRes = await axios.post('/refresh_token', {
         refreshToken,
       });
       const newToken = refreshRes.data.data.accessToken;
