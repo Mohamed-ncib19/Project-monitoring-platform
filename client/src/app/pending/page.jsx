@@ -1,16 +1,13 @@
 'use client';
 import Image from 'next/image';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
+
+import { CheckIcon } from '../../../public/icons/check-icon';
+import submitedIllustration from '@/../../public/images/registration-submited-illustration.svg'
 import CoreButton from '@/components/buttons/CoreButton';
 
-import { CheckIcon } from '../../../../public/icons/check-icon';
-import submitedIllustration from '../../../../public/images/registration-submited-illustration.svg';
-
-import './pending.styles.css';
-
 const Pending = () => {
-  const { data: session } = useSession();
 
   const handleSignOut = async () => {
     await signOut();
@@ -30,11 +27,11 @@ const Pending = () => {
           Your registration is under review, you will be in soon.
         </p>
         <div className=" col-xl-8 col-lg-10 col-12">
-          <CoreButton
+          {<CoreButton
             type="button"
             label={'Sign Out'}
-            onClick={handleSignOut}
-          />
+            onclick={handleSignOut}
+          />}
         </div>
       </div>
     </div>

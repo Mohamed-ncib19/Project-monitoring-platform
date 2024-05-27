@@ -1,5 +1,4 @@
 'use client';
-
 import { signOut } from 'next-auth/react';
 
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
