@@ -9,6 +9,7 @@ const CoreInput = ({
 }) => {
 
 
+
   const registerProps = !readOnly ? register(name) : {};
 
   return (

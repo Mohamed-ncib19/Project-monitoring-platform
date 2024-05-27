@@ -11,11 +11,9 @@ import { IconInfoCircle } from '@tabler/icons-react';
 
 import CoreInput from '@/components/Inputs/CoreInput';
 import PasswordInput from '@/components/Inputs/PasswordInput';
-import { Loader } from '@/components/loader/';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
-  const [loginLoader, setLoginLoader] = useState(false);
   const { push } = useRouter();
 
   const form = useForm({
@@ -30,7 +28,6 @@ export const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      setLoginLoader(true);
       const response = await signIn('credentials', {
         redirect: false,
         ...data,
@@ -40,17 +37,14 @@ export const LoginForm = () => {
       }
 
       if (!response.ok) {
-        setLoginLoader(false);
         return;
       }
 
-      setLoginLoader(false);
       push('/dashboard');
     } catch (error) {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
       }
-      setLoginLoader(false);
     }
   };
 
@@ -93,7 +87,6 @@ export const LoginForm = () => {
             </div>
           )}
           <CoreButton type="submit" label={'Log in'} />
-          {loginLoader && <Loader />}
         </form>
       </FormProvider>
     </>

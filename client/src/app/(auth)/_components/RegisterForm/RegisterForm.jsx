@@ -27,13 +27,14 @@ export const RegisterForm = ({ userName }) => {
       const res = await AuthRoute.registerRoute(
         {
           username: userName,
-          firstname: data.firstName,
-          lastname: data.lastName,
+          firstname: data.firstname,
+          lastname: data.lastname,
           bio: '',
           phone: data.phoneNumber,
           email: data.email,
         },
       );
+      console.log(res)
       
       if(res.msg.response.status === 500){
         alert('server error')
@@ -73,36 +74,36 @@ export const RegisterForm = ({ userName }) => {
           >
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center gap-5 pt-5">
               <CoreInput
-                register={register('firstName')}
-                name="firstName"
+                register={register}
+                name="firstname"
                 errors={errors}
-                placeholder={'First Name'}
+                placeholder={'Firstname'}
                 type={'text'}
               />
               <CoreInput
-                register={register('lastName')}
-                name="lastName"
+                register={register}
+                name="lastname"
                 errors={errors}
-                placeholder={'Last Name'}
+                placeholder={'Lastname'}
                 type={'text'}
               />
             </div>
             <CoreInput
-              register={register('phoneNumber')}
+              register={register}
               name={'phoneNumber'}
               placeholder={'Phone number'}
               errors={errors}
               type={'number'}
             />
             <CoreInput
-              register={register('email')}
+              register={register}
               name={'email'}
               placeholder={'Email'}
               errors={errors}
               type={'email'}
             />
 
-            <CoreButton type="submit" label={'Submit'} />
+           { <CoreButton type="submit" label={'Submit'} />}
           </form>
         </FormProvider>
       </div>

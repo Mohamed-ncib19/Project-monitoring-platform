@@ -6,7 +6,6 @@ import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 
 import { EditForm } from '@/app/(authenticated)/permissions/_components/EditForm';
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
-import { Loader } from '@/components/loader';
 import TopRightModal from '@/app/(authenticated)/_components/modals/TopRightModal';
 import DataTable from '@/layout/DataTable/';
 import UserRoute from '@/app/api/routes/user/userRoute';
@@ -44,7 +43,6 @@ const Permissions = () => {
         const res = await UserRoute.getPendingUsers();
         if (res.ok) {
           setUserRequests(res.data);
-          setLoading(false);
         } else {
           console.error(res);
         }
@@ -57,9 +55,7 @@ const Permissions = () => {
       try {
         const res = await UserRoute.getUsers();
         if(res.ok){
-          console.log(res.data)
           setUsers(res.data);
-          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -150,7 +146,7 @@ const Permissions = () => {
       },
       {
         Header:'Phone number',
-        accessor:'phone'
+        accessor:'phon'
       },
       {
         Header:'Email',
@@ -242,7 +238,7 @@ const Permissions = () => {
           </button>
         </div>
 
-        {loading ? <Loader /> : (
+        { (users || userRequests) && (
 
           (activeTab === 'requests' ?(
           <DataTable columns={Requestcolumns} data={userRequests} />)

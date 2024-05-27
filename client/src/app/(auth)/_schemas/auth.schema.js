@@ -8,10 +8,10 @@ export const LoginSchema = Yup.object().shape({
 const nameRegex = /^[A-Za-z]+$/;
 
 export const RegisterSchema = Yup.object().shape({
-  firstName: Yup.string()
+  firstname: Yup.string()
     .matches(nameRegex, 'First name must contain only letters')
     .required('First name is required'),
-  lastName: Yup.string()
+  lastname: Yup.string()
     .matches(nameRegex, 'Last name must contain only letters')
     .required('Last name is required'),
   phoneNumber: Yup.string()

@@ -1,4 +1,4 @@
-export const Loader = () => {
+const Loader = () => {
   return (
     <div className="backdrop">
       <div className="loader z-index-999" aria-hidden="true" tabIndex={-1}>
@@ -8,3 +8,4 @@ export const Loader = () => {
   );
 };
 
+export default Loader;

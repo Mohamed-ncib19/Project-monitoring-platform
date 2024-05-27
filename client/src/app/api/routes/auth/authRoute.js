@@ -16,6 +16,7 @@ const AuthRoute = {
   async registerRoute(userData) {
     try {
       const res = await axios.post('/register', userData);
+      console.log(res);
      return res.data;
     } catch (error) {
       return { ok: false, msg: error };

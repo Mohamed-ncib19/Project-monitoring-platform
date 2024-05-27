@@ -14,7 +14,6 @@ import Textarea from '../../../components/Inputs/Textarea';
 import UserRoute from '../../api/routes/user/userRoute';
 import CoreInput from '@/components/Inputs/CoreInput';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
-import { Loader } from '@/components/loader/';
 
 const Profile = () => {
   const Schema = Yup.object().shape({
@@ -106,9 +105,7 @@ const Profile = () => {
           Update your profile and personal details here
         </p>
       </div>
-      {loading ? (
-        <Loader />
-      ) : (
+    
         <FormProvider register={register} errors={errors}>
           <form
             className="d-flex flex-column gap-3"
@@ -283,7 +280,7 @@ const Profile = () => {
             </div>
           </form>
         </FormProvider>
-      )}
+      
     </div>
   );
 };
