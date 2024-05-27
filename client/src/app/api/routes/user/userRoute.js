@@ -1,9 +1,26 @@
 import axios from 'axios';
 
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
+
 const UserRoute = {
+
+  async getUsers(){
+    try {
+      const res = await axios.get('http://127.0.0.1:5000/users');
+      console.log(res)
+      if(res.status === 200){
+        return {ok:true,data:res.data.data}
+      }else{
+        return {ok:false,status:404}
+      }
+    } catch (error) {
+      return {ok:false,status:500,msg:'internal server error'}
+    }
+  },
   async getUserInfo(username, token) {
     try {
-      const res = await axios.get(`http://0.0.0.0:4000/users/${username}`, {
+      const res = await axios.get(`/users/${username}`, {
         headers: { Authorization: token },
       });
       console.log(res);
@@ -19,7 +36,7 @@ const UserRoute = {
 
   async editUserInfo(userData, username, token) {
     try {
-      const res = await axios.put(`http://0.0.0.0:4000/users/me`, userData, {
+      const res = await axios.put(`/users/me`, userData, {
         headers: { Authorization: token },
       });
 
@@ -37,7 +54,7 @@ const UserRoute = {
   async getPendingUsers() {
     const users = [];
     try {
-      const res = await axios.get('http://0.0.0.0:4000/users?pending=true', {
+      const res = await axios.get('/users?pending=true', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',

@@ -1,0 +1,50 @@
+*{
+    transition: all 100ms ease-in-out;
+}
+.edit svg {
+    transform: rotate(90deg);
+}
+.edit{
+    background-color: rgb(255, 255, 255);
+}
+.edit:hover{
+    background-color: rgb(220, 220, 220);
+}
+
+
+.requests{
+    border: none;
+    border-bottom: .2rem solid #689F63;
+}
+.nb-requests{
+    color: #689F63;
+}
+
+
+
+.users{
+    border: none;
+    border-bottom:.2rem solid #3573C7;
+}
+.nb-users{
+    color: #3573C7;
+}
+
+
+
+
+.banned-user{
+    border: none;
+    border-bottom:.2rem solid #D63939;
+}
+
+.nb-banned-users{
+    color: #D63939;
+}
+
+.tl{
+    background-color: #1DA1F2;
+}
+.dev{
+    background-color: #74B816;
+}
