@@ -104,7 +104,7 @@ const userServices = {
         "firstname",
         "lastname",
         "phone",
-        "bio",
+        "email",
         "role",
         "salary",
         "businessPosition",
