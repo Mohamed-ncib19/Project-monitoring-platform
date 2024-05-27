@@ -4,6 +4,8 @@ const autheticate = require("../../core/middlewares/autheticate");
 const getCurrentUserSchema = require("../schemas/getCurrentUserSchema");
 async function routes(fastify, options) {
   //get user data
+  fastify.get("/users", userController.getUsers);
+
   fastify.get("/users/:username", userController.getUser);
 
   fastify.get("/users/me", {
@@ -12,8 +14,7 @@ async function routes(fastify, options) {
     handler: userController.getCurrentUser,
   });
 
-  //Set up user profile [Manager]
-  fastify.put("/users/:username", userController.setUpAccount);
+  fastify.put("/users/:username", userController.setUpUser);
 
   fastify.put(
     "/users/me",
@@ -22,9 +23,8 @@ async function routes(fastify, options) {
   );
 
   //get users
-  fastify.get("/users", userController.getUsers);
 
-  fastify.delete("/requests/:username", userController.deleteRequest);
+  fastify.delete("/users/:username", userController.banUser);
 }
 
 module.exports = routes;

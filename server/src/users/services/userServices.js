@@ -35,12 +35,12 @@ const userServices = {
     }
   },
 
-  async getUsers(pending) {
+  async getUsers(option = null) {
     try {
       let users;
       const userModel = await UserModel();
-      if (pending) {
-        users = await userModel.find({ status: "pending" }).toArray();
+      if (option) {
+        users = await userModel.find({ status: option }).toArray();
       } else {
         users = await userModel.find({}).toArray();
       }
@@ -87,15 +87,17 @@ const userServices = {
         { username: username },
         { $set: updateObject }
       );
-      console.log(username);
       if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
     } catch (error) {
       console.error("Error updating profile", error);
       return { ok: false, status: httpStatus.NOT_MODIFIED };
     }
   },
 
-  async setUpAccount(username, updates) {
+  async setUpUser(username, updates) {
     try {
       const userModel = await UserModel();
       const updateObject = {};
@@ -118,23 +120,32 @@ const userServices = {
 
       const result = await userModel.updateOne(
         { username: username },
-        { $set: updateObject }
+        {
+          $set: {
+            ...updateObject,
+            status: "approved",
+          },
+        }
       );
-      if (result.acknowledged) return { ok: true };
+      if (result.modifiedCount) return { ok: true };
+      else return { ok: false };
     } catch (error) {
       console.error("Error updating profile", error);
       return { ok: false, status: httpStatus.NOT_MODIFIED };
     }
   },
 
-  async deleteRequest(username) {
+  async banUser(username) {
     try {
       const userModel = await UserModel();
       const result = await userModel.updateOne(
         { username: username },
-        { $set: { status: "declined" } }
+        { $set: { active: false } }
       );
       if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
     } catch (error) {
       console.error("Error Deleting request", error);
       return { ok: false, status: httpStatus.NOT_MODIFIED };
