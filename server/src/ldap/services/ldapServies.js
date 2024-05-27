@@ -23,39 +23,113 @@ const ldapServices = {
       });
     });
   },
-  disableUser(client, dn, callback) {
-    const change = new ldap.Change({
-      operation: "replace",
-      modification: {
-        type: "pwdAccountLockedTime",
-        values: ["000001010000Z"],
-      },
+  async disableUser(username) {
+    const client = ldap.createClient({
+      url: process.env.LDAP_URI,
     });
-    client.modify(dn, change, (err) => {
-      if (err) {
-        console.error("Failed to disable user:", err);
-        return callback(err);
-      }
-      console.log("User disabled successfully");
-      callback(null);
-    });
+
+    try {
+      // Ensure admin bind is successful before proceeding
+      await new Promise((resolve, reject) => {
+        client.bind(
+          "uid=admin,ou=system",
+          process.env.LDAP_ADMIN_PASSWORD,
+          (err) => {
+            if (err) {
+              return reject(
+                new Error("LDAP admin bind failed: " + err.message)
+              );
+            } else {
+              console.log("Admin connected successfully");
+              resolve();
+            }
+          }
+        );
+      });
+
+      const userDn = `uid=${username},${process.env.LDAP_BASE_DN}`;
+      const change = new ldap.Change({
+        operation: "replace",
+        modification: {
+          type: "pwdAccountLockedTime",
+          values: ["000001010000Z"],
+        },
+      });
+
+      await new Promise((resolve, reject) => {
+        client.modify(userDn, change, (err) => {
+          if (err) {
+            console.error("Failed to disable user:", err);
+            return reject(new Error("Failed to disable user"));
+          }
+          console.log("User disabled successfully");
+          resolve();
+        });
+      });
+
+      return { ok: true, message: "User disabled successfully" };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        message: "Internal server error",
+        details: error.message,
+      };
+    }
   },
-  enableUser(client, dn, callback) {
-    const change = new ldap.Change({
-      operation: "delete",
-      modification: {
-        type: "pwdAccountLockedTime",
-        values: [],
-      },
+  async enableUser(username) {
+    const client = ldap.createClient({
+      url: process.env.LDAP_URI,
     });
-    client.modify(dn, change, (err) => {
-      if (err) {
-        console.error("Failed to enable user:", err);
-        return callback(err);
-      }
-      console.log("User enabled successfully");
-      callback(null);
-    });
+
+    try {
+      // Ensure admin bind is successful before proceeding
+      await new Promise((resolve, reject) => {
+        client.bind(
+          "uid=admin,ou=system",
+          process.env.LDAP_ADMIN_PASSWORD,
+          (err) => {
+            if (err) {
+              return reject(
+                new Error("LDAP admin bind failed: " + err.message)
+              );
+            } else {
+              console.log("Admin connected successfully");
+              resolve();
+            }
+          }
+        );
+      });
+
+      const userDn = `uid=${username},${process.env.LDAP_BASE_DN}`;
+      const change = new ldap.Change({
+        operation: "delete",
+        modification: {
+          type: "pwdAccountLockedTime",
+          values: [],
+        },
+      });
+
+      await new Promise((resolve, reject) => {
+        client.modify(userDn, change, (err) => {
+          if (err) {
+            console.error("Failed to enable user:", err);
+            return reject(new Error("Failed to enable user"));
+          }
+          console.log("User enable successfully");
+          resolve();
+        });
+      });
+
+      return { ok: true, message: "User disabled successfully" };
+    } catch (error) {
+      console.error(error);
+      return {
+        ok: false,
+        message: "Internal server error",
+        details: error.message,
+      };
+    }
   },
   async checkUserExists(username) {
     const client = ldap.createClient({

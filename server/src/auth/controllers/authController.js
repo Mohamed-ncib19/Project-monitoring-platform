@@ -11,11 +11,7 @@ const authController = {
   async login(request, reply) {
     try {
       const { username, password } = request.body;
-      if (!username || !password) {
-        return reply.status(httpStatus.BAD_REQUEST).send({
-          error: { message: "Missing username or password" },
-        });
-      }
+
       const response = await loginService(username, password);
       if (!response.ok) {
         if (response.status) {
@@ -31,9 +27,9 @@ const authController = {
         response.tokens;
       const { user } = await userService.userExists(username);
       return reply.status(response.statusCode).send({
-        username: username,
+        username,
         accessToken: {
-          token: token,
+          token,
           expiresAt: tokenExpiresIn,
         },
         refreshToken: {
@@ -41,15 +37,13 @@ const authController = {
           expiresAt: refreshTokenExpiresIn,
         },
         profile: {
-          firstName: user.firstname,
-          lastName: user.lastname,
-          email: user.email,
-          bio: user.bio ? user.bio : null,
-          businessPosition: user.businessPosition
-            ? user.businessPosition
-            : null,
-          role: user.role ? user.role : null,
-          avatar: user.avatar ? user.avatar : null,
+          firstName: user.firstname || null,
+          lastName: user.lastname || null,
+          email: user.email || null,
+          bio: user.bio || null,
+          businessPosition: user.businessPosition || null,
+          role: user.role || null,
+          avatar: user.avatar || null,
         },
         status: response.status,
       });
@@ -87,7 +81,7 @@ const authController = {
       return reply.status(httpStatus.OK).send({
         username: userData.username,
         accessToken: {
-          token: token,
+          token,
           expiresAt: tokenExpiresIn,
         },
         refreshToken: {
@@ -95,15 +89,13 @@ const authController = {
           expiresAt: refreshTokenExpiresIn,
         },
         profile: {
-          firstName: userData.firstname ? userData.firstname : null,
-          lastName: userData.lastname ? userData.lastname : null,
-          email: userData.email ? userData.email : null,
-          bio: userData.bio ? userData.bio : null,
-          businessPosition: userData.businessPosition
-            ? userData.businessPosition
-            : null,
-          role: userData.role ? userData.role : null,
-          avatar: userData.avatar ? userData.avatar : null,
+          firstName: userData.firstname || null,
+          lastName: userData.lastname || null,
+          email: userData.email || null,
+          bio: userData.bio || null,
+          businessPosition: userData.businessPosition || null,
+          role: userData.role || null,
+          avatar: userData.avatar || null,
         },
         status: registerResponse.status,
       });
