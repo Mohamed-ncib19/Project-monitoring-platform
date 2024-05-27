@@ -71,13 +71,11 @@ const userController = {
       const response = await userServices.setUpAccount(username, userUpdates);
       if (!response.ok) {
         return reply.status(404).send({
-          error: { message: "Failed to Update user informations" },
-          data: null,
+          message: "Failed to setup user account",
         });
       } else {
         return reply.status(200).send({
-          error: null,
-          data: { message: "Informations updated successfuly" },
+          message: "Account setted up successfuly",
         });
       }
     } catch (error) {

@@ -65,6 +65,7 @@ async function loginService(username, password) {
     console.error("LDAP authentication error:", error);
     return {
       ok: false,
+      message: error,
     };
   }
 }

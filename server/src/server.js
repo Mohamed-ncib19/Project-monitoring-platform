@@ -1,7 +1,6 @@
 const Authroutes = require("./auth/routes/authRoutes");
 const userRoutes = require("./users/routes/userRoutes");
 const projectRoutes = require("./project/routes/projectsRoutes");
-const ldapRoutes = require("./ldap/routes/ldapRoutes");
 const {
   swaggerDescription,
   swaggerUiDescription,
@@ -27,8 +26,6 @@ fastify.register(Authroutes);
 fastify.register(userRoutes);
 
 fastify.register(projectRoutes);
-
-fastify.register(ldapRoutes);
 
 const PORT = process.env.PORT;
 
