@@ -45,10 +45,14 @@ const userController = {
       let response;
       const { pending } = request.query;
       const { approved } = request.query;
+      const { banned } = request.query;
+
       if (pending == "true") {
         response = await userServices.getUsers("pending");
       } else if (approved == "true") {
         response = await userServices.getUsers("approved");
+      } else if (banned == "true") {
+        response = await userServices.getUsers("banned");
       } else {
         response = await userServices.getUsers(false);
       }
