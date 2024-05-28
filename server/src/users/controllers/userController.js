@@ -43,19 +43,17 @@ const userController = {
   async getUsers(request, reply) {
     try {
       let response;
-      const { pending } = request.query;
-      const { approved } = request.query;
-      const { banned } = request.query;
+      const { active, pending, banned } = request.query;
+      const status =
+        active === "true"
+          ? "active"
+          : pending === "true"
+          ? "pending"
+          : banned === "true"
+          ? "banned"
+          : false;
+      response = await userServices.getUsers(status);
 
-      if (pending == "true") {
-        response = await userServices.getUsers("pending");
-      } else if (approved == "true") {
-        response = await userServices.getUsers("approved");
-      } else if (banned == "true") {
-        response = await userServices.getUsers("banned");
-      } else {
-        response = await userServices.getUsers(false);
-      }
       console.log(response);
       if (response.ok) {
         return reply.status(200).send({ users: response.users });
@@ -105,28 +103,6 @@ const userController = {
         return reply.status(200).send({
           error: null,
           data: { message: "Informations updated successfuly" },
-        });
-      }
-    } catch (error) {
-      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        error: { message: "Internal server error", details: error.message },
-        data: null,
-      });
-    }
-  },
-  async approve(request, reply) {
-    try {
-      const { username } = request.params;
-      const response = await userServices.approve(username);
-      if (!response.ok) {
-        return reply.status(404).send({
-          error: { message: "Failed to change user status" },
-          data: null,
-        });
-      } else {
-        return reply.status(200).send({
-          error: null,
-          data: { message: "status updated successfuly" },
         });
       }
     } catch (error) {

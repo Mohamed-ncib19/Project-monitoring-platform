@@ -39,15 +39,16 @@ const userServices = {
     try {
       let users;
       const userModel = await UserModel();
-      if (option === "banned") {
-        users = await userModel
-          .find({ $or: [{ status: "declined" }, { active: false }] })
-          .toArray();
-      } else if (option) {
-        users = await userModel.find({ status: option }).toArray();
-      } else {
-        users = await userModel.find({}).toArray();
-      }
+      const query =
+        option === "banned"
+          ? { $or: [{ status: "declined" }, { active: false }] }
+          : option === "active"
+          ? { active: true }
+          : option === "pending"
+          ? { status: option }
+          : {};
+
+      users = await userModel.find(query).toArray();
       return { ok: true, users: users };
     } catch (error) {
       console.error("Error getting users:", error);
@@ -101,7 +102,7 @@ const userServices = {
     }
   },
 
-  async setUpAccount(username, updates) {
+  async setUpUser(username, updates) {
     try {
       const userModel = await UserModel();
       const updateObject = {};
@@ -128,6 +129,7 @@ const userServices = {
           $set: {
             ...updateObject,
             status: "approved",
+            active: true,
           },
         }
       );
@@ -147,7 +149,7 @@ const userServices = {
       const userModel = await UserModel();
       const result = await userModel.updateOne(
         { username: username },
-        { $set: updateField }
+        { $set: { ...updateField, bannedAt: new Date() } }
       );
       if (result.acknowledged) return { ok: true };
       else {
@@ -160,14 +162,17 @@ const userServices = {
   },
   async restoreUser(username, type) {
     try {
-      console.log("type:", type);
-      const updateField =
-        type === "request" ? { status: "pending" } : { active: true };
-
       const userModel = await UserModel();
+
+      const updateField =
+        type === "request"
+          ? { status: "pending" }
+          : { active: true, status: "approved" };
+      const updateObject = { $set: updateField, $unset: { bannedAt: "" } };
+
       const result = await userModel.updateOne(
         { username: username },
-        { $set: updateField }
+        updateObject
       );
       if (result.acknowledged) return { ok: true };
       else {
