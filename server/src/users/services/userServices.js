@@ -97,7 +97,7 @@ const userServices = {
     }
   },
 
-  async setUpUser(username, updates) {
+  async setUpAccount(username, updates) {
     try {
       const userModel = await UserModel();
       const updateObject = {};
@@ -135,19 +135,42 @@ const userServices = {
     }
   },
 
-  async banUser(username) {
+  async banUser(username, type) {
     try {
+      const updateField =
+        type === "request" ? { status: "declined" } : { active: false };
+
       const userModel = await UserModel();
       const result = await userModel.updateOne(
         { username: username },
-        { $set: { active: false } }
+        { $set: updateField }
       );
       if (result.acknowledged) return { ok: true };
       else {
         return { ok: false };
       }
     } catch (error) {
-      console.error("Error Deleting request", error);
+      console.error("Error Deleting request / user", error);
+      return { ok: false, status: httpStatus.NOT_MODIFIED };
+    }
+  },
+  async restoreUser(username, type) {
+    try {
+      console.log("type:", type);
+      const updateField =
+        type === "request" ? { status: "pending" } : { active: true };
+
+      const userModel = await UserModel();
+      const result = await userModel.updateOne(
+        { username: username },
+        { $set: updateField }
+      );
+      if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
+    } catch (error) {
+      console.error("Error Restoring user", error);
       return { ok: false, status: httpStatus.NOT_MODIFIED };
     }
   },

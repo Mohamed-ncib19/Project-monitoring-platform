@@ -3,28 +3,29 @@ const userController = require("../controllers/userController");
 const autheticate = require("../../core/middlewares/autheticate");
 const getCurrentUserSchema = require("../schemas/getCurrentUserSchema");
 async function routes(fastify, options) {
-  //get user data
+  // Get all users
   fastify.get("/users", userController.getUsers);
 
+  // Get a specific user by username
   fastify.get("/users/:username", userController.getUser);
 
+  // Get the current authenticated user's profile
   fastify.get("/users/me", {
     schema: getCurrentUserSchema,
     preHandler: autheticate,
     handler: userController.getCurrentUser,
   });
 
+  // Setup or update a specific user by username (by manager)
   fastify.put("/users/:username", userController.setUpUser);
 
-  fastify.put(
-    "/users/me",
-    { preHandler: autheticate },
-    userController.updateProfile
-  );
+  // Update the current authenticated user's profile
+  fastify.put("/users/me", userController.updateProfile);
 
-  //get users
+  // Ban a specific user by username
+  fastify.delete("/users/:username/ban", userController.banUser);
 
-  fastify.delete("/users/:username", userController.banUser);
+  // Unban a specific user by username
+  fastify.put("/users/:username/restore", userController.restoreUser);
 }
-
 module.exports = routes;

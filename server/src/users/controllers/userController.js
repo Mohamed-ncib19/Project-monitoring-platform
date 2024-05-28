@@ -135,9 +135,14 @@ const userController = {
   async banUser(request, reply) {
     try {
       const { username } = request.params;
+      const { type } = request.query;
       const blockResponse = await ldapServices.disableUser(username);
-      console.log(blockResponse);
-      const banResponse = await userServices.banUser(username);
+      if (!blockResponse.ok) {
+        return reply.status(httpStatus.NOT_MODIFIED).send({
+          error: { message: "Failed to Ban User" },
+        });
+      }
+      const banResponse = await userServices.banUser(username, type);
       if (!banResponse.ok) {
         return reply.status(httpStatus.NOT_MODIFIED).send({
           error: { message: "Failed to Ban User" },
@@ -145,6 +150,32 @@ const userController = {
       } else {
         return reply.status(httpStatus.OK).send({
           error: { message: "User banned successfuly" },
+        });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        error: { message: "Internal server error", details: error.message },
+      });
+    }
+  },
+  async restoreUser(request, reply) {
+    try {
+      const { username } = request.params;
+      const { type } = request.query;
+      const unblockResponse = await ldapServices.enableUser(username);
+      if (!unblockResponse.ok) {
+        return reply.status(httpStatus.NOT_MODIFIED).send({
+          error: { message: "Failed to Restore User" },
+        });
+      }
+      const banResponse = await userServices.restoreUser(username, type);
+      if (!banResponse.ok) {
+        return reply.status(httpStatus.NOT_MODIFIED).send({
+          error: { message: "Failed to Restore User" },
+        });
+      } else {
+        return reply.status(httpStatus.OK).send({
+          error: { message: "User Restored successfuly" },
         });
       }
     } catch (error) {
