@@ -39,8 +39,12 @@ const userServices = {
     try {
       let users;
       const userModel = await UserModel();
-      if (option) {
+      if (option != banned) {
         users = await userModel.find({ status: option }).toArray();
+      } else if (option == banned) {
+        users = await userModel
+          .find({ status: "declined", active: false })
+          .toArray();
       } else {
         users = await userModel.find({}).toArray();
       }
