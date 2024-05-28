@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { IconEye, IconEyeOff } from '@tabler/icons-react';
-
-
 const PasswordInput = ({ register, errors, placeholder }) => {
   const [visible, setVisible] = useState(false);
 
@@ -12,7 +9,7 @@ const PasswordInput = ({ register, errors, placeholder }) => {
 
   return (
     <div
-      className={`form-group form-floating position-relative w-100 ${errors.password  ? 'is-invalid' : ''}`}
+      className={`form-group form-floating position-relative w-100 ${errors.password ? 'is-invalid' : ''}`}
     >
       <input
         type={visible ? 'text' : 'password'}
@@ -33,7 +30,11 @@ const PasswordInput = ({ register, errors, placeholder }) => {
         onClick={handleShowPassword}
       >
         <i className={`${errors.password ? 'px-2' : ''}`}>
-          {visible ? <IconEye /> : <IconEyeOff />}
+          {visible ? (
+            <i class="bi bi-eye-fill"></i>
+          ) : (
+            <i class="bi bi-eye-slash-fill"></i>
+          )}
         </i>
       </button>
 
