@@ -2,13 +2,15 @@ import { Modal } from 'react-bootstrap';
 
 import CoreButton from '@/components/buttons/CoreButton';
 import WarningIcon from '../../../../../../public/icons/warning-icon';
+import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 
 const EditModal = ({
   show,
   handleClose,
   headerTitle,
   children,
-  buttonLabel
+  buttonLabel,
+  user
 }) => {
   return (
 <>
@@ -23,23 +25,22 @@ const EditModal = ({
           <Modal.Title>{headerTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {edit && (
             <div className="d-flex justify-content-between align-items-center">
               <div className="d-flex gap-3">
                 <Avatar
-                  name={userData?.fullname || 'user name'}
+                  name={user?.fullname || 'user name'}
                   background="primary"
                   rounded="1"
                   textColor="white"
                 />
                 <div>
-                  <p>{userData?.fullname || 'fullname'}</p>
-                  <p>{userData?.position || 'position'}</p>
+                  <p>{user?.fullname || 'fullname'}</p>
+                  <p>{user?.position || 'position'}</p>
                 </div>
               </div>
               <p>profile link</p>
             </div>
-          )}
+        
 
 
        {   <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">

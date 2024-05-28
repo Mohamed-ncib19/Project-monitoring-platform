@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
-import AuthRoute from '@/app/api/routes/auth/authRoute';
+import AuthServices from '@/app/api/services/RegisterServices'
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CoreInput from '@/components/Inputs/CoreInput';
@@ -24,7 +24,7 @@ export const RegisterForm = ({ userName }) => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await AuthRoute.registerRoute(
+      const res = await AuthServices.registerRoute(
         {
           username: userName,
           firstname: data.firstname,
@@ -58,7 +58,7 @@ export const RegisterForm = ({ userName }) => {
 
   return (
     <>
-      <div className=" col-10 mt-5 custom-transition">
+      <div className=" col-10 mt-5">
         <p className="welcome custom-letter-spacing-wider text-dark h2">
           Welcome Back, <span className="text-custom-primary">{userName}!</span>
         </p>

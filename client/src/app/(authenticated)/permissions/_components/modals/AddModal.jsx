@@ -23,26 +23,8 @@ const AddModal = ({
           <Modal.Title>{headerTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-       {/*    {edit && (
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="d-flex gap-3">
-                <Avatar
-                  name={userData?.fullname || 'user name'}
-                  background="primary"
-                  rounded="1"
-                  textColor="white"
-                />
-                <div>
-                  <p>{userData?.fullname || 'fullname'}</p>
-                  <p>{userData?.position || 'position'}</p>
-                </div>
-              </div>
-              <p>profile link</p>
-            </div>
-          )} */}
 
-
-       {   <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">
+          <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">
             <i className="fs-4">
               <WarningIcon />
             </i>
@@ -50,7 +32,7 @@ const AddModal = ({
               Alert: setting a user's role will adjust their access to
               information and actions
             </p>
-          </div>}
+          </div>
 
           {children}
         </Modal.Body>

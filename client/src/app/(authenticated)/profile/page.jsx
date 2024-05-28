@@ -11,7 +11,6 @@ import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Textarea from '../../../components/Inputs/Textarea';
-import UserRoute from '../../api/routes/user/userRoute';
 import CoreInput from '@/components/Inputs/CoreInput';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
 
@@ -32,7 +31,6 @@ const Profile = () => {
     resolver: yupResolver(Schema),
   });
 
-  const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const { data: session } = useSession();
 
