@@ -24,13 +24,11 @@ const Pending = () => {
           Your registration is under review, you will be in soon.
         </p>
         <div className=" col-xl-8 col-lg-10 col-12">
-          {
-            <CoreButton
-              type="button"
-              label={'Sign Out'}
-              onclick={handleSignOut}
-            />
-          }
+          <CoreButton
+            type="button"
+            label={'Sign Out'}
+            onClick={handleSignOut}
+          />
         </div>
       </div>
     </div>

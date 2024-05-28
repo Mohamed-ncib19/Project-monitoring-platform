@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
-import CoreButton from '@/components/buttons/CoreButton';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
+import CoreButton from '@/components/buttons/CoreButton';
 
 export const ProductHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);

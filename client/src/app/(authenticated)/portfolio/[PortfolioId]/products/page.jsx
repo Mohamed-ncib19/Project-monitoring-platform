@@ -1,8 +1,9 @@
 'use client';
 import { useEffect } from 'react';
 
-import { getProductsByPrograms } from '../../../../api/routes/routesEndpoints';
 import { ProductHeader } from '@/app/(authenticated)/_components/ProductHeader';
+
+import { getProductsByPrograms } from '../../../../api/routes/routesEndpoints';
 
 const ProductsByProgram = ({ params }) => {
   const id = params.ProgramId;
