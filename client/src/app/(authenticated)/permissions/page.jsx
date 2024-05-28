@@ -6,18 +6,18 @@ import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 
 import { EditForm } from '@/app/(authenticated)/permissions/_components/EditForm';
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
-import TopRightModal from '@/app/(authenticated)/_components/modals/TopRightModal';
 import DataTable from '@/layout/DataTable/';
 import UserRoute from '@/app/api/routes/user/userRoute';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import Link from 'next/link';
 import ViewIcon from '../../../../public/icons/ViewIcon';
+import AddModal from '@/app/(authenticated)/permissions/_components/modals/AddModal';
+import EditModal from '@/app/(authenticated)/permissions/_components/modals/EditModal';
 
 const Permissions = () => {
   const [users, setUsers] = useState([]);
   const [userRequests,setUserRequests] = useState([]);
   const [bannedUser,setBannedUser] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -250,22 +250,23 @@ const Permissions = () => {
         ))}
           
 
-          <TopRightModal
+          <AddModal
           headerTitle={'Edit account'}
-          show={isEditModalOpen}
-          handleClose={handleCloseEditModal}
-          edit={true}
-          user={selectedUser}
-          form={<EditForm />}
-        />
-
-        <TopRightModal
-          headerTitle={'Account setup'}
           show={isModalOpen}
           handleClose={handleClose}
-          edit={false}
-          user={selectedUser}
-        />
+          buttonLabel={'Save'}
+        >
+            
+        </AddModal>
+
+        <EditModal
+          headerTitle={'Edit account'}
+          buttonLabel={'Save'}
+          show={isEditModalOpen}
+          handleClose={handleCloseEditModal}
+        >
+           <EditForm user={selectedUser} />
+        </EditModal>
       </div>
   );
 };

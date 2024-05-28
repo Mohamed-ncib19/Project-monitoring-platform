@@ -8,23 +8,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import CoreInput from '@/components/Inputs/CoreInput';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
+import { EditSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
+
 
 export const EditForm = ({ user }) => {
-  console.log(user);
-  const Schema = Yup.object().shape({
-    firstname: Yup.string(),
-    lastname: Yup.string(),
-    phone: Yup.string().matches(/^[0-9]+$/, 'Phone number is not valid'),
-    email: Yup.string().email('Invalid email address'),
-    position: Yup.string(),
-    salary: Yup.number()
-      .typeError('Salary must be a number')
-      .positive('Salary must be a positive number'),
-    role: Yup.string(),
-  });
 
   const methods = useForm({
-    resolver: yupResolver(Schema),
+    resolver: yupResolver(EditSchema),
     defaultValues: {
       firstname: user?.firstname || '',
       lastname: user?.lastname || '',
@@ -42,8 +32,6 @@ export const EditForm = ({ user }) => {
     handleSubmit,
     formState: { errors },
   } = methods;
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -54,7 +42,6 @@ export const EditForm = ({ user }) => {
       setValue('position', user.position);
       setValue('salary', user.salary);
       setValue('role', user.role);
-      setLoading(false);
     }
   }, [user, setValue]);
 
@@ -75,7 +62,6 @@ export const EditForm = ({ user }) => {
       if (role && role !== user.role) cleanData.role = role;
 
       if (Object.keys(cleanData).length > 0) {
-        console.log(cleanData);
 
         /*   const resUpdateUser = await UserRoute.editUserInfo(cleanData, user.username, session.token);
 
@@ -109,10 +95,8 @@ export const EditForm = ({ user }) => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-
   return (
-    <div>
+    <>
       <FormProvider {...methods}>
         <form
           className="d-flex flex-column gap-4 py-5"
@@ -120,14 +104,14 @@ export const EditForm = ({ user }) => {
         >
           <div className="d-flex flex-row justify-content-between align-items-center gap-4">
             <CoreInput
-              register={register('firstname')}
+              register={register}
               name="firstname"
               placeholder="First name"
               errors={errors}
               type="text"
             />
             <CoreInput
-              register={register('lastname')}
+              register={register}
               name="lastname"
               placeholder="Last name"
               errors={errors}
@@ -137,7 +121,7 @@ export const EditForm = ({ user }) => {
 
           <div className="d-flex flex-row justify-content-center gap-4">
             <CoreInput
-              register={register('phone')}
+              register={register}
               name="phone"
               placeholder="Phone number"
               errors={errors}
@@ -147,7 +131,7 @@ export const EditForm = ({ user }) => {
 
           <div className="d-flex flex-row justify-content-center gap-4">
             <CoreInput
-              register={register('email')}
+              register={register}
               name="email"
               placeholder="Email address"
               errors={errors}
@@ -162,7 +146,7 @@ export const EditForm = ({ user }) => {
               </p>
               <SelectInput
                 hookForm={true}
-                register={register('position')}
+                register={register}
                 setValue={setValue}
                 name="position"
                 placeholder="Business Position"
@@ -189,7 +173,7 @@ export const EditForm = ({ user }) => {
             <div className="">
               <p className="fs-6 mb-2 text-soft-black">Salary</p>
               <CoreInput
-                register={register('salary')}
+                register={register}
                 name="salary"
                 placeholder="In TND"
                 errors={errors}
@@ -202,7 +186,7 @@ export const EditForm = ({ user }) => {
             <p className="fs-6 mb-2 py-1 text-soft-black">Role</p>
             <SelectInput
               hookForm={true}
-              register={register('role')}
+              register={register}
               setValue={setValue}
               name="role"
               placeholder="Role"
@@ -217,6 +201,6 @@ export const EditForm = ({ user }) => {
           </div>
         </form>
       </FormProvider>
-    </div>
+    </>
   );
 };

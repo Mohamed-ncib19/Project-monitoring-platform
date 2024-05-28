@@ -18,7 +18,6 @@ const AuthRoute = {
   async registerRoute(userData) {
     console.log(userData)
     try {
-      console.log(endPoint)
       const response = await axios.post(`${endPoint}/register`, userData);
       console.log(response)
      return response.data;

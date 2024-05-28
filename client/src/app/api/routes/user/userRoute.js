@@ -7,7 +7,7 @@ const UserRoute = {
 
   async getUsers(){
     try {
-      const res = await axios.get('http://127.0.0.1:5000/users');
+      const res = await axios.get('http://127.0.0.1:5000/users?approve=true');
       console.log(res)
       if(res.status === 200){
         return {ok:true,data:res.data.data}
@@ -60,7 +60,6 @@ const UserRoute = {
           'Content-Type': 'application/json',
         },
       });
-      console.log(res.data);
       if (res.status === 200) {
 
         /*     res.data.data.map((user)=>{
@@ -72,7 +71,6 @@ const UserRoute = {
                 position:user.position
                });
               }); */
-        console.log(users);
         return { ok: true, status: 200, data: res.data.data };
       } else {
         return { ok: false, msg: res };

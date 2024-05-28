@@ -1,22 +1,21 @@
 import { Modal } from 'react-bootstrap';
 
-import WarningIcon from '@/../public/icons/warning-icon';
-import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import CoreButton from '@/components/buttons/CoreButton';
+import WarningIcon from '../../../../../../public/icons/warning-icon';
 
-const TopRightModal = ({
+const EditModal = ({
   show,
   handleClose,
   headerTitle,
-  userData,
-  form,
-  edit,
+  children,
+  buttonLabel
 }) => {
   return (
-    <div className="modal bg-danger">
-      <Modal
+<>
+    <Modal
         show={show}
         onHide={handleClose}
+        animation={false}
         dialogClassName="full-height-modal"
         contentClassName="full-height-modal-content"
       >
@@ -41,7 +40,9 @@ const TopRightModal = ({
               <p>profile link</p>
             </div>
           )}
-          <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">
+
+
+       {   <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">
             <i className="fs-4">
               <WarningIcon />
             </i>
@@ -49,17 +50,17 @@ const TopRightModal = ({
               Alert: setting a user's role will adjust their access to
               information and actions
             </p>
-          </div>
+          </div>}
 
-          {form}
+          {children}
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12 d-flex justify-content-end">
-            <CoreButton type="submit" label={'Save'} />
+            <CoreButton type="submit" label={buttonLabel} />
           </div>
         </Modal.Footer>
       </Modal>
-    </div>
+    </>
   );
 };
-export default TopRightModal;
+export default EditModal;

@@ -8,7 +8,15 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
-  if (user) redirect('/dashboard');
+  if (user){
+    if(user.profile.role){
+      redirect('/dashboard');
+    }else if(user.profile.role === null){
+      redirect('/pending');
+    }
+  }
+    
+    
 
   return (
     <section>

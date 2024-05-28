@@ -45,7 +45,7 @@ export const RegisterForm = ({ userName }) => {
         push('/pending');
       }
       if (res.ok) {
-        push('/auth/pending');
+        push('/pending');
       } else {
         alert('Error in the system');
         console.log(res.message)
