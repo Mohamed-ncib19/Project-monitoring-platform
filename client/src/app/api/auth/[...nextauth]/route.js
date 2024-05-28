@@ -57,7 +57,6 @@ export const authOptions = {
         try {
           const { username, password } = credentials;
           const user = await authenticate(username, password);
-          console.log(user)
           return Promise.resolve(user);
         } catch (e) {
           return Promise.reject(new Error(e.message));
