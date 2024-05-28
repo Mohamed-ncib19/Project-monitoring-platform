@@ -10,7 +10,7 @@ const ClientLayout = ({ children, data }) => {
     axios.defaults.headers.common = {
       Authorization: `Bearer ${data?.accessToken?.token}`,
     };
-
+    axios.defaults.baseURL = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {

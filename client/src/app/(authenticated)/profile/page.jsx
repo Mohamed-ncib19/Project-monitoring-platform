@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
@@ -13,14 +13,23 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Textarea from '../../../components/Inputs/Textarea';
 import CoreInput from '@/components/Inputs/CoreInput';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
+import { EditUserSchema } from './_shcemas/editUser.schema';
+import { getServerSession } from 'next-auth';
 
 const Profile = () => {
-  const Schema = Yup.object().shape({
-    bio: Yup.string(),
-    firstname: Yup.string(),
-    lastname: Yup.string(),
-    phone: Yup.string().matches(/^[0-9]+$/, 'Phone number is not valid'),
-  });
+
+  const getUser = async () =>{
+    try {
+      const user = await getSession();
+      console.log(user);
+    } catch (error) {
+      throw new Error({
+        message: 'Error al obtener el usuario',
+      })
+    }
+  };
+
+  getUser();
 
   const {
     register,
@@ -28,11 +37,28 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(Schema),
+    resolver: yupResolver(EditUserSchema),
   });
 
   const [userData, setUserData] = useState(null);
   const { data: session } = useSession();
+
+
+
+  const editUserInfo = async (userData) => {
+    try {
+      const response = await axios.put(`/users/me`,userData);
+      return response.data.data;
+    } catch (error) {
+      throw new Error(
+        JSON.stringify({
+          status:error.response?.status,
+          code : error?.code,
+          data : error.response?.data,
+        })
+      )
+    }
+  }
 
 
   const onSubmit = async (data) => {
@@ -57,7 +83,7 @@ const Profile = () => {
       }
 
       if (Object.keys(cleanData).length > 0) {
-        const resUpdateUser = await UserRoute.editUserInfo(
+        const resUpdateUser = await editUserInfo(
           cleanData,
           userData?.username,
           session?.token,
