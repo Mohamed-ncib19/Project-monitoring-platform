@@ -8,7 +8,6 @@ import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { IconInfoCircle } from '@tabler/icons-react';
 
-
 import CoreInput from '@/components/Inputs/CoreInput';
 import PasswordInput from '@/components/Inputs/PasswordInput';
 
@@ -59,7 +58,7 @@ export const LoginForm = () => {
 
   return (
     <>
-      <div className=" col-10 mt-5 custom-transition">
+      <div className=" col-10 mt-5">
         <p className="welcome custom-letter-spacing-wider text-dark h2">
           Welcome
         </p>

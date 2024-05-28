@@ -209,14 +209,12 @@
 .step-item:after,
 .step-item:before {
   background: var(--tblr-steps-color);
-  transition: background-color 0.5s ease;
   cursor: pointer;
 }
 .step-item:hover::before {
   content: '';
   background-color: var(--tblr-teal);
   scale: 1.4;
-  transition: all 500ms ease-in-out;
 }
 
 .step-item:not(:last-child):after {

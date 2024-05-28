@@ -46,7 +46,7 @@ export const Sidebar = () => {
           isOpen
             ? 'col-xl-2 col-lg-2 col-md-4 col-sm-4 col-xs-4 col-7 w-100 '
             : ''
-        }  transition-transform duration-500 ease-in-out `}
+        }  `}
       >
         <div className="w-100   ">
           <div className="p-3  w-100">
@@ -56,7 +56,7 @@ export const Sidebar = () => {
                   src={isOpen ? Logo : LogoSvg}
                   width={isOpen ? 100 : 30}
                   alt="logo"
-                  layout="responsice"
+                  
                   loading="lazy"
                   className="w-100"
                 />
