@@ -2,17 +2,14 @@
 import { signOut } from 'next-auth/react';
 
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
-
-import {ToggleDropdown} from '@/app/(authenticated)/_components/Dropdown';
+import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
 import { ToggleNotification } from '@/app/(authenticated)/_components/ToggleNotification';
-
 
 export const Navbar = ({ user }) => {
   const { profile } = user;
   const handleSignOut = async () => {
     await signOut();
   };
-
 
   const notifications = [
     {
