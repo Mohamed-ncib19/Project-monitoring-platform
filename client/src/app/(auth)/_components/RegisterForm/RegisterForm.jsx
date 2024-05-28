@@ -2,10 +2,11 @@ import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
-import AuthServices from '@/app/api/services/RegisterServices'
+
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CoreInput from '@/components/Inputs/CoreInput';
+import axios from 'axios';
 
 export const RegisterForm = ({ userName }) => {
 
@@ -22,9 +23,19 @@ export const RegisterForm = ({ userName }) => {
     formState: { errors },
   } = form;
 
+  const Register = async (userData)=> {
+    try {
+      const res = await axios.post(`${endpointUrl}/register`, userData);
+      console.log(res)
+     return res.data;
+    } catch (error) {
+      return { ok: false, msg: error };
+    }
+  }
+
   const onSubmit = async (data) => {
     try {
-      const res = await AuthServices.registerRoute(
+      const res = await Register(
         {
           username: userName,
           firstname: data.firstname,

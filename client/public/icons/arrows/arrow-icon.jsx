@@ -18,7 +18,7 @@ const ArrowIcons = {
   },
   ArrowLeftIcon: () => {
     return (
-      <i className="text-dark custom-hover-icon fs-2 p-1">
+      <i className=" custom-hover-icon fs-2 p-1">
         <svg
           stroke="currentColor"
           fill="currentColor"

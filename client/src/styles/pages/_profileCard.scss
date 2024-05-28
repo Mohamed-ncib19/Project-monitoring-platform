@@ -1,33 +1,43 @@
 :root {
-    --header-height: 15em;
-    --card-top-offset: 3em;
-  }
-  
-  .profile-header {
-    background: linear-gradient(90deg, rgb(33, 81, 214) 0%, rgb(123, 143, 187) 100%);
-    position: relative;
-    height: var(--header-height);
-  }
-  
-  .profile-card {
-    position: absolute;
-    z-index: 10;
-    top: calc(var(--header-height) + var(--card-top-offset));
-    left: 0;
-    right: 0;
-  }
-  
-  .card-section h4 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .link:hover {
-    background-color: rgb(229, 229, 229);
-  }
-  .back{
-    background-color: transparent;
-  }
-  .back:hover {
-    background-color: rgba(229, 229, 229, 0.351);
-  }
+  --header-height: 15em;
+  --card-top-offset: 3em;
+}
+
+.profile-header {
+  background: linear-gradient(120deg, #1B1B4F 0%, #76C5F0 100%);
+  position: relative;
+  height: var(--header-height);
+}
+
+.profile-card {
+  position: absolute;
+  z-index: 10;
+  top: calc(var(--header-height) + var(--card-top-offset));
+  height: max-content;
+  left: 0;
+  right: 0;
+  letter-spacing: 1px;
+}
+
+.card-section h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.link:hover {
+  background-color: rgb(229, 229, 229);
+}
+
+.back {
+  background-color: transparent;
+  color: aliceblue;
+}
+
+.back:hover {
+  background-color: rgba(229, 229, 229, 0.351);
+}
+
+.custom-value-field {
+  color: rgba(34, 34, 34, 0.8);
+  font-weight: bold;
+}

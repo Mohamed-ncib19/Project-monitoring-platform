@@ -42,63 +42,16 @@ export const AddForm = ({ user }) => {
     }
   }, [user, setValue]);
 
-  const onSubmit = async (data) => {
-    try {
-      const { firstname, lastname, bio, phone, email, position, salary, role } =
-        data;
-      const cleanData = {};
 
-      if (firstname && firstname !== user.firstname)
-        cleanData.firstname = firstname;
-      if (lastname && lastname !== user.lastname) cleanData.lastname = lastname;
-      if (bio && bio !== user.bio) cleanData.bio = bio;
-      if (phone && phone !== user.phone) cleanData.phone = phone;
-      if (email && email !== user.email) cleanData.email = email;
-      if (position && position !== user.position) cleanData.position = position;
-      if (salary && salary !== user.salary) cleanData.salary = salary;
-      if (role && role !== user.role) cleanData.role = role;
 
-      if (Object.keys(cleanData).length > 0) {
 
-        /*   const resUpdateUser = await UserRoute.editUserInfo(cleanData, user.username, session.token);
 
-        if (resUpdateUser.ok) {
-          Swal.fire({
-            icon: "success",
-            title: "Profile information updated successfully",
-          });
-        } else {
-          const errorText = resUpdateUser.status === 404 ? "Resource not found" : "Server error";
-          Swal.fire({
-            icon: "error",
-            title: "Failed to update",
-            text: errorText,
-          });
-        } */
-      } else {
-        Swal.fire({
-          icon: 'info',
-          title: 'No Changes',
-          text: 'You did not make any updates.',
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to update',
-        text: 'An unexpected error occurred',
-      });
-    }
-  };
+  
+  
 
   return (
     <>
-      <FormProvider {...methods}>
-        <form
-          className="d-flex flex-column gap-4 py-5"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+       
           <div className="d-flex flex-row justify-content-between align-items-center gap-4">
             <CoreInput
               register={register}
@@ -196,8 +149,8 @@ export const AddForm = ({ user }) => {
               ]}
             />
           </div>
-        </form>
-      </FormProvider>
+
+      
     </>
   );
 };
