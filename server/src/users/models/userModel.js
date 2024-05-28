@@ -11,6 +11,4 @@ const userModel = async function userModel() {
   }
 };
 
-
-
 module.exports = userModel;

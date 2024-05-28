@@ -1,16 +1,13 @@
 require("dotenv").config();
 
-const httpStatus = require("http-status");
-const { ObjectId } = require("mongodb");
 const ldap = require("ldapjs");
+const ldapAdminModel = require("../models/ldapAdminModel");
+const ldapModel = require("../models/ldapModel");
 
 const ldapServices = {
   async bindUser(username, password) {
+    const client = await ldapModel();
     const userDn = `uid=${username},${process.env.LDAP_BASE_DN}`;
-    const client = ldap.createClient({
-      url: process.env.LDAP_URI,
-    });
-
     return new Promise((resolve) => {
       client.bind(userDn, password, (err) => {
         if (err) {
@@ -24,29 +21,8 @@ const ldapServices = {
     });
   },
   async disableUser(username) {
-    const client = ldap.createClient({
-      url: process.env.LDAP_URI,
-    });
-
     try {
-      // Ensure admin bind is successful before proceeding
-      await new Promise((resolve, reject) => {
-        client.bind(
-          "uid=admin,ou=system",
-          process.env.LDAP_ADMIN_PASSWORD,
-          (err) => {
-            if (err) {
-              return reject(
-                new Error("LDAP admin bind failed: " + err.message)
-              );
-            } else {
-              console.log("Admin connected successfully");
-              resolve();
-            }
-          }
-        );
-      });
-
+      const client = await ldapAdminModel();
       const userDn = `uid=${username},${process.env.LDAP_BASE_DN}`;
       const change = new ldap.Change({
         operation: "replace",
@@ -78,29 +54,8 @@ const ldapServices = {
     }
   },
   async enableUser(username) {
-    const client = ldap.createClient({
-      url: process.env.LDAP_URI,
-    });
-
     try {
-      // Ensure admin bind is successful before proceeding
-      await new Promise((resolve, reject) => {
-        client.bind(
-          "uid=admin,ou=system",
-          process.env.LDAP_ADMIN_PASSWORD,
-          (err) => {
-            if (err) {
-              return reject(
-                new Error("LDAP admin bind failed: " + err.message)
-              );
-            } else {
-              console.log("Admin connected successfully");
-              resolve();
-            }
-          }
-        );
-      });
-
+      const client = await ldapAdminModel();
       const userDn = `uid=${username},${process.env.LDAP_BASE_DN}`;
       const change = new ldap.Change({
         operation: "delete",
@@ -109,7 +64,6 @@ const ldapServices = {
           values: [],
         },
       });
-
       await new Promise((resolve, reject) => {
         client.modify(userDn, change, (err) => {
           if (err) {
@@ -132,27 +86,9 @@ const ldapServices = {
     }
   },
   async checkUserExists(username) {
-    const client = ldap.createClient({
-      url: process.env.LDAP_URI,
-    });
     try {
-      // Ensure admin bind is successful before proceeding
-      await new Promise((resolve, reject) => {
-        client.bind(
-          "uid=admin,ou=system",
-          process.env.LDAP_ADMIN_PASSWORD,
-          (err) => {
-            if (err) {
-              return reject(
-                new Error("LDAP admin bind failed: " + err.message)
-              );
-            } else {
-              console.log("Admin connected successfully");
-              resolve();
-            }
-          }
-        );
-      });
+      const client = await ldapAdminModel();
+
       const searchOptions = {
         filter: `(uid=${username})`,
         scope: "sub",
