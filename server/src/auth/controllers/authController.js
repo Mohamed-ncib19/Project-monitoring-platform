@@ -48,6 +48,7 @@ const authController = {
         status: response.status,
       });
     } catch (error) {
+      console.error(`Error in login method: ${error.message}`);
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
       });

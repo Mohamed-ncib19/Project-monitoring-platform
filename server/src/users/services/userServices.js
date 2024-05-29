@@ -56,25 +56,6 @@ const userServices = {
     }
   },
 
-  async approve(id) {
-    try {
-      const userModel = await UserModel();
-      const result = await userModel.updateOne(
-        { username: id },
-        {
-          $set: {
-            status: "approved",
-            active: true,
-          },
-        }
-      );
-      if (result.acknowledged) return { ok: true, status: httpStatus.CREATED };
-    } catch (error) {
-      console.error("Error updating status:", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
-    }
-  },
-
   async updateProfile(username, updates) {
     try {
       const userModel = await UserModel();
@@ -157,13 +138,12 @@ const userServices = {
       }
     } catch (error) {
       console.error("Error Deleting request / user", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
+      return { ok: false };
     }
   },
   async restoreUser(username, type) {
     try {
       const userModel = await UserModel();
-
       const updateField =
         type === "request"
           ? { status: "pending" }
@@ -180,7 +160,7 @@ const userServices = {
       }
     } catch (error) {
       console.error("Error Restoring user", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
+      return { ok: false };
     }
   },
 };

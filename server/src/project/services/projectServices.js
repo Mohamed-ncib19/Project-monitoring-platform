@@ -21,13 +21,15 @@ const projectServices = {
       const projectModel = await ProjectModel();
       const result = await projectModel.insertOne({
         ...project,
-        status: "pending",
-        role: null,
+        createdAt: new Date(),
       });
-      if (result.acknowledged) return { ok: true, status: httpStatus.CREATED };
+      if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
     } catch (error) {
       console.error("Error creating project:", error);
-      return { ok: false, status: httpStatus.CONFLICT };
+      return { ok: false };
     }
   },
   async getProjects(product) {
