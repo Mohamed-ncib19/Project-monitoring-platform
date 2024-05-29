@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const userServices = require("../services/userServices");
-const ldapServices = require("../../ldap/services/ldapServies");
+const ldapServices = require("../../ldap/services/ldapServices");
 const userController = {
   async getUser(request, reply) {
     try {
