@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { LoginSchema } from '@/app/(auth)/_schemas/auth.schema';
@@ -11,7 +11,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
-  const { push, refresh } = useRouter();
+  const { push } = useRouter();
+  const { data } = useSession();
+
+  useEffect(() => {
+    if (data?.status === 'pending') {
+      push('/pending');
+    }
+    if (data?.status === 'approved') {
+      push('/dashboard');
+    }
+  }, [data]);
 
   const form = useForm({
     resolver: yupResolver(LoginSchema),
@@ -31,8 +41,11 @@ export const LoginForm = () => {
       });
       if (JSON.parse(response.error)?.status === 422) {
         push(`/?username=${data.username}`);
+        return;
       }
-      refresh();
+      if (JSON.parse(response.error)?.status !== 200) {
+        setIsValid(false);
+      }
     } catch (error) {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
@@ -42,7 +55,7 @@ export const LoginForm = () => {
 
   return (
     <>
-      <div className="pt-5">
+      <div className="col-10 pt-5">
         <p className="welcome custom-letter-spacing-wider text-dark h2">
           Welcome
         </p>
@@ -56,12 +69,11 @@ export const LoginForm = () => {
           onSubmit={onSubmit}
         >
           <CoreInput
-            register={register}
+            name="username"
+            type="text"
+            placeholder="LDAP Username"
             errors={errors}
-            name={'username'}
-            type={'text'}
-            placeholder={'LDAP Username'}
-            readOnly={false}
+            register={register}
           />
           <PasswordInput
             register={register('password')}
