@@ -18,7 +18,7 @@ const AddModal = ({
         show={show}
         onHide={handleClose}
         animation={false}
-        dialogClassName="full-height-modal"
+        dialogClassName="full-height-modal my-modal"
         contentClassName="full-height-modal-content"
       >
         <Modal.Header closeButton>

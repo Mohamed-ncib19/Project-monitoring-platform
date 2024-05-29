@@ -6,10 +6,10 @@ import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { LoginSchema } from '@/app/(auth)/_schemas/auth.schema';
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IconInfoCircle } from '@tabler/icons-react';
 
 import CoreInput from '@/components/Inputs/CoreInput';
 import PasswordInput from '@/components/Inputs/PasswordInput';
+import InfoIcon from '../../../../../public/icons/info-icon';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
@@ -96,7 +96,7 @@ export const LoginForm = () => {
           {!isValid && (
             <div className="text-danger d-flex flex-row gap-2">
               <i>
-                <IconInfoCircle />
+                <InfoIcon />
               </i>
               <p>Login failed. Please verify if your account exists in LDAP</p>
             </div>

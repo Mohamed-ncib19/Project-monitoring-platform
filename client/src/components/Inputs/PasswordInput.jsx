@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { IconEye, IconEyeOff } from '@tabler/icons-react';
-
+/* import { IconEye, IconEyeOff } from '@tabler/icons-react';
+ */
 
 const PasswordInput = ({field, errors, placeholder }) => {
   const [visible, setVisible] = useState(false);
@@ -34,7 +34,7 @@ const PasswordInput = ({field, errors, placeholder }) => {
         onClick={handleShowPassword}
       >
         <i className={`${errors.password ? 'px-2' : ''}`}>
-          {visible ? <IconEye /> : <IconEyeOff />}
+          {/* {visible ? <IconEye /> : <IconEyeOff />} */}
         </i>
       </button>
 

@@ -34,7 +34,7 @@ fastify.register(porfolioRoutes);
 const PORT = process.env.PORT;
 
 async function start() {
-  fastify.listen({ port: PORT, host: "0.0.0.0" });
+  fastify.listen({ port: PORT, host: "127.0.0.1" });
 }
 
 start();
