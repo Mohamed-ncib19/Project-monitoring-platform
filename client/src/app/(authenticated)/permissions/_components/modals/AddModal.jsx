@@ -8,8 +8,10 @@ const AddModal = ({
   handleClose,
   headerTitle,
   children,
-  buttonLabel
+  buttonLabel,
+  handleSubmit
 }) => {
+
   return (
 <>
     <Modal
@@ -22,6 +24,8 @@ const AddModal = ({
         <Modal.Header closeButton>
           <Modal.Title>{headerTitle}</Modal.Title>
         </Modal.Header>
+        
+        
         <Modal.Body>
 
           <div className="modal-alert text-white d-flex justify-content-center align-items-center p-2 gap-2 rounded-5 mt-4">
@@ -38,9 +42,11 @@ const AddModal = ({
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12 d-flex justify-content-end">
-            <CoreButton type="submit" label={buttonLabel} />
+            <CoreButton type="submit" label={buttonLabel} onclick={handleSubmit} />
           </div>
         </Modal.Footer>
+        
+  
       </Modal>
     </>
   );

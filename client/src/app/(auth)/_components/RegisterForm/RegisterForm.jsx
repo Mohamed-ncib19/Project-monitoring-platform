@@ -1,30 +1,50 @@
 import { useRouter } from 'next/navigation';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm,Controller } from 'react-hook-form';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
-import AuthServices from '@/app/api/services/RegisterServices'
+
 import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CoreInput from '@/components/Inputs/CoreInput';
+import axios from 'axios';
+import { getSession } from 'next-auth/react';
 
-export const RegisterForm = ({ userName }) => {
+export const RegisterForm = async ({ userName }) => {
 
   const { push } = useRouter();
 
+  
   const form = useForm({
     resolver: yupResolver(RegisterSchema),
   });
 
   const {
     register,
-    setValue,
+    control,
     handleSubmit,
     formState: { errors },
   } = form;
 
+
+
+const api = {
+
+  async Register (userData) {
+    try {
+      const res = await axios.post(`/register`, userData);
+     return Promise.resolve({
+      ok:true,
+      data:res.data
+     });
+    } catch (error) {
+      return Promise.reject({ ok: false, msg: error })
+    }
+  }
+}
+
   const onSubmit = async (data) => {
     try {
-      const res = await AuthServices.registerRoute(
+      const res = await api.Register(
         {
           username: userName,
           firstname: data.firstname,
@@ -34,25 +54,25 @@ export const RegisterForm = ({ userName }) => {
           email: data.email,
         },
       );
-      console.log(res)
       
+      if(!res.ok){
       if(res.msg.response.status === 500){
         alert('server error')
-        return;
       }
-
+      
+      if(res.msg.response.status === 403){
+        alert('user already exist') 
+      }
+      return;
+    }
       if(res.data.status === 'pending'  ){
-        push('/pending');
+        console.log(res)
+        
+        push('/');
       }
-      if (res.ok) {
-        push('/pending');
-      } else {
-        alert('Error in the system');
-        console.log(res.message)
-      }
+      
     } catch (error) {
       console.error('Error creating new user:', error);
-      alert('Error creating new user');
     }
   };
 
@@ -73,35 +93,60 @@ export const RegisterForm = ({ userName }) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center gap-5 pt-5">
-              <CoreInput
-                register={register}
+              <Controller
+              name='firstname'
+              control={control}
+              render={({field})=>(
+                <CoreInput
+                field={field}
                 name="firstname"
                 errors={errors}
                 placeholder={'Firstname'}
                 type={'text'}
               />
-              <CoreInput
-                register={register}
+              )}
+              />
+
+            <Controller
+              name='lastname'
+              control={control}
+              render={({field})=>(
+                <CoreInput
+                field={field}
                 name="lastname"
                 errors={errors}
                 placeholder={'Lastname'}
                 type={'text'}
               />
+              )}
+              />
             </div>
-            <CoreInput
-              register={register}
-              name={'phoneNumber'}
-              placeholder={'Phone number'}
-              errors={errors}
-              type={'number'}
-            />
-            <CoreInput
-              register={register}
-              name={'email'}
-              placeholder={'Email'}
-              errors={errors}
-              type={'email'}
-            />
+            <Controller
+              name='phoneNumber'
+              control={control}
+              render={({field})=>(
+                <CoreInput
+                field={field}
+                name="phoneNumber"
+                errors={errors}
+                placeholder={'Phone number'}
+                type={'text'}
+              />
+              )}
+              />
+            <Controller
+              name='email'
+              control={control}
+              render={({field})=>(
+                <CoreInput
+                field={field}
+                name="email"
+                errors={errors}
+                placeholder={'email'}
+                type={'text'}
+              />
+              )}
+              />
 
            { <CoreButton type="submit" label={'Submit'} />}
           </form>
