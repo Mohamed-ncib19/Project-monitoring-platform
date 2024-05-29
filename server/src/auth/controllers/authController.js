@@ -4,7 +4,7 @@ const registrationService = require("../services/registrationService");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../services/generateJWT");
 const userService = require("../../users/services/userServices");
-const ldapServices = require("../../ldap/services/ldapServies");
+const ldapServices = require("../../ldap/services/ldapServices");
 require("dotenv").config();
 
 const authController = {

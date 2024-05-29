@@ -7,7 +7,6 @@ const userServices = {
     try {
       const userModel = await UserModel();
       const user = await userModel.findOne({ username: username });
-      console.log(user);
       if (user) {
         return { ok: true, exists: true, user: user };
       }
