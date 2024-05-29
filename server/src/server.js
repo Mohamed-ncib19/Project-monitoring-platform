@@ -17,6 +17,7 @@ require("dotenv").config();
 fastify.register(require("@fastify/cors"), {
   origin: true,
   methods: ["POST", "GET", "PUT", "DELETE"],
+  //try
 });
 
 fastify.register(require("@fastify/swagger"), swaggerDescription);
