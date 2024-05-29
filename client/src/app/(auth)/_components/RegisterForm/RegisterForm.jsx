@@ -7,7 +7,6 @@ import CoreButton from '@/components/buttons/CoreButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CoreInput from '@/components/Inputs/CoreInput';
 import axios from 'axios';
-import { getSession } from 'next-auth/react';
 
 export const RegisterForm = async ({ userName }) => {
 
@@ -25,57 +24,54 @@ export const RegisterForm = async ({ userName }) => {
     formState: { errors },
   } = form;
 
+  const api = {
 
-
-const api = {
-
-  async Register (userData) {
-    try {
-      const res = await axios.post(`/register`, userData);
-     return Promise.resolve({
-      ok:true,
-      data:res.data
-     });
-    } catch (error) {
-      return Promise.reject({ ok: false, msg: error })
+    async Register (userData) {
+      try {
+        const res = await axios.post(`/register`, userData);
+       return Promise.resolve({
+        ok:true,
+        data:res.data
+       });
+      } catch (error) {
+        return Promise.reject({ ok: false, msg: error })
+      }
     }
   }
-}
-
-  const onSubmit = async (data) => {
-    try {
-      const res = await api.Register(
-        {
-          username: userName,
-          firstname: data.firstname,
-          lastname: data.lastname,
-          bio: '',
-          phone: data.phoneNumber,
-          email: data.email,
-        },
-      );
-      
-      if(!res.ok){
-      if(res.msg.response.status === 500){
-        alert('server error')
-      }
-      
-      if(res.msg.response.status === 403){
-        alert('user already exist') 
-      }
-      return;
-    }
-      if(res.data.status === 'pending'  ){
-        console.log(res)
+  
+    const onSubmit = async (data) => {
+      try {
+        const res = await api.Register(
+          {
+            username: userName,
+            firstname: data.firstname,
+            lastname: data.lastname,
+            bio: '',
+            phone: data.phoneNumber,
+            email: data.email,
+          },
+        );
         
-        push('/');
+        if(!res.ok){
+        if(res.msg.response.status === 500){
+          alert('server error')
+        }
+        
+        if(res.msg.response.status === 403){
+          alert('user already exist') 
+        }
+        return;
       }
-      
-    } catch (error) {
-      console.error('Error creating new user:', error);
-    }
-  };
-
+        if(res.data.status === 'pending'  ){
+          console.log(res)
+          
+          push('/pending');
+        }
+        
+      } catch (error) {
+        console.error('Error creating new user:', error);
+      }
+    };
   return (
     <>
       <div className=" col-10 mt-5">

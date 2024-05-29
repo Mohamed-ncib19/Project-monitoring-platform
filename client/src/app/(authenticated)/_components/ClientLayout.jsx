@@ -6,6 +6,7 @@ const endpointUrl = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 axios.defaults.baseURL = endpointUrl;
 const ClientLayout = ({ children, data }) => {
   const session = useSession();
+  console.log(session)
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
       Authorization: `Bearer ${data?.accessToken?.token}`,

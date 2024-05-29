@@ -3,6 +3,8 @@ import { Modal } from 'react-bootstrap';
 import CoreButton from '@/components/buttons/CoreButton';
 import WarningIcon from '../../../../../../public/icons/warning-icon';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+import Link from 'next/link';
+import ViewIcon from '../../../../../../public/icons/ViewIcon';
 
 const EditModal = ({
   show,
@@ -19,7 +21,7 @@ const EditModal = ({
         show={show}
         onHide={handleClose}
         animation={false}
-        dialogClassName="full-height-modal"
+        dialogClassName="full-height-modal my-modal"
         contentClassName="full-height-modal-content"
       >
         <Modal.Header closeButton>
@@ -29,17 +31,17 @@ const EditModal = ({
             <div className="d-flex justify-content-between align-items-center">
               <div className="d-flex gap-3">
                 <Avatar
-                  name={user?.fullname || 'user name'}
+                  name={(user?.firstname + ' ' + user?.lastname) || 'user name'}
                   background="primary"
                   rounded="1"
                   textColor="white"
                 />
                 <div>
-                  <p>{user?.fullname || 'fullname'}</p>
-                  <p>{user?.position || 'position'}</p>
+                  <p>{(user?.firstname + ' ' + user?.lastname) || 'fullname'}</p>
+                  <p>{user?.businessPosition || 'position'}</p>
                 </div>
               </div>
-              <p>profile link</p>
+              <Link href={`/profile/${user?.username}`}>view profile <ViewIcon /> </Link>
             </div>
         
 
