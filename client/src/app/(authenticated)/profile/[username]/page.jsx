@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation';
 import { Avatar } from '../../_components/Avatar';
 import { useEffect, useState } from 'react';
-import { UserServices } from '@/app/api/services/UserServices';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import ArrowIcons from '../../../../../public/icons/arrows/arrow-icon';

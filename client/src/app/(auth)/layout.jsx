@@ -8,6 +8,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
+  console.log(user)
   if (user){
     if(user.profile.role){
       redirect('/dashboard');

@@ -1,15 +1,11 @@
-import { useEffect } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
-
+import React, { useEffect } from 'react';
+import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import CoreInput from '@/components/Inputs/CoreInput';
 import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
-import { SetupSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
+import { SetupSchema } from '../../_schemas/permission.schema';
 
-export const AddForm = ({ user }) => {
-
+export const AddForm = ({ user, handleSubmitForm, setSubmitCallback }) => {
   const methods = useForm({
     resolver: yupResolver(SetupSchema),
     defaultValues: {
@@ -17,140 +13,162 @@ export const AddForm = ({ user }) => {
       lastname: user?.lastname || '',
       phone: user?.phone || '',
       email: user?.email || '',
-      position: user?.position || '',
+      businessPosition: user?.businessPosition || '',
       salary: user?.salary || '',
       role: user?.role || '',
     },
   });
 
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    formState: { errors },
-  } = methods;
+  const { control, handleSubmit, formState: { errors } } = methods;
+
+  const onSubmitFormData = async (data) => {
+    try {
+      if (handleSubmitForm) {
+        await handleSubmitForm({username:user.username,data:data});
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
+  };
 
   useEffect(() => {
-    if (user) {
-      setValue('firstname', user.firstname);
-      setValue('lastname', user.lastname);
-      setValue('phone', user.phone);
-      setValue('email', user.email);
-      setValue('position', user.position);
-      setValue('salary', user.salary);
-      setValue('role', user.role);
+    if (setSubmitCallback) {
+      setSubmitCallback(() => handleSubmit(onSubmitFormData));
     }
-  }, [user, setValue]);
-
-
-
-
-
-  
-  
+  }, [setSubmitCallback, handleSubmit]);
 
   return (
-    <>
-       
-          <div className="d-flex flex-row justify-content-between align-items-center gap-4">
-            <CoreInput
-              register={register}
-              name="firstname"
-              placeholder="First name"
-              errors={errors}
-              type="text"
-            />
-            <CoreInput
-              register={register}
-              name="lastname"
-              placeholder="Last name"
-              errors={errors}
-              type="text"
+    <FormProvider {...methods}>
+      <form className="d-flex flex-column gap-4 py-5" onSubmit={handleSubmit(onSubmitFormData)}>
+        <div className="d-flex flex-row justify-content-between align-items-center gap-4">
+          <Controller
+            name="firstname"
+            control={control}
+            render={({ field }) => (
+              <CoreInput
+                field={field}
+                placeholder="First name"
+                errors={errors}
+                name="firstname"
+                type="text"
+              />
+            )}
+          />
+          <Controller
+            name="lastname"
+            control={control}
+            render={({ field }) => (
+              <CoreInput
+                field={field}
+                placeholder="Last name"
+                errors={errors}
+                name="lastname"
+                type="text"
+              />
+            )}
+          />
+        </div>
+
+        <div className="d-flex flex-row justify-content-center gap-4">
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <CoreInput
+                field={field}
+                placeholder="Phone number"
+                errors={errors}
+                name="phone"
+                type="text"
+              />
+            )}
+          />
+        </div>
+
+        <div className="d-flex flex-row justify-content-center gap-4">
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <CoreInput
+                field={field}
+                placeholder="Email"
+                errors={errors}
+                name="email"
+                type="text"
+              />
+            )}
+          />
+        </div>
+
+        <div className="d-flex justify-content-between border-top border-bottom py-4">
+          <div>
+            <p className="fs-6 mb-2 py-1 text-soft-black">Business Position</p>
+            <Controller
+              name="businessPosition"
+              control={control}
+              render={({ field }) => (
+                <SelectInput
+                  field={field}
+                  placeholder="Business Position"
+                  errors={errors}
+                  search={true}
+                  content={[
+                    { text: 'Frontend Developer', value: 'frontDev' },
+                    { text: 'Backend Developer', value: 'backDev' },
+                    { text: 'Full-stack Developer', value: 'fullStackDev' },
+                    { text: 'Mobile Developer (ANDROID)', value: 'mobileDevAND' },
+                    { text: 'Mobile Developer (IOS)', value: 'mobileDevIOS' },
+                    { text: 'IT Business Analyst', value: 'itBAnalyst' },
+                    { text: 'Quality Assurance (QA) Engineer', value: 'qltAssuranceEng' },
+                    { text: 'IT Project Manager', value: 'itProjectMng' },
+                    { text: 'Product Owner', value: 'prodOwn' },
+                    { text: 'Scrum Master', value: 'scrMstr' },
+                    { text: 'Team Lead', value: 'TL' },
+                  ]}
+                />
+              )}
             />
           </div>
-
-          <div className="d-flex flex-row justify-content-center gap-4">
-            <CoreInput
-              register={register}
-              name="phone"
-              placeholder="Phone number"
-              errors={errors}
-              type="text"
+          <div>
+            <p className="fs-6 mb-2 text-soft-black">Salary</p>
+            <Controller
+              name="salary"
+              control={control}
+              render={({ field }) => (
+                <CoreInput
+                  field={field}
+                  placeholder="Salary"
+                  errors={errors}
+                  name="salary"
+                  type="number"
+                />
+              )}
             />
           </div>
+        </div>
 
-          <div className="d-flex flex-row justify-content-center gap-4">
-            <CoreInput
-              register={register}
-              name="email"
-              placeholder="Email address"
-              errors={errors}
-              type="email"
-            />
-          </div>
-
-          <div className="d-flex justify-content-between border-top border-bottom py-4">
-            <div className="">
-              <p className="fs-6 mb-2 py-1 text-soft-black">
-                Business Position
-              </p>
+        <div>
+          <p className="fs-6 mb-2 py-1 text-soft-black">Role</p>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
               <SelectInput
-                hookForm={true}
-                register={register}
-                setValue={setValue}
-                name="position"
-                placeholder="Business Position"
+                field={field}
+                placeholder="Role"
                 errors={errors}
                 search={true}
                 content={[
-                  { text: 'Frontend Developer', value: 'frontDev' },
-                  { text: 'Backend Developer', value: 'backDev' },
-                  { text: 'Full-stack Developer', value: 'fullStackDev' },
-                  { text: 'Mobile Developer (ANDROID)', value: 'mobileDevAND' },
-                  { text: 'Mobile Developer (IOS)', value: 'mobileDevIOS' },
-                  { text: 'IT Business Analyst', value: 'itBAnalyst' },
-                  {
-                    text: 'Quality Assurance (QA) Engineer',
-                    value: 'qltAssuranceEng',
-                  },
-                  { text: 'IT Project Manager ', value: 'itProjectMng' },
-                  { text: 'Product Owner', value: 'prodOwn' },
-                  { text: 'Scrum Master', value: 'scrMstr' },
-                  { text: 'Team Lead', value: 'TL' },
+                  { text: 'Manager', value: 'Manager' },
+                  { text: 'Team Lead', value: 'Team lead' },
+                  { text: 'Team member', value: 'Team member' },
                 ]}
               />
-            </div>
-            <div className="">
-              <p className="fs-6 mb-2 text-soft-black">Salary</p>
-              <CoreInput
-                register={register}
-                name="salary"
-                placeholder="In TND"
-                errors={errors}
-                type="number"
-              />
-            </div>
-          </div>
-
-          <div className="">
-            <p className="fs-6 mb-2 py-1 text-soft-black">Role</p>
-            <SelectInput
-              hookForm={true}
-              register={register}
-              setValue={setValue}
-              name="role"
-              placeholder="Role"
-              errors={errors}
-              search={true}
-              content={[
-                { text: 'Manager', value: 'manager' },
-                { text: 'Team Lead', value: 'TL' },
-                { text: 'Team member', value: 'TM' },
-              ]}
-            />
-          </div>
-
-      
-    </>
+            )}
+          />
+        </div>
+      </form>
+    </FormProvider>
   );
 };

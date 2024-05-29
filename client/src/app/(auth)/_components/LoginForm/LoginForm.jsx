@@ -20,8 +20,8 @@ export const LoginForm = () => {
   });
 
   const {
-    register,
     formState: { errors },
+    control,
     handleSubmit,
   } = form;
 
@@ -31,7 +31,6 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
-      console.log(response)
       if (JSON.parse(response.error)?.status === 422) {
         push(`/?username=${data.username}`);
       }
@@ -53,8 +52,7 @@ export const LoginForm = () => {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
       }
-    }
-  };
+    }  };
 
   return (
     <>
@@ -71,21 +69,30 @@ export const LoginForm = () => {
           className="login-form col-12 col-md-8 col-lg-10 col-xl-10 mx-auto d-flex flex-column gap-4   "
           onSubmit={handleSubmit(onSubmit)}
         >
-          <CoreInput
-            register={register}
+          <Controller
+          name='username'
+          control={control}
+          render={({field})=>(
+            <CoreInput
+            field={field}
             errors={errors}
-            name={'username'}
+            name='username'
             type={'text'}
             placeholder={'LDAP Username'}
-            readOnly={false}
-         
-            
           />
+          )}
+          />
+         <Controller
+         name='password'
+         control={control}
+         render={({field})=>(
           <PasswordInput
-            register={register('password')}
-            errors={errors}
-            placeholder={'Password'}
-          />
+          field={field}
+          errors={errors}
+          placeholder={'Password'}
+        />
+         )}
+         />
           {!isValid && (
             <div className="text-danger d-flex flex-row gap-2">
               <i>

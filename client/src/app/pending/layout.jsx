@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 
 const Layout = async ({ children }) => {
     const user = await getServerSession(authOptions);
-
+    console.log(user);
+    
     if(!user) redirect('/');
     if(user.profile.role) redirect('/dashboard');
 
