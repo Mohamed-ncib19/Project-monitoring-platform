@@ -2,45 +2,15 @@ import { Modal } from 'react-bootstrap';
 
 import CoreButton from '@/components/buttons/CoreButton';
 import WarningIcon from '../../../../../../public/icons/warning-icon';
-import { FormProvider } from 'react-hook-form';
 
 const AddModal = ({
   show,
   handleClose,
   headerTitle,
   children,
-  buttonLabel
+  buttonLabel,
+  handleSubmit
 }) => {
-
-
-  const handleSetupUser = async (data) => {
-    try {
-      console.log(data);
-      const { firstname, lastname, bio, phone, email, position, salary, role } =
-        data;
-      const cleanData = {};
-
-      if (firstname && firstname !== user.firstname)
-        cleanData.firstname = firstname;
-      if (lastname && lastname !== user.lastname) cleanData.lastname = lastname;
-      if (bio && bio !== user.bio) cleanData.bio = bio;
-      if (phone && phone !== user.phone) cleanData.phone = phone;
-      if (email && email !== user.email) cleanData.email = email;
-      if (position && position !== user.position) cleanData.position = position;
-      if (salary && salary !== user.salary) cleanData.salary = salary;
-      if (role && role !== user.role) cleanData.role = role;
-
-      if (Object.keys(cleanData).length > 0) {
-        console.log(cleanData);
-      } else {
-        console.log('404');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
 
   return (
 <>
@@ -54,8 +24,7 @@ const AddModal = ({
         <Modal.Header closeButton>
           <Modal.Title>{headerTitle}</Modal.Title>
         </Modal.Header>
-        <FormProvider  >
-          <form onSubmit={handleSetupUser} >
+        
         
         <Modal.Body>
 
@@ -73,12 +42,11 @@ const AddModal = ({
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12 d-flex justify-content-end">
-            <CoreButton type="submit" label={buttonLabel} />
+            <CoreButton type="submit" label={buttonLabel} onclick={handleSubmit} />
           </div>
         </Modal.Footer>
         
-        </form>
-        </FormProvider>
+  
       </Modal>
     </>
   );

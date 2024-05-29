@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 
-const PasswordInput = ({ register, errors, placeholder }) => {
+const PasswordInput = ({field, errors, placeholder }) => {
   const [visible, setVisible] = useState(false);
 
   const handleShowPassword = () => {
@@ -20,8 +20,9 @@ const PasswordInput = ({ register, errors, placeholder }) => {
           errors.password ? 'is-invalid text-danger' : ''
         }`}
         placeholder={placeholder}
+        onChange={field?.onChange}
+        onBlur={field?.onBlur}
         name="password"
-        {...register}
       />
       <label htmlFor="floating-input light-text-custom-color z-0">
         {placeholder}

@@ -13,6 +13,7 @@ import AddModal from '@/app/(authenticated)/permissions/_components/modals/AddMo
 import EditModal from '@/app/(authenticated)/permissions/_components/modals/EditModal';
 import { AddForm } from './_components/AddForm';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 
 const Permissions = () => {
   const [users, setUsers] = useState([]);
@@ -22,6 +23,9 @@ const Permissions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [setupSubmitForm, setSetupSubmitForm] = useState(null);
+  const [editSubmitForm,setEditSubmitForm] = useState(null);
 
   const handleClose = () => setIsModalOpen(false);
   const handleShow = (user) => {
@@ -53,7 +57,7 @@ const Permissions = () => {
 
     async getUsers() {
       try {
-        const response = await axios.get('/users?approved=true');
+        const response = await axios.get('/users?active=true');
         return response.data.users;
       } catch (error) {
         throw new Error(
@@ -79,6 +83,33 @@ const Permissions = () => {
         );
       }
     },
+    async setupUser(username,data){
+      try {
+        const response = await axios.put(`/users/${username}`,data);
+        console.log(response)
+        return response.data
+      } catch (error) {
+        return Promise.reject({
+          ok:false,
+          status:500,
+          msg:'internal server'
+        })
+      }
+    },
+    async editUser(username,data){
+      try {
+        const response = await axios.put(`/users/${username}`,data);
+        console.log(response)
+        return response.data
+      } catch (error) {
+        return Promise.reject({
+          ok:false,
+          status:500,
+          msg:'internal server'
+        })
+      }
+    },
+
   };
 
   useEffect(() => {
@@ -200,6 +231,24 @@ const Permissions = () => {
     {
       Header: 'joined',
       accessor: 'joinedAt',
+      Cell: ({ value }) => {
+        const date = new Date(value);
+        const formattedDate = date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        });
+        const formattedTime = date.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        });
+        return (
+          <span>
+            {formattedDate} {formattedTime}
+          </span>
+        );
+      },
     },
     {
       Header: 'Statut',
@@ -207,11 +256,11 @@ const Permissions = () => {
         return (
           <div
             className={`${
-              row.original.role === 'manager'
+              row.original.role === 'Manager'
                 ? 'bg-danger col-11 m-auto '
                 : row.original.role === 'Team lead'
                   ? 'tl col-9 m-auto'
-                  : row.original.role === 'Developer'
+                  : row.original.role === 'Team member'
                     ? 'dev col-10 m-auto '
                     : ''
             }
@@ -297,6 +346,24 @@ const Permissions = () => {
     {
       Header: 'Banned Date',
       accessor: 'bannedDate  ',
+      Cell: ({ value }) => {
+        const date = new Date(value);
+        const formattedDate = date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        });
+        const formattedTime = date.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        });
+        return (
+          <span>
+            {formattedDate} {formattedTime}
+          </span>
+        );
+      },
     },
     {
       Header: 'Statut',
@@ -358,33 +425,28 @@ const Permissions = () => {
     },
   ]);
 
-  const handleSetupUser = async (data) => {
-    try {
-      console.log(data);
-      const { firstname, lastname, bio, phone, email, position, salary, role } =
-        data;
-      const cleanData = {};
 
-      if (firstname && firstname !== user.firstname)
-        cleanData.firstname = firstname;
-      if (lastname && lastname !== user.lastname) cleanData.lastname = lastname;
-      if (bio && bio !== user.bio) cleanData.bio = bio;
-      if (phone && phone !== user.phone) cleanData.phone = phone;
-      if (email && email !== user.email) cleanData.email = email;
-      if (position && position !== user.position) cleanData.position = position;
-      if (salary && salary !== user.salary) cleanData.salary = salary;
-      if (role && role !== user.role) cleanData.role = role;
 
-      if (Object.keys(cleanData).length > 0) {
-        console.log(cleanData);
-      } else {
-        console.log('404');
-      }
-    } catch (error) {
-      console.log(error);
-    }
+
+ 
+
+  const handleSetup = async (formData) => {
+    if(setupSubmitForm) await setupSubmitForm();
+    console.log(formData.data);
+    console.log(formData.username);
+    
+    const response = await api.setupUser(formData.username, formData.data);
+     console.log(response);
   };
 
+  const handleEdit = async (formData) =>{
+    if(editSubmitForm) await editSubmitForm();
+    console.log(formData.data);
+    const response = await api.editUser(formData.username, formData.data);
+    console.log(response);
+
+  }
+  
   return (
     <>
       <div className="pb-4">
@@ -421,33 +483,47 @@ const Permissions = () => {
         </button>
       </div>
 
+<>
       {activeTab === 'requests' && (
+        userRequests.length > 0 ? ( 
         <DataTable columns={Requestcolumns} data={userRequests} />
+      ):(
+        <p className=' text-center fs-2 text-muted' >no requests</p>
+      )
       )}
       {activeTab === 'users' && (
-        <DataTable columns={UsersColumns} data={users} />
+        users.length > 0 ? ( 
+          <DataTable columns={UsersColumns} data={users} />
+        ):(
+          <p className=' text-center fs-2 text-muted' >no users</p>
+        )
       )}
       {activeTab === 'bannedUsers' && (
-        <DataTable columns={BannedUsersColumns} data={bannedUsers} />
-      )}
+ bannedUsers.length > 0 ? ( 
+  <DataTable columns={BannedUsersColumns} data={bannedUsers} />
+):(
+  <p className=' text-center fs-2 text-muted' >no banned users</p>
+)      )}
+</>
+    <AddModal
+      headerTitle={'Setup account'}
+      show={isModalOpen}
+      handleClose={handleClose}
+      buttonLabel={'Save'}
+      handleSubmit={handleSetup}
+    >
+      <AddForm user={selectedUser} handleSubmitForm={handleSetup} setSubmitCallback={setSetupSubmitForm} />
+    </AddModal>
 
-      <AddModal
-        headerTitle={'Setup account'}
-        show={isModalOpen}
-        handleClose={handleClose}
-        buttonLabel={'Save'}
-        handleSubmit={handleSetupUser}
-      >
-        <AddForm user={selectedUser} />
-      </AddModal>
 
       <EditModal
         headerTitle={'Edit account'}
         buttonLabel={'Save'}
         show={isEditModalOpen}
         handleClose={handleCloseEditModal}
+        handleSubmit={handleEdit}
       >
-        <EditForm user={selectedUser} />
+        <EditForm user={selectedUser} handleSubmitForm={handleEdit} setSubmitCallback={setEditSubmitForm} />
       </EditModal>
     </>
   );

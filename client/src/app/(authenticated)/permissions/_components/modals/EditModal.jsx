@@ -10,7 +10,8 @@ const EditModal = ({
   headerTitle,
   children,
   buttonLabel,
-  user
+  user,
+  handleSubmit
 }) => {
   return (
 <>
@@ -57,7 +58,7 @@ const EditModal = ({
         </Modal.Body>
         <Modal.Footer>
           <div className="col-12 d-flex justify-content-end">
-            <CoreButton type="submit" label={buttonLabel} />
+            <CoreButton type="submit" label={buttonLabel} onclick={handleSubmit} />
           </div>
         </Modal.Footer>
       </Modal>
