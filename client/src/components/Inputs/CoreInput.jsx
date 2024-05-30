@@ -3,7 +3,7 @@ import clx from 'clsx';
 const CoreInput = ({
   name,
   placeholder,
-  type,
+  type = 'text',
   readOnly = false,
   errors,
   register,
