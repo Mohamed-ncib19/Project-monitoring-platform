@@ -3,7 +3,6 @@ import CoreButton from "../buttons/CoreButton";
 import { useCallback } from "react";
 
 const ConfirmModal = ({ show, handleClose, headerTitle, username, children, handleSave }) => {
-console.log(username)
     const onDelete = useCallback(async () => {
         try {
             if (handleSave) await handleSave(username);

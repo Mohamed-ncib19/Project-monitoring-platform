@@ -41,6 +41,7 @@ export const LoginForm = () => {
       }
       const user = await getSession();
 
+
       if(user){
         if(user.profile.role){
           push('/dashboard');
@@ -94,8 +95,8 @@ export const LoginForm = () => {
          )}
          />
           {!isValid && (
-            <div className="text-danger d-flex flex-row gap-2">
-              <i>
+            <div className="text-danger d-flex flex-row justify-content-center align-items-start text-danger gap-2">
+              <i  >
                 <InfoIcon />
               </i>
               <p>Login failed. Please verify if your account exists in LDAP</p>

@@ -9,7 +9,6 @@ import {Navbar} from '@/app/(authenticated)/_components/Navbar';
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
   if (!user) redirect('/');
-
   return (
     <ClientLayout data={user}>
       <div className=" sidebar">

@@ -14,8 +14,17 @@ import EditModal from '@/app/(authenticated)/permissions/_components/modals/Edit
 import { AddForm } from './_components/AddForm';
 import axios from 'axios';
 import ConfirmModal from '@/components/modals/ConfirmModal';
+import { useRouter } from 'next/navigation';
+
+import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
+import usersNotFound from '@/../../public/images/users-not-found.png';
+import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
+import Image from 'next/image';
+
 
 const Permissions = () => {
+  const router = useRouter();
+
   const [users, setUsers] = useState([]);
   const [userRequests, setUserRequests] = useState([]);
   const [bannedUsers, setBannedUsers] = useState([]);
@@ -67,7 +76,6 @@ const [restoreType,setRestoreType] = useState(null);
   
   const handleCloseRestoreModal = () => setIsRestoreModalOpen(false);
   const handleRestoreShow = (user) => {
-    console.log(user.role)
     setRestoreType(
       user.role != undefined ? 'account'
       :'request'
@@ -128,7 +136,6 @@ const [restoreType,setRestoreType] = useState(null);
     async setupUser(username, data) {
       try {
         const response = await axios.put(`/users/${username}`, data);
-        console.log(response);
         return response.data;
       } catch (error) {
         return Promise.reject({
@@ -153,11 +160,9 @@ const [restoreType,setRestoreType] = useState(null);
 
     async deleteUser(username) {
       try {
-        console.log(username);
         const response = await axios.delete(
           `/users/${username}/ban?type=request`,
         );
-        console.log(response);
         return response.data;
       } catch (error) {
         return Promise.reject({
@@ -173,7 +178,6 @@ const [restoreType,setRestoreType] = useState(null);
         const response = await axios.delete(`/users/${username}/ban?type=user`);
         return response.data;
       } catch (error) {
-        console.log(error)
         return Promise.reject({
           ok: false,
           status: 500,
@@ -187,7 +191,6 @@ const [restoreType,setRestoreType] = useState(null);
         const response = await axios.put(`/users/${username}/restore?type=request`);
         return response.data;
       } catch (error) {
-        console.log(error)
         return Promise.reject({
           ok: false,
           status: 500,
@@ -201,7 +204,6 @@ const [restoreType,setRestoreType] = useState(null);
         const response = await axios.put(`/users/${username}/restore?type=user`);
         return response.data;
       } catch (error) {
-        console.log(error)
         return Promise.reject({
           ok: false,
           status: 500,
@@ -529,28 +531,38 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleSetup = async (formData) => {
     if (setupSubmitForm) await setupSubmitForm();
-    console.log(formData.data);
-    console.log(formData.username);
 
     const response = await api.setupUser(formData.username, formData.data);
-    console.log(response);
+    if(response.message === 'Account setted up successfuly'){
+      setIsModalOpen(false);
+      router.refresh();
+    }else{
+      alert('setp failed');
+    }
   };
 
   const handleEdit = async (formData) => {
     if (editSubmitForm) await editSubmitForm();
-    console.log(formData.data);
     const response = await api.editUser(formData.username, formData.data);
-    console.log(response);
+    if(response.message === 'Account setted up successfuly'){
+      setIsEditModalOpen(false);
+      router.refresh();
+    }else{
+      alert('setp failed');
+    }
   };
 
   const handleDelete = async (username) => {
     if (username) {
       try {
-        console.log(username);
         const response = await api.deleteUser(username);
-        console.log(response);
+        if(response.message === 'User banned successfuly'){
+          setActiveTab('bannedUsers')
+        }else{
+          alert('failed to delete request')
+        }
       } catch (error) {
-        console.log(error);
+        alert('internal server');
       }
     }
   };
@@ -559,22 +571,25 @@ const [restoreType,setRestoreType] = useState(null);
     console.log(username)
     if (username) {
       try {
-        console.log(username);
         const response = await api.desactivateUser(username);
-        console.log(response);
+        if(response.message === 'User banned successfuly'){
+          setActiveTab('bannedUsers');
+        }else{
+          alert('failed to desavtivate user')
+        }
       } catch (error) {
-        console.log(error);
+        alert('internal server');
       }
     }
   };
 
   const handleRestoreRequest = async (username) => {
-    console.log(username)
     if (username) {
       try {
-        console.log(username);
         const response = await api.restoreRequest(username);
-        console.log(response);
+        if(response.message === 'User Restored successfuly'){
+          setActiveTab('requests')
+        }
       } catch (error) {
         console.log(error);
       }
@@ -587,12 +602,15 @@ const [restoreType,setRestoreType] = useState(null);
       try {
         console.log(username);
         const response = await api.restoreUser(username);
-        console.log(response);
+        if(response.message === 'User Restored successfuly'){
+          setActiveTab('users')
+        }
       } catch (error) {
         console.log(error);
       }
     }
   };
+
 
   return (
     <>
@@ -635,19 +653,50 @@ const [restoreType,setRestoreType] = useState(null);
           (userRequests.length > 0 ? (
             <DataTable columns={Requestcolumns} data={userRequests} />
           ) : (
-            <p className=" text-center fs-2 text-muted">no requests</p>
-          ))}
+            <div className='m-auto d-flex flex-column justify-content-center align-items-center'>
+            <Image
+              src={requestsNotFound}
+              alt='Not Found'
+              loading='lazy'
+              width={600}
+              placeholder='blur'
+              quality={80}
+
+            />
+            <p className='text-center fs-1 fw-bold text-muted'>No requests found</p>
+          </div>
+            ))}
         {activeTab === 'users' &&
           (users.length > 0 ? (
             <DataTable columns={UsersColumns} data={users} />
           ) : (
-            <p className=" text-center fs-2 text-muted">no users</p>
-          ))}
+            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+            <Image
+            src={usersNotFound}
+            alt='Not Found'
+            loading='lazy'
+            width={600}
+            placeholder='blur'
+            
+            />
+          <p className=" text-center fs-1 fw-bold text-muted">no users found</p>
+          </div>  
+         ))}
         {activeTab === 'bannedUsers' &&
           (bannedUsers.length > 0 ? (
             <DataTable columns={BannedUsersColumns} data={bannedUsers} />
           ) : (
-            <p className=" text-center fs-2 text-muted">no banned users</p>
+            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+              <Image
+              src={bannedUsersNotFound}
+              alt='Not Found'
+              loading='lazy'
+              width={600}
+              placeholder='blur'
+              
+              />
+            <p className=" text-center fs-1 fw-bold text-muted">no banned users found</p>
+            </div>  
           ))}
       </>
       <AddModal
