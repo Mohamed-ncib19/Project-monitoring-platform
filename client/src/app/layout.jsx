@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 
 import { AppConfigProvider } from '@/providers/AppConfigProvider';
+import ToastsProvider from '@/providers/Toasts/ToastsProvider';
 
 import '@/main.scss';
 
@@ -15,11 +16,14 @@ const inter = Inter({
   display: 'swap',
   weight: '400',
 });
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-soft-gray`}>
-        <AppConfigProvider>{children}</AppConfigProvider>
+        <AppConfigProvider>
+          <ToastsProvider>{children}</ToastsProvider>
+        </AppConfigProvider>
       </body>
     </html>
   );
