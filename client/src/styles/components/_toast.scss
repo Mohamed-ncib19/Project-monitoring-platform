@@ -1,0 +1,49 @@
+.custom-toast-container {
+  box-shadow: 0 16px 24px 0 #00000024;
+  width: 343px;
+  height: 45px;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: white;
+
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  .background-success-gradient {
+    background: linear-gradient(to right, #00ED511F, #00ED7B00);
+    height: 100%;
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .background-danger-gradient {
+    background: linear-gradient(to right, #F0424840, #F0424800);
+    height: 100%;
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .background-warning-gradient {
+    background: linear-gradient(to right, #FFD42640, #FFD42600);
+    height: 100%;
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+
+    .message {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+}
+
