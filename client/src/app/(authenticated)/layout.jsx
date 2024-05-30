@@ -13,7 +13,7 @@ const Layout = async ({ children }) => {
 
   return (
     <ClientLayout data={user}>
-      <div className=" sidebar">
+      <div className="sidebar">
         <Sidebar />
       </div>
       <div className="main-content">
