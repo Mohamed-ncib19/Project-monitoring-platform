@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useNotifications } from 'reapop';
 
 import { LoginSchema } from '@/app/(auth)/_schemas/auth.schema';
 import CoreButton from '@/components/buttons/CoreButton';
@@ -13,6 +14,7 @@ export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
   const { push } = useRouter();
   const { data } = useSession();
+  const { notify } = useNotifications();
 
   useEffect(() => {
     if (data?.status === 'pending') {
@@ -39,12 +41,17 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
-      if (JSON.parse(response.error)?.status === 422) {
+
+      const error = JSON.parse(response.error);
+
+      if (error?.status === 422) {
         push(`/?username=${data.username}`);
         return;
       }
-      if (JSON.parse(response.error)?.status !== 200) {
+
+      if (error && error.status !== 200) {
         setIsValid(false);
+        notify({ message: 'User not Found', status: 'danger' });
       }
     } catch (error) {
       if (error.response.status === 422) {
@@ -70,7 +77,6 @@ export const LoginForm = () => {
         >
           <CoreInput
             name="username"
-            type="text"
             placeholder="LDAP Username"
             errors={errors}
             register={register}
@@ -85,7 +91,7 @@ export const LoginForm = () => {
               <p>Login failed. Please verify if your account exists in LDAP</p>
             </div>
           )}
-          <CoreButton type="submit" label={'Log in'} />
+          <CoreButton type="submit" label="Log in" />
         </form>
       </FormProvider>
     </>

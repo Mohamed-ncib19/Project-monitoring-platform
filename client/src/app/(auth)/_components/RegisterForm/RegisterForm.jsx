@@ -1,78 +1,47 @@
 import { useRouter } from 'next/navigation';
-import { FormProvider, useForm,Controller } from 'react-hook-form';
+import axios from 'axios';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNotifications } from 'reapop';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
-
 import CoreButton from '@/components/buttons/CoreButton';
-import { yupResolver } from '@hookform/resolvers/yup';
 import CoreInput from '@/components/Inputs/CoreInput';
-import axios from 'axios';
-import { getSession } from 'next-auth/react';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export const RegisterForm = async ({ userName }) => {
-
   const { push } = useRouter();
+  const { notify } = useNotifications();
 
-  
   const form = useForm({
     resolver: yupResolver(RegisterSchema),
   });
 
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
   } = form;
 
-
-
-const api = {
-
-  async Register (userData) {
-    try {
-      const res = await axios.post(`/register`, userData);
-     return Promise.resolve({
-      ok:true,
-      data:res.data
-     });
-    } catch (error) {
-      return Promise.reject({ ok: false, msg: error })
-    }
-  }
-}
-
   const onSubmit = async (data) => {
     try {
-      const res = await api.Register(
-        {
-          username: userName,
-          firstname: data.firstname,
-          lastname: data.lastname,
-          bio: '',
-          phone: data.phoneNumber,
-          email: data.email,
-        },
-      );
-      
-      if(!res.ok){
-      if(res.msg.response.status === 500){
-        alert('server error')
+      const res = await axios.post('/register', {
+        username: userName,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        bio: '',
+        phone: data.phoneNumber,
+        email: data.email,
+      });
+
+      if (res.data.status === 'pending') {
+        push('/pending');
       }
-      
-      if(res.msg.response.status === 403){
-        alert('user already exist') 
-      }
-      return;
-    }
-      if(res.data.status === 'pending'  ){
-        console.log(res)
-        
-        push('/');
-      }
-      
     } catch (error) {
-      console.error('Error creating new user:', error);
+      if (error.response.status === 403) {
+        notify({ message: 'User already exist', status: 'warning' });
+        return;
+      }
+      notify({ message: 'Error creating new user', status: 'danger' });
     }
   };
 
@@ -93,62 +62,35 @@ const api = {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center gap-5 pt-5">
-              <Controller
-              name='firstname'
-              control={control}
-              render={({field})=>(
-                <CoreInput
-                field={field}
+              <CoreInput
                 name="firstname"
+                placeholder="Firstname"
                 errors={errors}
-                placeholder={'Firstname'}
-                type={'text'}
-              />
-              )}
+                register={register}
               />
 
-            <Controller
-              name='lastname'
-              control={control}
-              render={({field})=>(
-                <CoreInput
-                field={field}
+              <CoreInput
                 name="lastname"
+                placeholder="Lastname"
                 errors={errors}
-                placeholder={'Lastname'}
-                type={'text'}
-              />
-              )}
+                register={register}
               />
             </div>
-            <Controller
-              name='phoneNumber'
-              control={control}
-              render={({field})=>(
-                <CoreInput
-                field={field}
-                name="phoneNumber"
-                errors={errors}
-                placeholder={'Phone number'}
-                type={'text'}
-              />
-              )}
-              />
-            <Controller
-              name='email'
-              control={control}
-              render={({field})=>(
-                <CoreInput
-                field={field}
-                name="email"
-                errors={errors}
-                placeholder={'email'}
-                type={'text'}
-              />
-              )}
-              />
+            <CoreInput
+              name="phoneNumber"
+              placeholder="Phone number"
+              errors={errors}
+              register={register}
+            />
+            <CoreInput
+              name="email"
+              placeholder="email"
+              type="email"
+              errors={errors}
+              register={register}
+            />
 
-           { <CoreButton type="submit" label={'Submit'} />}
+            <CoreButton type="submit" label="Submit" />
           </form>
         </FormProvider>
       </div>
