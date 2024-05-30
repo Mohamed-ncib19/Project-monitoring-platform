@@ -1,8 +1,8 @@
 import clx from 'clsx';
 
-import DangerCheck from '@/../public/icons/danger-check-icon';
-import SuccessIcon from '@/../public/icons/success-check-icon';
-import WarningIcon from '@/../public/icons/warning-check-icon';
+import DangerCheck from '../../../public/icons/toast/danger-check-icon';
+import SuccessIcon from '../../../public/icons/toast/success-check-icon';
+import WarningIcon from '../../../public/icons/toast/warning-check-icon';
 
 const Toast = ({ notification, dismissNotification }) => {
   let renderIcon;

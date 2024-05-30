@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { cloneElement, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 export const ToggleDropdown = ({
@@ -34,7 +34,7 @@ export const ToggleDropdown = ({
   }, [isOpen]);
 
   const renderedButton =
-    button && React.cloneElement(button, { onClick: toggleDropdown });
+    button && cloneElement(button, { onClick: toggleDropdown });
   const renderedItems =
     items && items.length > 0
       ? items.map((item, index) => {

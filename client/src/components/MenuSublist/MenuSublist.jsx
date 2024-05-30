@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-import ArrowIcons from '@/../public/icons/arrows/arrow-icon';
-
+import ArrowDownIcon from '@/../public/icons/arrows/arrow-down-icon';
+import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
 
 export const MenuSublist = ({ Icon, text, isOpen, setIsOpen, list }) => {
   const [isOpenSublist, setIsOpenSublist] = useState(false);
@@ -32,9 +32,9 @@ export const MenuSublist = ({ Icon, text, isOpen, setIsOpen, list }) => {
         <>
           {isOpen ? (
             !isOpenSublist ? (
-              <ArrowIcons.ArrowRightIcon />
+              <ArrowRightIcon />
             ) : (
-              <ArrowIcons.ArrowDownIcon />
+              <ArrowDownIcon />
             )
           ) : null}
         </>
