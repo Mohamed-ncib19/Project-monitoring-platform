@@ -1,7 +1,7 @@
-const Authroutes = require("./auth/routes/authRoutes");
-const userRoutes = require("./users/routes/userRoutes");
-const projectRoutes = require("./project/routes/projectRoutes");
-const porfolioRoutes = require("./porfolio/routes/porfolioRoutes");
+const Authroutes = require("./core/modules/auth/routes/auth.routes");
+const userRoutes = require("./core/modules/users/routes/user.routes");
+const projectRoutes = require("./core/modules/project/routes/project.routes");
+const porfolioRoutes = require("./core/modules/porfolio//routes/porfolio.routes");
 
 const {
   swaggerDescription,
@@ -17,7 +17,6 @@ require("dotenv").config();
 fastify.register(require("@fastify/cors"), {
   origin: true,
   methods: ["POST", "GET", "PUT", "DELETE"],
-  //try
 });
 
 fastify.register(require("@fastify/swagger"), swaggerDescription);
