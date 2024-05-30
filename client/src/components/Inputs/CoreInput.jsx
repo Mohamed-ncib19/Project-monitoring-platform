@@ -3,7 +3,7 @@ const CoreInput = ({
   errors,
   placeholder,
   name,
-  type,
+  type = 'text' ,
   readOnly,
 }) => {
  

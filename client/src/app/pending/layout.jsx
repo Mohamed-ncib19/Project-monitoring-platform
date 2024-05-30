@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 const Layout = async ({ children }) => {
 
   const user = await getServerSession(authOptions);
-  console.log(user);
   if (!user) redirect('/');
   if (user.status === 'approved') redirect('/dashboard');
 

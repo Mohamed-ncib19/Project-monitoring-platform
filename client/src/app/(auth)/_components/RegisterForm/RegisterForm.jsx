@@ -63,7 +63,6 @@ export const RegisterForm = async ({ userName }) => {
         return;
       }
         if(res.data.status === 'pending'  ){
-          console.log(res)
           
           push('/pending');
         }

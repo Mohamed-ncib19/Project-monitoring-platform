@@ -35,9 +35,13 @@ const getMe = async (token) => {
 
 const refreshAccessToken = async (token) => {
   try {
-    const { data } = await axios.post(`${endPoint}/refresh_token`, {
-      refreshToken: token.refreshToken?.token,
+    console.log(token)
+    const { data } = await axios.post(`/refresh_token`, {
+      refreshToken: token.refreshToken,
     });
+
+    console.log(data)
+    
     return {
       ...token,
       accessToken: data.accessToken,
@@ -57,6 +61,7 @@ export const authOptions = {
         try {
           const { username, password } = credentials;
           const user = await authenticate(username, password);
+          console.log(user)
           return Promise.resolve(user);
         } catch (e) {
           return Promise.reject(new Error(e.message));
@@ -79,11 +84,31 @@ export const authOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }) {
+      console.log(user)
+
+      console.log(account)
+
+      console.log(profile)
       return true;
-    },
+    },  
 
     async jwt({ token, user, account, trigger }) {
+    
+    
+      console.log(token)
+
+
+      console.log(user)
+
+
+      console.log(account)
+
+
+      console.log(trigger)
+
       if (trigger === 'update') {
+        console.log('triggred')
+        
         if (Date.now() < new Date(token.accessToken?.expiresAt)?.getTime()) {
           token = await refreshAccessToken(token);
         }
