@@ -2,23 +2,20 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const userServices = require("../services/userServices");
-const ldapServices = require("../../ldap/services/ldapServies");
+const ldapServices = require("../../ldap/services/ldapServices");
 const userController = {
   async getUser(request, reply) {
     try {
       const { username } = request.params;
       const response = await userServices.userExists(username);
       if (response.ok) {
-        return reply.status(200).send({ error: null, data: response.user });
+        return reply.status(200).send({ user: response.user });
       } else {
-        return reply
-          .status(404)
-          .send({ error: { message: "User not found" }, data: null });
+        return reply.status(404).send({ error: { message: "User not found" } });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -27,16 +24,15 @@ const userController = {
       const { username } = request.user;
       const response = await userServices.userExists(username);
       if (response.ok) {
-        return reply.status(200).send({ error: null, data: response.user });
+        return reply.status(httpStatus.OK).send({ user: response.user });
       } else {
         return reply
-          .status(404)
-          .send({ error: { message: "User not found" }, data: null });
+          .status(httpStatus.NOT_FOUND)
+          .send({ error: { message: "User not found" } });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -54,12 +50,11 @@ const userController = {
           : false;
       response = await userServices.getUsers(status);
 
-      console.log(response);
       if (response.ok) {
-        return reply.status(200).send({ users: response.users });
+        return reply.status(httpStatus.OK).send({ users: response.users });
       } else {
         return reply
-          .status(404)
+          .status(httpStatus.NOT_FOUND)
           .send({ error: { message: "Users not found" } });
       }
     } catch (error) {
@@ -74,18 +69,17 @@ const userController = {
       const userUpdates = request.body;
       const response = await userServices.setUpUser(username, userUpdates);
       if (!response.ok) {
-        return reply.status(404).send({
+        return reply.status(httpStatus.NOT_FOUND).send({
           message: "Failed to setup user account",
         });
       } else {
-        return reply.status(200).send({
+        return reply.status(httpStatus.OK).send({
           message: "Account setted up successfuly",
         });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -95,20 +89,17 @@ const userController = {
       const updates = request.body;
       const response = await userServices.updateProfile(username, updates);
       if (!response.ok) {
-        return reply.status(404).send({
+        return reply.status(httpStatus.NOT_FOUND).send({
           error: { message: "Failed to Update user informations" },
-          data: null,
         });
       } else {
-        return reply.status(200).send({
-          error: null,
-          data: { message: "Informations updated successfuly" },
+        return reply.status(httpStatus.OK).send({
+          message: "Informations updated successfuly",
         });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -129,7 +120,7 @@ const userController = {
         });
       } else {
         return reply.status(httpStatus.OK).send({
-          error: { message: "User banned successfuly" },
+          message: "User banned successfuly",
         });
       }
     } catch (error) {
@@ -155,7 +146,7 @@ const userController = {
         });
       } else {
         return reply.status(httpStatus.OK).send({
-          error: { message: "User Restored successfuly" },
+          message: "User Restored successfuly",
         });
       }
     } catch (error) {

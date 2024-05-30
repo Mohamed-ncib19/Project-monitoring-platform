@@ -4,7 +4,7 @@ const registrationService = require("../services/registrationService");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../services/generateJWT");
 const userService = require("../../users/services/userServices");
-const ldapServices = require("../../ldap/services/ldapServies");
+const ldapServices = require("../../ldap/services/ldapServices");
 require("dotenv").config();
 
 const authController = {
@@ -48,6 +48,7 @@ const authController = {
         status: response.status,
       });
     } catch (error) {
+      console.error(`Error in login method: ${error.message}`);
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
       });

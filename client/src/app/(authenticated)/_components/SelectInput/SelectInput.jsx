@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Select } from 'semantic-ui-react';
-
 import 'semantic-ui-css/semantic.min.css';
 
 export const SelectInput = ({
@@ -10,9 +9,15 @@ export const SelectInput = ({
   name,
   placeholder,
   disabled,
-  search
+  search,
+  defaultValue,
 }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState(defaultValue || '');
+
+  useEffect(() => {
+    setSelectedOptions(defaultValue);
+  }, [defaultValue]);
+
   const handleChange = (_, data) => {
     setSelectedOptions(data.value);
     field.onChange(data.value);

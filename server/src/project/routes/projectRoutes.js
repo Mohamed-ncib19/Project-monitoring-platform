@@ -1,14 +1,12 @@
 require("dotenv").config();
-const projectsController = require("../controllers/projectsController");
+const projectController = require("../controllers/projectController");
 
 async function routes(fastify, options) {
   //Create project
-  fastify.post("/projects", projectsController.createProject);
-
+  fastify.post("/projects", projectController.createProject);
   //Get projects
-  fastify.get("/projects", projectsController.getProjects);
+  fastify.get("/projects", projectController.getProjects);
 
-  
   fastify.post("/webhook", async (request, reply) => {
     try {
       // Process the webhook payload

@@ -2,7 +2,7 @@ const ldap = require("ldapjs");
 const { generateToken, generateRefreshToken } = require("./generateJWT");
 const userServices = require("../../users/services/userServices");
 const httpStatus = require("http-status");
-const ldapServices = require("../../ldap/services/ldapServies");
+const ldapServices = require("../../ldap/services/ldapServices");
 async function loginService(username, password) {
   try {
     const userBind = await ldapServices.bindUser(username, password);

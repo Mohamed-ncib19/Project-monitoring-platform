@@ -1,6 +1,8 @@
 const Authroutes = require("./auth/routes/authRoutes");
 const userRoutes = require("./users/routes/userRoutes");
-const projectRoutes = require("./project/routes/projectsRoutes");
+const projectRoutes = require("./project/routes/projectRoutes");
+const porfolioRoutes = require("./porfolio/routes/porfolioRoutes");
+
 const {
   swaggerDescription,
   swaggerUiDescription,
@@ -14,7 +16,8 @@ require("dotenv").config();
 
 fastify.register(require("@fastify/cors"), {
   origin: true,
-  methods: ["POST", "GET", "PUT"],
+  methods: ["POST", "GET", "PUT", "DELETE"],
+  //try
 });
 
 fastify.register(require("@fastify/swagger"), swaggerDescription);
@@ -27,10 +30,12 @@ fastify.register(userRoutes);
 
 fastify.register(projectRoutes);
 
+fastify.register(porfolioRoutes);
+
 const PORT = process.env.PORT;
 
 async function start() {
-  fastify.listen({ port: PORT, host: "0.0.0.0" });
+  fastify.listen({ port: PORT, host: "127.0.0.1" });
 }
 
 start();

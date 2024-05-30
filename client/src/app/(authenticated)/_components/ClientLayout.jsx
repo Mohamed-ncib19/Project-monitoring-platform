@@ -8,14 +8,17 @@ const ClientLayout = ({ children, data }) => {
   const session = useSession();
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
-      Authorization: `Bearer ${data?.accessToken?.token}`,
+      Authorization: `${data?.accessToken}`,
     };
+
+
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {
         const originalConfig = err.config;
-        if (err.response?.status === 401 && !originalConfig._retry) {
+        console.log(originalConfig);
+        if (err.response?.status === 401 && originalConfig._retry) {
           originalConfig._retry = true;
           const newSession = await session.update();
           if (newSession?.error) {
@@ -24,7 +27,7 @@ const ClientLayout = ({ children, data }) => {
             originalConfig.headers['Authorization'] =
               `Bearer ${newSession?.accessToken?.token}`;
             axios.defaults.headers.common = {
-              Authorization: `Bearer ${newSession?.accessToken?.token}`,
+              Authorization: `Bearer ${newSessfhVyUoG-I-yRkUS0Jr801nL3i4GpqHQqVUv4IUAaMsion?.accessToken?.token}`,
             };
             return axios(originalConfig);
           }

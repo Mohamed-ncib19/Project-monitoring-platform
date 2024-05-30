@@ -2,24 +2,24 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const projectServices = require("../services/projectServices");
-const projectsController = {
+const projectController = {
   async createProject(request, reply) {
     try {
       const projectData = request.body;
       const response = await projectServices.projectExists(projectData.name);
       if (!response.exists) {
-        const response = await projectsService.createProject(projectData);
-        return reply.status(200).send({ error: null, data: response.project });
+        const response = await projectServices.createProject(projectData);
+        return reply
+          .status(httpStatus.OK)
+          .send({ message: "Project created successfuly" });
       } else {
         return reply.status(httpStatus.CONFLICT).send({
           error: { message: "project name already taken" },
-          data: null,
         });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         error: { message: "Internal server error", details: error.message },
-        data: null,
       });
     }
   },
@@ -108,4 +108,4 @@ const projectsController = {
   },
 };
 
-module.exports = projectsController;
+module.exports = projectController;

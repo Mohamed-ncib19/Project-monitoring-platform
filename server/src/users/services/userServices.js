@@ -7,7 +7,6 @@ const userServices = {
     try {
       const userModel = await UserModel();
       const user = await userModel.findOne({ username: username });
-      console.log(user);
       if (user) {
         return { ok: true, exists: true, user: user };
       }
@@ -53,25 +52,6 @@ const userServices = {
     } catch (error) {
       console.error("Error getting users:", error);
       return { ok: false, status: httpStatus.NOT_FOUND };
-    }
-  },
-
-  async approve(id) {
-    try {
-      const userModel = await UserModel();
-      const result = await userModel.updateOne(
-        { username: id },
-        {
-          $set: {
-            status: "approved",
-            active: true,
-          },
-        }
-      );
-      if (result.acknowledged) return { ok: true, status: httpStatus.CREATED };
-    } catch (error) {
-      console.error("Error updating status:", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
     }
   },
 
@@ -157,13 +137,12 @@ const userServices = {
       }
     } catch (error) {
       console.error("Error Deleting request / user", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
+      return { ok: false };
     }
   },
   async restoreUser(username, type) {
     try {
       const userModel = await UserModel();
-
       const updateField =
         type === "request"
           ? { status: "pending" }
@@ -180,7 +159,7 @@ const userServices = {
       }
     } catch (error) {
       console.error("Error Restoring user", error);
-      return { ok: false, status: httpStatus.NOT_MODIFIED };
+      return { ok: false };
     }
   },
 };

@@ -13,19 +13,41 @@ import AddModal from '@/app/(authenticated)/permissions/_components/modals/AddMo
 import EditModal from '@/app/(authenticated)/permissions/_components/modals/EditModal';
 import { AddForm } from './_components/AddForm';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import ConfirmModal from '@/components/modals/ConfirmModal';
+import { useRouter } from 'next/navigation';
+
+import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
+import usersNotFound from '@/../../public/images/users-not-found.png';
+import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
+import Image from 'next/image';
+
 
 const Permissions = () => {
+  const router = useRouter();
+
   const [users, setUsers] = useState([]);
   const [userRequests, setUserRequests] = useState([]);
   const [bannedUsers, setBannedUsers] = useState([]);
+
   const [activeTab, setActiveTab] = useState('requests');
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [isDesactivateModalOpen, setIsDesactivateModalOpen] = useState(false);
+
+  const [isRestoreModalOpen,setIsRestoreModalOpen] = useState(false);
+
+
+const [restoreType,setRestoreType] = useState(null);
+
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [setupSubmitForm, setSetupSubmitForm] = useState(null);
-  const [editSubmitForm,setEditSubmitForm] = useState(null);
+  const [editSubmitForm, setEditSubmitForm] = useState(null);
 
   const handleClose = () => setIsModalOpen(false);
   const handleShow = (user) => {
@@ -33,11 +55,39 @@ const Permissions = () => {
     setIsModalOpen(true);
   };
 
+  const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
+  const handleShowDeleteModal = (user) => {
+    setIsDeleteModalOpen(true);
+    setSelectedUser(user);
+  };
+
+  const handleCloseDesactivateModal = () => setIsDesactivateModalOpen(false);
+  const handleShowDesactivateModal = (user) => {
+    setIsDesactivateModalOpen(true);
+    setSelectedUser(user)
+  }
+
   const handleCloseEditModal = () => setIsEditModalOpen(false);
   const handleEditShow = (user) => {
     setSelectedUser(user);
     setIsEditModalOpen(true);
   };
+
+  
+  const handleCloseRestoreModal = () => setIsRestoreModalOpen(false);
+  const handleRestoreShow = (user) => {
+    setRestoreType(
+      user.role != undefined ? 'account'
+      :'request'
+    )
+    setSelectedUser(user);
+    setIsRestoreModalOpen(true);
+  };
+
+  const handleRestoreMethod = () => {
+    return restoreType === 'account' ? handleRestoreUser : handleRestoreRequest;
+  };
+  
 
   const api = {
     async getPendingUsers() {
@@ -83,30 +133,82 @@ const Permissions = () => {
         );
       }
     },
-    async setupUser(username,data){
+    async setupUser(username, data) {
       try {
-        const response = await axios.put(`/users/${username}`,data);
-        console.log(response)
-        return response.data
+        const response = await axios.put(`/users/${username}`, data);
+        return response.data;
       } catch (error) {
         return Promise.reject({
-          ok:false,
-          status:500,
-          msg:'internal server'
-        })
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
       }
     },
-    async editUser(username,data){
+    async editUser(username, data) {
       try {
-        const response = await axios.put(`/users/${username}`,data);
-        console.log(response)
-        return response.data
+        const response = await axios.put(`/users/${username}`, data);
+        return response.data;
       } catch (error) {
         return Promise.reject({
-          ok:false,
-          status:500,
-          msg:'internal server'
-        })
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
+      }
+    },
+
+    async deleteUser(username) {
+      try {
+        const response = await axios.delete(
+          `/users/${username}/ban?type=request`,
+        );
+        return response.data;
+      } catch (error) {
+        return Promise.reject({
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
+      }
+    },
+
+    async desactivateUser(username) {
+      try {
+        const response = await axios.delete(`/users/${username}/ban?type=user`);
+        return response.data;
+      } catch (error) {
+        return Promise.reject({
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
+      }
+    },
+
+    async restoreRequest(username) {
+      try {
+        const response = await axios.put(`/users/${username}/restore?type=request`);
+        return response.data;
+      } catch (error) {
+        return Promise.reject({
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
+      }
+    },
+
+    async restoreUser(username) {
+      try {
+        const response = await axios.put(`/users/${username}/restore?type=user`);
+        return response.data;
+      } catch (error) {
+        return Promise.reject({
+          ok: false,
+          status: 500,
+          msg: 'internal server',
+        });
       }
     },
 
@@ -185,7 +287,7 @@ const Permissions = () => {
                 },
                 {
                   content: 'Delete',
-                  onclick: () => console.log('deleted'),
+                  onclick: () => handleShowDeleteModal(row.original),
                 },
               ]}
               lastItemDivide={false}
@@ -302,7 +404,7 @@ const Permissions = () => {
               },
               {
                 content: 'Deactivate',
-                onclick: () => console.log('deleted'),
+                onclick: () => handleShowDesactivateModal(row.original),
               },
             ]}
             lastItemDivide={false}
@@ -371,11 +473,11 @@ const Permissions = () => {
         return (
           <div
             className={`${
-              row.original.role === 'manager'
+              row.original.role === 'Manager'
                 ? 'bg-danger col-11 m-auto '
                 : row.original.role === 'Team lead'
                   ? 'tl col-9 m-auto'
-                  : row.original.role === 'Developer'
+                  : row.original.role === 'Team member'
                     ? 'dev col-10 m-auto '
                     : ''
             }
@@ -415,7 +517,9 @@ const Permissions = () => {
             items={[
               {
                 content: 'Restore account',
-                onclick: () => console.log('Restored'),
+                onclick: () =>{
+                  handleRestoreShow(row.original)
+                },
               },
             ]}
             lastItemDivide={false}
@@ -425,28 +529,89 @@ const Permissions = () => {
     },
   ]);
 
-
-
-
- 
-
   const handleSetup = async (formData) => {
-    if(setupSubmitForm) await setupSubmitForm();
-    console.log(formData.data);
-    console.log(formData.username);
-    
+    if (setupSubmitForm) await setupSubmitForm();
+
     const response = await api.setupUser(formData.username, formData.data);
-     console.log(response);
+    if(response.message === 'Account setted up successfuly'){
+      setIsModalOpen(false);
+      router.refresh();
+    }else{
+      alert('setp failed');
+    }
   };
 
-  const handleEdit = async (formData) =>{
-    if(editSubmitForm) await editSubmitForm();
-    console.log(formData.data);
+  const handleEdit = async (formData) => {
+    if (editSubmitForm) await editSubmitForm();
     const response = await api.editUser(formData.username, formData.data);
-    console.log(response);
+    if(response.message === 'Account setted up successfuly'){
+      setIsEditModalOpen(false);
+      router.refresh();
+    }else{
+      alert('setp failed');
+    }
+  };
 
-  }
-  
+  const handleDelete = async (username) => {
+    if (username) {
+      try {
+        const response = await api.deleteUser(username);
+        if(response.message === 'User banned successfuly'){
+          setActiveTab('bannedUsers')
+        }else{
+          alert('failed to delete request')
+        }
+      } catch (error) {
+        alert('internal server');
+      }
+    }
+  };
+
+  const handleDesactivate = async (username) => {
+    console.log(username)
+    if (username) {
+      try {
+        const response = await api.desactivateUser(username);
+        if(response.message === 'User banned successfuly'){
+          setActiveTab('bannedUsers');
+        }else{
+          alert('failed to desavtivate user')
+        }
+      } catch (error) {
+        alert('internal server');
+      }
+    }
+  };
+
+  const handleRestoreRequest = async (username) => {
+    if (username) {
+      try {
+        const response = await api.restoreRequest(username);
+        if(response.message === 'User Restored successfuly'){
+          setActiveTab('requests')
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleRestoreUser = async (username) => {
+    console.log(username)
+    if (username) {
+      try {
+        console.log(username);
+        const response = await api.restoreUser(username);
+        if(response.message === 'User Restored successfuly'){
+          setActiveTab('users')
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+
   return (
     <>
       <div className="pb-4">
@@ -483,37 +648,87 @@ const Permissions = () => {
         </button>
       </div>
 
-<>
-      {activeTab === 'requests' && (
-        userRequests.length > 0 ? ( 
-        <DataTable columns={Requestcolumns} data={userRequests} />
-      ):(
-        <p className=' text-center fs-2 text-muted' >no requests</p>
-      )
-      )}
-      {activeTab === 'users' && (
-        users.length > 0 ? ( 
-          <DataTable columns={UsersColumns} data={users} />
-        ):(
-          <p className=' text-center fs-2 text-muted' >no users</p>
-        )
-      )}
-      {activeTab === 'bannedUsers' && (
- bannedUsers.length > 0 ? ( 
-  <DataTable columns={BannedUsersColumns} data={bannedUsers} />
-):(
-  <p className=' text-center fs-2 text-muted' >no banned users</p>
-)      )}
-</>
-    <AddModal
-      headerTitle={'Setup account'}
-      show={isModalOpen}
-      handleClose={handleClose}
-      buttonLabel={'Save'}
-      handleSubmit={handleSetup}
-    >
-      <AddForm user={selectedUser} handleSubmitForm={handleSetup} setSubmitCallback={setSetupSubmitForm} />
-    </AddModal>
+      <>
+        {activeTab === 'requests' &&
+          (userRequests.length > 0 ? (
+            <DataTable columns={Requestcolumns} data={userRequests} />
+          ) : (
+            <div className='m-auto d-flex flex-column justify-content-center align-items-center'>
+            <Image
+              src={requestsNotFound}
+              alt='Not Found'
+              loading='lazy'
+              width={600}
+              placeholder='blur'
+              quality={80}
+
+            />
+            <p className='text-center fs-1 fw-bold text-muted'>No requests found</p>
+          </div>
+            ))}
+        {activeTab === 'users' &&
+          (users.length > 0 ? (
+            <DataTable columns={UsersColumns} data={users} />
+          ) : (
+            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+            <Image
+            src={usersNotFound}
+            alt='Not Found'
+            loading='lazy'
+            width={600}
+            placeholder='blur'
+            
+            />
+          <p className=" text-center fs-1 fw-bold text-muted">no users found</p>
+          </div>  
+         ))}
+        {activeTab === 'bannedUsers' &&
+          (bannedUsers.length > 0 ? (
+            <DataTable columns={BannedUsersColumns} data={bannedUsers} />
+          ) : (
+            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+              <Image
+              src={bannedUsersNotFound}
+              alt='Not Found'
+              loading='lazy'
+              width={600}
+              placeholder='blur'
+              
+              />
+            <p className=" text-center fs-1 fw-bold text-muted">no banned users found</p>
+            </div>  
+          ))}
+      </>
+      <AddModal
+        headerTitle="Setup account"
+        show={isModalOpen}
+        handleClose={handleClose}
+        buttonLabel={'Save'}
+        handleSubmit={handleSetup}
+      >
+        <AddForm
+          user={selectedUser}
+          handleSubmitForm={handleSetup}
+          setSubmitCallback={setSetupSubmitForm}
+        />
+      </AddModal>
+
+      <ConfirmModal
+        headerTitle="Delete request"
+        username={selectedUser?.username}
+        show={isDeleteModalOpen}
+        handleClose={handleCloseDeleteModal}
+        handleSave={handleDelete}
+      >
+        <div className="text-muted fs-5 m-auto px-3">
+          <p>Are you sure you want to delete this request?</p>
+          <p>You can undo in the banned list</p>
+        </div>
+      </ConfirmModal>
+
+
+
+
 
 
       <EditModal
@@ -521,10 +736,47 @@ const Permissions = () => {
         buttonLabel={'Save'}
         show={isEditModalOpen}
         handleClose={handleCloseEditModal}
+        user={selectedUser}
         handleSubmit={handleEdit}
       >
-        <EditForm user={selectedUser} handleSubmitForm={handleEdit} setSubmitCallback={setEditSubmitForm} />
+        <EditForm
+          user={selectedUser}
+          handleSubmitForm={handleEdit}
+          setSubmitCallback={setEditSubmitForm}
+        />
       </EditModal>
+
+      <ConfirmModal
+        headerTitle="Deactivate acount"
+        username={selectedUser?.username}
+        show={isDesactivateModalOpen}
+        handleClose={handleCloseDesactivateModal}
+        handleSave={handleDesactivate}
+      >
+        <div className="text-muted fs-5 m-auto px-3">
+          <p>Are you sure you want to deactivate this account ? </p>
+          <p>You can undo in the banned list</p>
+        </div>
+      </ConfirmModal>
+
+
+
+   <ConfirmModal
+  headerTitle={`Deactivate ${restoreType}`}
+  username={selectedUser?.username}
+  show={isRestoreModalOpen}
+  handleClose={handleCloseRestoreModal}
+  handleSave={() => handleRestoreMethod()(selectedUser?.username)}
+>
+  <div className="text-muted fs-5 m-auto px-3">
+    <p>Are you sure you want to re-activate this {restoreType}?</p>
+  </div>
+</ConfirmModal>
+
+
+
+
+
     </>
   );
 };

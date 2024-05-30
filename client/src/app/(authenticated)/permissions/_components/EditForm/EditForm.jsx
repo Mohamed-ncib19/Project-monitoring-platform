@@ -6,7 +6,6 @@ import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
 import { SetupSchema } from '../../_schemas/permission.schema';
 
 export const EditForm = ({ user, handleSubmitForm, setSubmitCallback }) => {
-  console.log(user)
   const methods = useForm({
     resolver: yupResolver(SetupSchema),
     defaultValues: {
@@ -24,7 +23,6 @@ export const EditForm = ({ user, handleSubmitForm, setSubmitCallback }) => {
 
   const onSubmitFormData = async (data) => {
     try {
-      console.log("Form Data in AddForm:", data);
       if (handleSubmitForm) {
         await handleSubmitForm({username:user.username,data:data});
       }
@@ -116,6 +114,7 @@ export const EditForm = ({ user, handleSubmitForm, setSubmitCallback }) => {
                   placeholder="Business Position"
                   errors={errors}
                   search={true}
+                  defaultValue={user?.businessPosition}
                   content={[
                     { text: 'Frontend Developer', value: 'frontDev' },
                     { text: 'Backend Developer', value: 'backDev' },
@@ -156,11 +155,13 @@ export const EditForm = ({ user, handleSubmitForm, setSubmitCallback }) => {
           <Controller
             name="role"
             control={control}
+            defaultValue={user?.role}
             render={({ field }) => (
               <SelectInput
                 field={field}
                 placeholder="Role"
                 errors={errors}
+                defaultValue={user?.role}
                 search={true}
                 content={[
                   { text: 'Manager', value: 'Manager' },

@@ -1,4 +1,4 @@
-const CoreButton = ({
+const   CoreButton = ({
   label,
   type,
   onClick,
