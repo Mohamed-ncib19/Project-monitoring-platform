@@ -125,6 +125,7 @@ export const authOptions = {
         token.profile = {
           ...user.profile,
         };
+        token.status = user.status;
       }
 
       if (Date.now() < new Date(token.exp)?.getTime()) {
@@ -141,6 +142,7 @@ export const authOptions = {
       session.profile = {
         ...token.profile,
       };
+      session.status = token.status;
       return session;
     },
   },

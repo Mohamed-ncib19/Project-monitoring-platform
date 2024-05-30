@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
-import ArrowIcons from '@/../public/icons/arrows/arrow-icon';
+import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
 import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 import EmptyProgramSVG from '@/../public/icons/empty-program';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown/Dropdown';
+import { PortfolioHeader } from '@/app/(authenticated)/_components/PortfolioHeader';
 import { getPrograms } from '@/app/api/routes/routesEndpoints';
 import Loading from '@/app/loading';
 import CoreButton from '@/components/buttons/CoreButton';
-import ToggleDropdown from '@/app/(authenticated)/_components/Dropdown/Dropdown';
-import { PortfolioHeader } from '@/app/(authenticated)/_components/PortfolioHeader';
 
 const Programs = () => {
   const [programs, setPrograms] = useState([]);
@@ -113,7 +113,7 @@ const Programs = () => {
                     p
                     className=" check-products align-self-end border-0 rounded-circle px-1 py-1 fs-4  text-dark-gray"
                   >
-                    <ArrowIcons.ArrowRightIcon />
+                    <ArrowRightIcon />
                   </Link>
                 </div>
               ))

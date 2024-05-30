@@ -1,17 +1,16 @@
 .focus-blue-bottom-border {
     border: 2px solid #dce1e7;
   }
-  
+
   .focus-blue-bottom-border:focus {
     border-color: #dce1e7;
     border-bottom-color: #000000;
     outline: none;
   }
-  
+
   .form-control:focus {
     box-shadow: none;
   }
   .read-only-input{
     background-color: #ededed;
    }
- 

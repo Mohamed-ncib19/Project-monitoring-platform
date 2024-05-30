@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePagination, useSortBy, useTable } from 'react-table';
 
-import ArrowIcons from '@/../public/icons/arrows/arrow-icon';
+import ArrowLeftIcon from '@/../public/icons/arrows/arrow-left-icon';
+import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
 
 const DataTable = ({
   columns,
@@ -142,7 +143,7 @@ const DataTable = ({
               onClick={() => previousPage()}
               disabled={!canPreviousPage}
             >
-              <ArrowIcons.ArrowLeftIcon />
+              <ArrowLeftIcon />
             </button>
 
             <div className="mx-2">{pageButtons.length}</div>
@@ -152,7 +153,7 @@ const DataTable = ({
               onClick={() => nextPage()}
               disabled={!canNextPage}
             >
-              <ArrowIcons.ArrowRightIcon />
+              <ArrowRightIcon />
             </button>
           </div>
         </div>
