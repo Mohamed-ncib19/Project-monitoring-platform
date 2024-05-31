@@ -531,15 +531,22 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleSetup = async (formData) => {
     if (setupSubmitForm) await setupSubmitForm();
-
-    const response = await api.setupUser(formData.username, formData.data);
-    if(response.message === 'Account setted up successfuly'){
-      setIsModalOpen(false);
-      router.refresh();
-    }else{
-      alert('setp failed');
+  
+    console.log(formData)
+    try {
+      const response = await api.setupUser(formData.username, formData.data);
+      if (response.message === 'Account setted up successfuly') {
+        setIsModalOpen(false);
+        router.refresh();
+      } else {
+        alert('Setup failed');
+      }
+    } catch (error) {
+      console.error('API error:', error);
+      alert('Setup failed due to an API error');
     }
   };
+  
 
   const handleEdit = async (formData) => {
     if (editSubmitForm) await editSubmitForm();

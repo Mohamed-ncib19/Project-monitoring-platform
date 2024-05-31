@@ -35,8 +35,7 @@ const getMe = async (token) => {
 
 const refreshAccessToken = async (token) => {
   try {
-    console.log(token)
-    const { data } = await axios.post(`/refresh_token`, {
+    const  { data } = await axios.post(`${endPoint}/refresh_token`, {
       refreshToken: token.refreshToken,
     });
 
@@ -61,7 +60,6 @@ export const authOptions = {
         try {
           const { username, password } = credentials;
           const user = await authenticate(username, password);
-          console.log(user)
           return Promise.resolve(user);
         } catch (e) {
           return Promise.reject(new Error(e.message));
@@ -84,36 +82,21 @@ export const authOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log(user)
-
-      console.log(account)
-
-      console.log(profile)
       return true;
     },  
 
     async jwt({ token, user, account, trigger }) {
     
-    
-      console.log(token)
-
-
-      console.log(user)
-
-
-      console.log(account)
-
-
-      console.log(trigger)
-
+  console.log(token)
       if (trigger === 'update') {
-        console.log('triggred')
-        
+        console.log(trigger)
         if (Date.now() < new Date(token.accessToken?.expiresAt)?.getTime()) {
           token = await refreshAccessToken(token);
+          console.log(token)
         }
         try {
           const data = await getMe(token?.accessToken);
+          console.log(data)
           token.username = user.username;
           token.email = data?.email.address;
         } catch (e) {}
@@ -128,6 +111,7 @@ export const authOptions = {
         token.status = user.status;
       }
 
+      
       if (Date.now() < new Date(token.exp)?.getTime()) {
         return token;
       }

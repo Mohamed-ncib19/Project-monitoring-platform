@@ -1,10 +1,11 @@
 'use client';
-import Image from 'next/image';
+
 import { signOut } from 'next-auth/react';
 
-import { CheckIcon } from '@/../../public/icons/check-icon';
+import  CheckIcon  from '@/../../public/icons/check-icon';
 import submittedIllustration from '@/../../public/images/registration-submited-illustration.svg';
 import CoreButton from '@/components/buttons/CoreButton';
+import Image from 'next/image';
 
 const Pending = () => {
   const handleSignOut = async () => {
