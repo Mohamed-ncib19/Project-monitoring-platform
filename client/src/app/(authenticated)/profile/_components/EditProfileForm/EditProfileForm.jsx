@@ -1,12 +1,11 @@
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-
+import Select from 'react-select';
 import Image from 'next/image';
 
 import logo from '@/../public/images/Logo.png';
 import CoreButton from '@/components/buttons/CoreButton';
 
 
-import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
 import { EditUserSchema } from '@/app/(authenticated)/profile/_shcemas/profile.schema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Textarea from '@/components/Inputs/Textarea';
@@ -20,6 +19,7 @@ export const EditProfileForm = ({dataProvider}) =>{
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
       } = useForm({
         resolver: yupResolver(EditUserSchema),
@@ -160,14 +160,21 @@ export const EditProfileForm = ({dataProvider}) =>{
 
                 <div className="col-4">
                   <label className="fs-6 mb-2 text-soft-black">Last Name</label>
-                
-                        <CoreInput
-                        name='lastname'
-                        placeholder='lastname'
-                        defaultValue={dataProvider?.lastname}
-                        register={register}
-                        errors={errors}
+              
+                      {/*defaultValue={{ value: dataProvider?.businessPosition, label: dataProvider?.businessPosition }}*/}
+                      
+
+                      <Controller
+                      name="businessPosition"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          options={rolesOptions}
+                          isDisabled
+                         defaultValue={dataProvider?.businessPosition}
                         />
+                      )}
+                    />
                   
               
                 </div>
@@ -220,6 +227,20 @@ export const EditProfileForm = ({dataProvider}) =>{
                       readOnly={true}
                       placeholder="Select a business position"
                     />
+
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    options={rolesOptions}
+                    value={rolesOptions.find(option => option.value === field.value)}
+                    onChange={(selectedOption) => {
+                      field.onChange(selectedOption.value);
+                    }}
+                  />
+                )}
+              />
                             </div>
 
                 <div className="col-4">

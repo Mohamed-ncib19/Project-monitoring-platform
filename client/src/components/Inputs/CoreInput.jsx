@@ -7,6 +7,7 @@ const CoreInput = ({
   readOnly = false,
   errors,
   register,
+  defaultValue
 }) => {
   return (
     <>
@@ -21,6 +22,7 @@ const CoreInput = ({
             'is-invalid': !readOnly && errors[name],
           })}
           {...register(name)}
+          defaultValue={defaultValue}
         />
 
         {!readOnly && (
