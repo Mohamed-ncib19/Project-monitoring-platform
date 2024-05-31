@@ -66,34 +66,45 @@ const DataTable = ({
         className="table table-striped table-bordered"
       >
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="light-text-custom-color"
-                >
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
+          {headerGroups.map((headerGroup) => {
+            const { key, ...props } = headerGroup.getHeaderGroupProps();
+            return (
+              <tr key={key} {...props}>
+                {headerGroup.headers.map((column) => {
+                  const { key, ...props } = column.getHeaderProps(
+                    column.getSortByToggleProps(),
+                  );
+                  return (
+                    <th
+                      key={key}
+                      {...props}
+                      className="light-text-custom-color"
+                    >
+                      {column.render('Header')}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                          : ''}
+                      </span>
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row) => {
             prepareRow(row);
+            const { key, ...props } = row.getRowProps();
             return (
-              <tr className="user" {...row.getRowProps()}>
+              <tr key={key} className="user" {...props}>
                 {row.cells.map((cell) => {
+                  const { key, ...props } = cell.getCellProps();
                   return (
-                    <td {...cell.getCellProps()} className="text-secondary">
+                    <td key={key} {...props} className="text-secondary">
                       {cell.render('Cell')}
                     </td>
                   );
