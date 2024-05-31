@@ -41,18 +41,22 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
-
       const error = JSON.parse(response.error);
-
       if (error?.status === 422) {
         push(`/?username=${data.username}`);
         return;
       }
+   
 
       if (error && error.status !== 200) {
         setIsValid(false);
         notify({ message: 'User not Found', status: 'danger' });
       }
+      
+      if(response.ok){
+        notify({message: 'Welcome Back', status:'success'});
+      }
+
     } catch (error) {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);

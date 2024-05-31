@@ -16,6 +16,7 @@ const [userData,setUserData] = useState(null);
     try {
       const response = await axios.get('/users/me');
       console.log(response)
+      setUserData(response.data.user);
     } catch (error) {
         alert('internal server error');
         return;
@@ -25,6 +26,9 @@ const [userData,setUserData] = useState(null);
   useEffect(()=>{
     getUser();
   },[])
+
+console.log(userData)
+
 
   const editUserInfo = async (userData) => {
     try {
@@ -40,60 +44,6 @@ const [userData,setUserData] = useState(null);
       );
     }
   };
-
-/*   const onSubmit = async (data) => {
-    try {
-      const { firstname, lastname, bio, phone } = data;
-      const cleanData = {};
-
-      if (firstname && firstname !== userData.firstname) {
-        cleanData.firstname = firstname;
-      }
-
-      if (lastname && lastname !== userData.lastname) {
-        cleanData.lastname = lastname;
-      }
-
-      if (bio && bio !== userData.bio) {
-        cleanData.bio = bio;
-      }
-
-      if (phone && phone !== userData.phone) {
-        cleanData.phone = phone;
-      }
-
-      if (Object.keys(cleanData).length > 0) {
-        const resUpdateUser = await editUserInfo(cleanData);
-
-        if (resUpdateUser.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Profile information updated successfully',
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Failed to update',
-            text: resUpdateUser.status === 404 ? 'Resource not found' : 'Server error',
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: 'info',
-          title: 'No Changes',
-          text: 'You did not make any updates.',
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to update',
-        text: 'An unexpected error occurred',
-      });
-    }
-  }; */
-
   return (
     <div className="px-3 d-flex flex-column gap-2 col-11 m-auto">
       <div className="">
@@ -103,7 +53,7 @@ const [userData,setUserData] = useState(null);
         </p>
       </div>
 
-     {/*  <EditProfileForm /> */}
+      <EditProfileForm dataProvider={userData} />
 
      
     </div>

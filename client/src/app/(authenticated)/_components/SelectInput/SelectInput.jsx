@@ -1,44 +1,47 @@
+import clsx from 'clsx';
 import { useState, useEffect } from 'react';
-import { Select } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
+import Select from 'react-select';
 
 export const SelectInput = ({
-  field,
   errors,
-  content,
-  name,
+  name = '',
+  register,
+  options,
   placeholder,
-  disabled,
-  search,
-  defaultValue,
+  readOnly = false,
+  defaultValue
 }) => {
-  const [selectedOptions, setSelectedOptions] = useState(defaultValue || '');
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
-    setSelectedOptions(defaultValue);
+    setSelectedOption(defaultValue);
   }, [defaultValue]);
 
-  const handleChange = (_, data) => {
-    setSelectedOptions(data.value);
-    field.onChange(data.value);
-  };
+  const handleChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
 
+  };
   return (
     <div className="form-group">
       <Select
-        disabled={disabled}
+        name={name}
         placeholder={placeholder}
-        className={`form-control focus-blue-bottom-border rounded ${
-          errors[name] ? 'is-invalid' : ''
-        }`}
-        id={name + '-list'}
-        search={search}
-        options={content}
-        value={selectedOptions}
+        value={selectedOption}
+        {...(register && register(name))}
+        defaultValue={defaultValue}
+        className={clsx('form-control focus-blue-bottom-border rounded', {
+          'is-invalid': errors && errors[name],
+        })}
+        classNamePrefix="select"
+        isDisabled={readOnly}
+        isSearchable={!readOnly}
+        options={readOnly ? [] : options}
         onChange={handleChange}
       />
-      {errors[name] && (
-        <p className="invalid-feedback">{errors[name].message}</p>
+      {errors && errors[name] && (
+        <p className="invalid-feedback">
+          {errors[name].message}
+        </p>
       )}
     </div>
   );

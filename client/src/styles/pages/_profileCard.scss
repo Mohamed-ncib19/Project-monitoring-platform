@@ -1,6 +1,6 @@
 :root {
   --header-height: 15em;
-  --card-top-offset: 3em;
+  --card-top-offset: 2em;
 }
 
 .profile-header {
@@ -8,6 +8,7 @@
   position: relative;
   height: var(--header-height);
 }
+
 
 .profile-card {
   position: absolute;
