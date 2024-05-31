@@ -9,6 +9,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
   if (user) {
+    console.log(user)
     if (user.status === 'approved') redirect('/dashboard');
     if (user.status === 'pending') redirect('/pending');
   }

@@ -1,32 +1,26 @@
 import { Modal } from 'react-bootstrap';
 import CoreButton from '@/components/buttons/CoreButton';
-import WarningIcon from '../../../../../../public/icons/warning-icon';
+import WarningIcon from '@/../../public/icons/warning-icon';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { EditSchema } from '../../_schemas/permission.schema';
+import { EditSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
 import CoreInput from '@/components/Inputs/CoreInput';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import { useNotifications } from 'reapop';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveTab }) => {
+export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, setActiveTab }) => {
   const { notify } = useNotifications();
   const options = [
     { value: 'Frontend Developer', label: 'Frontend Developer' },
     { value: 'Backend Developer', label: 'Backend Developer' },
     { value: 'Full-stack Developer', label: 'Full-stack Developer' },
-    {
-      value: 'Mobile Developer (ANDROID)',
-      label: 'Mobile Developer (ANDROID)',
-    },
+    { value: 'Mobile Developer (ANDROID)', label: 'Mobile Developer (ANDROID)' },
     { value: 'Mobile Developer (IOS)', label: 'Mobile Developer (IOS)' },
     { value: 'IT Business Analyst', label: 'IT Business Analyst' },
-    {
-      value: 'Quality Assurance (QA) Engineer',
-      label: 'Quality Assurance (QA) Engineer',
-    },
+    { value: 'Quality Assurance (QA) Engineer', label: 'Quality Assurance (QA) Engineer' },
     { value: 'IT Project Manager', label: 'IT Project Manager' },
     { value: 'Product Owner', label: 'Product Owner' },
     { value: 'Scrum Master', label: 'Scrum Master' },
@@ -43,12 +37,7 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
     resolver: yupResolver(EditSchema),
   });
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    register,
-  } = methods;
+  const { handleSubmit, formState: { errors }, control, register, reset } = methods;
 
   const EditUser = async (username, data) => {
     try {
@@ -63,16 +52,28 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
     }
   };
 
-  const {refresh} = useRouter();
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstname: user.firstname || '',
+        lastname: user.lastname || '',
+        phone: user.phone || '',
+        email: user.email || '',
+        salary: user.salary || '',
+        businessPosition: user.businessPosition || '',
+        role: user.role || '',
+      });
+    }
+  }, [user, reset]);
 
   const handleEdit = handleSubmit(async (formData) => {
-
     try {
       const response = await EditUser(user?.username, formData);
+      console.log(response)
       if (response.message === 'Account setted up successfuly') {
-        notify({ message: 'Account updated successfuly', status: 'success' });
+        notify({ message: 'Account updated successfully', status: 'success' });
         handleClose();
-        refresh();
+        setActiveTab('requests')
       } else {
         notify({ message: 'Failed to setup user account', status: 'error' });
       }
@@ -100,16 +101,12 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
             <WarningIcon />
           </i>
           <p className="alert-content">
-            Alert: setting a user's role will adjust their access to information
-            and actions
+            Alert: setting a user's role will adjust their access to information and actions
           </p>
         </div>
 
         <FormProvider {...methods}>
-          <form
-            className="d-flex flex-column gap-4 py-5 "
-            onSubmit={handleEdit}
-          >
+          <form className="d-flex flex-column gap-4 py-5" onSubmit={handleEdit}>
             <div className="d-flex flex-row justify-content-between align-items-center gap-4">
               <CoreInput
                 name="firstname"
@@ -117,7 +114,6 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
                 errors={errors}
                 control={control}
                 register={register}
-                defaultValue={user && user?.firstname}
               />
 
               <CoreInput
@@ -127,7 +123,6 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
                 control={control}
                 type="text"
                 register={register}
-                defaultValue={user && user?.lastname}
               />
             </div>
 
@@ -138,7 +133,6 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
               control={control}
               type="number"
               register={register}
-              defaultValue={user && user?.phone}
             />
 
             <CoreInput
@@ -148,51 +142,31 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
               control={control}
               type="email"
               register={register}
-              defaultValue={user && user?.email}
             />
 
             <div className="d-flex justify-content-between align-items-center gap-2 border-top border-bottom py-4">
               <div className="col-6">
-                <p className="fs-6 mb-2 py-1 text-soft-black">
-                  Business Position
-                </p>
+                <p className="fs-6 mb-2 py-1 text-soft-black">Business Position</p>
                 <Controller
-                name="businessPosition"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <>
-                      <div>
-                        <Select
-                          className={clsx(' ', {
-                            'is-invalid  border-2 border-danger': !!errors.businessPosition,
-                          })}
-                          {...field}
-                          options={options}
-                          onChange={(option) =>
-                            field.onChange(option ? option.value : '')
-                          }
-                         
-                          value={
-                            options.find((businessPosition) => businessPosition.value === field.value)
-                          }
-                          defaultValue={{value:user?.businessPosition , label: user?.businessPosition}}
-
-                        />
-                        {errors && errors.businessPosition && (
-                          <span
-                            className={clsx('fs-6', {
-                              'text-danger': errors && errors.businessPosition,
-                            })}
-                          >
-                            {errors.businessPosition.message}
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  );
-                }}
-              />
+                  name="businessPosition"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      className={clsx(' ', {
+                        'is-invalid border-2 border-danger': !!errors.businessPosition,
+                      })}
+                      {...field}
+                      options={options}
+                      onChange={(option) => field.onChange(option ? option.value : '')}
+                      value={options.find((businessPosition) => businessPosition.value === field.value)}
+                    />
+                  )}
+                />
+                {errors.businessPosition && (
+                  <span className={clsx('fs-6 text-danger')}>
+                    {errors.businessPosition.message}
+                  </span>
+                )}
               </div>
               <div>
                 <p className="fs-6 mb-2 text-soft-black">Salary</p>
@@ -203,7 +177,6 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
                   control={control}
                   type="number"
                   register={register}
-                  defaultValue={user && user?.salary}
                 />
               </div>
             </div>
@@ -213,40 +186,23 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
               <Controller
                 name="role"
                 control={control}
-                render={({ field }) => {
-                  return (
-                    <>
-                      <div>
-                        <Select
-                          className={clsx(' ', {
-                            'is-invalid  border-2 border-danger': !!errors.role,
-                          })}
-                          {...field}
-                          options={rolesOptions}
-                          onChange={(option) =>
-                            field.onChange(option ? option.value : '')
-                          }
-                         
-                          value={
-                            rolesOptions.find((role) => role.value === field.value)
-                          }
-                          defaultValue={{value:user?.role , label: user?.role}}
-
-                        />
-                        {errors && errors.role && (
-                          <span
-                            className={clsx('fs-6', {
-                              'text-danger': errors && errors.role,
-                            })}
-                          >
-                            {errors.role.message}
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    className={clsx(' ', {
+                      'is-invalid border-2 border-danger': !!errors.role,
+                    })}
+                    {...field}
+                    options={rolesOptions}
+                    onChange={(option) => field.onChange(option ? option.value : '')}
+                    value={rolesOptions.find((role) => role.value === field.value)}
+                  />
+                )}
               />
+              {errors.role && (
+                <span className={clsx('fs-6 text-danger')}>
+                  {errors.role.message}
+                </span>
+              )}
             </div>
           </form>
         </FormProvider>
@@ -260,5 +216,3 @@ const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActive
     </Modal>
   );
 };
-
-export default EditModal;

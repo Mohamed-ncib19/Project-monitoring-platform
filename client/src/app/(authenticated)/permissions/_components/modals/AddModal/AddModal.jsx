@@ -1,31 +1,26 @@
 import { Modal } from 'react-bootstrap';
 import CoreButton from '@/components/buttons/CoreButton';
-import WarningIcon from '../../../../../../public/icons/warning-icon';
+import WarningIcon from '@/../../public/icons/warning-icon';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { SetupSchema } from '../../_schemas/permission.schema';
+import { SetupSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
 import CoreInput from '@/components/Inputs/CoreInput';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import { useNotifications } from 'reapop';
 import axios from 'axios';
+import { useEffect } from 'react';
 
-const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveTab }) => {
+export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, setActiveTab }) => {
   const { notify } = useNotifications();
   const options = [
     { value: 'Frontend Developer', label: 'Frontend Developer' },
     { value: 'Backend Developer', label: 'Backend Developer' },
     { value: 'Full-stack Developer', label: 'Full-stack Developer' },
-    {
-      value: 'Mobile Developer (ANDROID)',
-      label: 'Mobile Developer (ANDROID)',
-    },
+    { value: 'Mobile Developer (ANDROID)', label: 'Mobile Developer (ANDROID)' },
     { value: 'Mobile Developer (IOS)', label: 'Mobile Developer (IOS)' },
     { value: 'IT Business Analyst', label: 'IT Business Analyst' },
-    {
-      value: 'Quality Assurance (QA) Engineer',
-      label: 'Quality Assurance (QA) Engineer',
-    },
+    { value: 'Quality Assurance (QA) Engineer', label: 'Quality Assurance (QA) Engineer' },
     { value: 'IT Project Manager', label: 'IT Project Manager' },
     { value: 'Product Owner', label: 'Product Owner' },
     { value: 'Scrum Master', label: 'Scrum Master' },
@@ -42,12 +37,7 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
     resolver: yupResolver(SetupSchema),
   });
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    register,
-  } = methods;
+  const { handleSubmit, formState: { errors }, control, register, reset } = methods;
 
   const setupUser = async (username, data) => {
     try {
@@ -62,16 +52,29 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
     }
   };
 
-  const handleSetup = handleSubmit(async (formData) => {
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstname: user.firstname || '',
+        lastname: user.lastname || '',
+        phone: user.phone || '',
+        email: user.email || '',
+        salary: user.salary || '',
+        businessPosition: user.businessPosition || '',
+        role: user.role || '',
+      });
+    }
+  }, [user, reset]);
 
+  const handleSetup = handleSubmit(async (formData) => {
     try {
       const response = await setupUser(user?.username, formData);
       if (response.message === 'Account setted up successfuly') {
         notify({ message: response.message, status: 'success' });
         handleClose();
-        setActiveTab('users')
+        setActiveTab('users');
       } else {
-        notify({ message: 'Failed to setup user account', status: 'error' });
+        notify({ message: response.message, status: 'error' });
       }
     } catch (error) {
       notify({ message: 'server error', status: 'error' });
@@ -97,16 +100,12 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
             <WarningIcon />
           </i>
           <p className="alert-content">
-            Alert: setting a user's role will adjust their access to information
-            and actions
+            Alert: setting a user's role will adjust their access to information and actions
           </p>
         </div>
 
         <FormProvider {...methods}>
-          <form
-            className="d-flex flex-column gap-4 py-5 "
-            onSubmit={handleSetup}
-          >
+          <form className="d-flex flex-column gap-4 py-5" onSubmit={handleSetup}>
             <div className="d-flex flex-row justify-content-between align-items-center gap-4">
               <CoreInput
                 name="firstname"
@@ -114,7 +113,6 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
                 errors={errors}
                 control={control}
                 register={register}
-                defaultValue={user && user?.firstname}
               />
 
               <CoreInput
@@ -124,7 +122,6 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
                 control={control}
                 type="text"
                 register={register}
-                defaultValue={user && user?.lastname}
               />
             </div>
 
@@ -135,7 +132,6 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
               control={control}
               type="number"
               register={register}
-              defaultValue={user && user?.phone}
             />
 
             <CoreInput
@@ -145,53 +141,32 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
               control={control}
               type="email"
               register={register}
-              defaultValue={user && user?.email}
             />
 
             <div className="d-flex justify-content-between align-items-center gap-2 border-top border-bottom py-4">
               <div className="col-6">
-                <p className="fs-6 mb-2 py-1 text-soft-black">
-                  Business Position
-                </p>
+                <p className="fs-6 mb-2 py-1 text-soft-black">Business Position</p>
                 <Controller
                   name="businessPosition"
                   control={control}
-                  render={({ field }) => {
-                    return (
-                      <>
-                        <div>
-                          <Select
-                            className={clsx('position-select', {
-                              'is-invalid  border-2 border-danger':
-                                !!errors.businessPosition,
-                            })}
-                            options={options}
-                            {...field}
-                            onChange={(option) =>
-                              field.onChange(option ? option.value : '')
-                            }
-                            onBlur={field.onBlur}
-                            value={
-                              options.find(
-                                (option) => option.value === field.value,
-                              ) || ''
-                            }
-                          />
-                          {errors && errors.businessPosition && (
-                            <span
-                              className={clsx('fs-6', {
-                                'text-danger':
-                                  errors && errors.businessPosition,
-                              })}
-                            >
-                              {errors.businessPosition.message}
-                            </span>
-                          )}
-                        </div>
-                      </>
-                    );
-                  }}
+                  render={({ field }) => (
+                    <Select
+                      className={clsx('position-select', {
+                        'is-invalid border-2 border-danger': !!errors.businessPosition,
+                      })}
+                      options={options}
+                      {...field}
+                      onChange={(option) => field.onChange(option ? option.value : '')}
+                      onBlur={field.onBlur}
+                      value={options.find((option) => option.value === field.value) || ''}
+                    />
+                  )}
                 />
+                {errors.businessPosition && (
+                  <span className={clsx('fs-6 text-danger')}>
+                    {errors.businessPosition.message}
+                  </span>
+                )}
               </div>
               <div>
                 <p className="fs-6 mb-2 text-soft-black">Salary</p>
@@ -202,7 +177,6 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
                   control={control}
                   type="number"
                   register={register}
-                  defaultValue={user && user?.salary}
                 />
               </div>
             </div>
@@ -212,40 +186,24 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
               <Controller
                 name="role"
                 control={control}
-                render={({ field }) => {
-                  return (
-                    <>
-                      <div>
-                        <Select
-                          className={clsx(' ', {
-                            'is-invalid  border-2 border-danger': !!errors.role,
-                          })}
-                          options={rolesOptions}
-                          {...field}
-                          onChange={(option) =>
-                            field.onChange(option ? option.value : '')
-                          }
-                          onBlur={field.onBlur}
-                          value={
-                            rolesOptions.find(
-                              (option) => option.value === field.value,
-                            ) || ''
-                          }
-                        />
-                        {errors && errors.role && (
-                          <span
-                            className={clsx('fs-6', {
-                              'text-danger': errors && errors.role,
-                            })}
-                          >
-                            {errors.role.message}
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  );
-                }}
+                render={({ field }) => (
+                  <Select
+                    className={clsx(' ', {
+                      'is-invalid border-2 border-danger': !!errors.role,
+                    })}
+                    options={rolesOptions}
+                    {...field}
+                    onChange={(option) => field.onChange(option ? option.value : '')}
+                    onBlur={field.onBlur}
+                    value={rolesOptions.find((option) => option.value === field.value) || ''}
+                  />
+                )}
               />
+              {errors.role && (
+                <span className={clsx('fs-6 text-danger')}>
+                  {errors.role.message}
+                </span>
+              )}
             </div>
           </form>
         </FormProvider>
@@ -259,5 +217,3 @@ const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user,setActiveT
     </Modal>
   );
 };
-
-export default AddModal;

@@ -63,7 +63,7 @@ const DataTable = ({
     <>
       <table
         {...getTableProps()}
-        className="table table-striped table-bordered"
+        className="table table-striped table-bordered "
       >
         <thead>
           {headerGroups.map((headerGroup) => (
