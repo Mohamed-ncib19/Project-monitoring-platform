@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 
 import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 
-import { EditForm } from '@/app/(authenticated)/permissions/_components/EditForm';
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
 import DataTable from '@/layout/DataTable/';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
@@ -11,7 +10,6 @@ import Link from 'next/link';
 import ViewIcon from '../../../../public/icons/ViewIcon';
 import AddModal from '@/app/(authenticated)/permissions/_components/modals/AddModal';
 import EditModal from '@/app/(authenticated)/permissions/_components/modals/EditModal';
-import { AddForm } from './_components/AddForm';
 import axios from 'axios';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import { useRouter } from 'next/navigation';
@@ -20,6 +18,7 @@ import requestsNotFound from '@/../../public/images/requests-not-found.png';
 import usersNotFound from '@/../../public/images/users-not-found.png';
 import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
 import Image from 'next/image';
+import { notify } from 'reapop';
 
 
 const Permissions = () => {
@@ -57,12 +56,14 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
   const handleShowDeleteModal = (user) => {
+    console.log(user)
     setIsDeleteModalOpen(true);
     setSelectedUser(user);
   };
 
   const handleCloseDesactivateModal = () => setIsDesactivateModalOpen(false);
   const handleShowDesactivateModal = (user) => {
+    console.log(user)
     setIsDesactivateModalOpen(true);
     setSelectedUser(user)
   }
@@ -133,86 +134,68 @@ const [restoreType,setRestoreType] = useState(null);
         );
       }
     },
-    async setupUser(username, data) {
-      try {
-        const response = await axios.put(`/users/${username}`, data);
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
-    async editUser(username, data) {
-      try {
-        const response = await axios.put(`/users/${username}`, data);
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
+  
 
-    async deleteUser(username) {
-      try {
-        const response = await axios.delete(
-          `/users/${username}/ban?type=request`,
-        );
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
 
-    async desactivateUser(username) {
-      try {
-        const response = await axios.delete(`/users/${username}/ban?type=user`);
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
 
-    async restoreRequest(username) {
-      try {
-        const response = await axios.put(`/users/${username}/restore?type=request`);
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
 
-    async restoreUser(username) {
-      try {
-        const response = await axios.put(`/users/${username}/restore?type=user`);
-        return response.data;
-      } catch (error) {
-        return Promise.reject({
-          ok: false,
-          status: 500,
-          msg: 'internal server',
-        });
-      }
-    },
+  
 
   };
+
+  const deleteRequest = async(username) => {
+    try {
+      const response = await axios.delete(
+        `/users/${username}/ban?type=request`,
+      );
+      return response.data;
+    } catch (error) {
+      return Promise.reject({
+        ok: false,
+        status: 500,
+        msg: 'internal server',
+      });
+    }
+  };
+  const desactivateUser = async (username) => {
+    try {
+      const response = await axios.delete(`/users/${username}/ban?type=user`);
+      return response.data;
+    } catch (error) {
+      return Promise.reject({
+        ok: false,
+        status: 500,
+        msg: 'internal server',
+      });
+    }
+  };
+
+  const restoreRequest =async (username) => {
+    try {
+      const response = await axios.put(`/users/${username}/restore?type=request`);
+      return response.data;
+    } catch (error) {
+      return Promise.reject({
+        ok: false,
+        status: 500,
+        msg: 'internal server',
+      });
+    }
+  };
+
+  const restoreUser = async (username) => {
+    try {
+      const response = await axios.put(`/users/${username}/restore?type=user`);
+      return response.data;
+    } catch (error) {
+      return Promise.reject({
+        ok: false,
+        status: 500,
+        msg: 'internal server',
+      });
+    }
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -529,50 +512,16 @@ const [restoreType,setRestoreType] = useState(null);
     },
   ]);
 
-  const handleSetup = async (formData) => {
-    if (setupSubmitForm) await setupSubmitForm();
 
-    const response = await api.setupUser(formData.username, formData.data);
-    if(response.message === 'Account setted up successfuly'){
-      setIsModalOpen(false);
-      router.refresh();
-    }else{
-      alert('setp failed');
-    }
-  };
 
-  const handleEdit = async (formData) => {
-    if (editSubmitForm) await editSubmitForm();
-    const response = await api.editUser(formData.username, formData.data);
-    if(response.message === 'Account setted up successfuly'){
-      setIsEditModalOpen(false);
-      router.refresh();
-    }else{
-      alert('setp failed');
-    }
-  };
 
-  const handleDelete = async (username) => {
-    if (username) {
+  const handleDesactivateUser = async () => {
+    console.log(selectedUser?.username)
+    if (selectedUser?.username) {
       try {
-        const response = await api.deleteUser(username);
+        const response = await desactivateUser(selectedUser?.username);
         if(response.message === 'User banned successfuly'){
-          setActiveTab('bannedUsers')
-        }else{
-          alert('failed to delete request')
-        }
-      } catch (error) {
-        alert('internal server');
-      }
-    }
-  };
-
-  const handleDesactivate = async (username) => {
-    console.log(username)
-    if (username) {
-      try {
-        const response = await api.desactivateUser(username);
-        if(response.message === 'User banned successfuly'){
+          handleCloseDesactivateModal();
           setActiveTab('bannedUsers');
         }else{
           alert('failed to desavtivate user')
@@ -583,15 +532,38 @@ const [restoreType,setRestoreType] = useState(null);
     }
   };
 
+  const handleDeleteRequest = async () =>{
+    console.log(username)
+    try {
+        const response = await deleteRequest(username);
+        if(response.message === 'request deleted successfuly'){
+            notify({message : response.message , status:'success'});
+            handleClose();
+            setActiveTab('bannedUsers')
+        }else{
+            notify({message : response.message , status:'error'});
+        }
+    } catch (error) {
+        notify({message : 'internal server error' , status:'error'});
+    }
+}
+
+
+
   const handleRestoreRequest = async (username) => {
     if (username) {
       try {
-        const response = await api.restoreRequest(username);
+        const response = await restoreRequest(username);
         if(response.message === 'User Restored successfuly'){
+          handleCloseRestoreModal();
+          notify({message : response.message, status : 'success'});
           setActiveTab('requests')
+        }else{
+          notify({message : response.message, status : 'error'});
+
         }
       } catch (error) {
-        console.log(error);
+        notify({message : 'server error' , status : 'error'});
       }
     }
   };
@@ -601,7 +573,7 @@ const [restoreType,setRestoreType] = useState(null);
     if (username) {
       try {
         console.log(username);
-        const response = await api.restoreUser(username);
+        const response = await restoreUser(username);
         if(response.message === 'User Restored successfuly'){
           setActiveTab('users')
         }
@@ -704,21 +676,17 @@ const [restoreType,setRestoreType] = useState(null);
         show={isModalOpen}
         handleClose={handleClose}
         buttonLabel={'Save'}
-        handleSubmit={handleSetup}
-      >
-        <AddForm
-          user={selectedUser}
-          handleSubmitForm={handleSetup}
-          setSubmitCallback={setSetupSubmitForm}
-        />
-      </AddModal>
+        user={selectedUser}
+        setActiveTab={setActiveTab}
+      />
+
 
       <ConfirmModal
         headerTitle="Delete request"
         username={selectedUser?.username}
         show={isDeleteModalOpen}
         handleClose={handleCloseDeleteModal}
-        handleSave={handleDelete}
+       handleClick={handleDeleteRequest}
       >
         <div className="text-muted fs-5 m-auto px-3">
           <p>Are you sure you want to delete this request?</p>
@@ -728,30 +696,23 @@ const [restoreType,setRestoreType] = useState(null);
 
 
 
-
-
-
       <EditModal
         headerTitle={'Edit account'}
-        buttonLabel={'Save'}
         show={isEditModalOpen}
         handleClose={handleCloseEditModal}
+        buttonLabel={'Save'}
         user={selectedUser}
-        handleSubmit={handleEdit}
-      >
-        <EditForm
-          user={selectedUser}
-          handleSubmitForm={handleEdit}
-          setSubmitCallback={setEditSubmitForm}
-        />
-      </EditModal>
+        setActiveTab={setActiveTab}
+      />
 
+
+   
       <ConfirmModal
         headerTitle="Deactivate acount"
         username={selectedUser?.username}
         show={isDesactivateModalOpen}
         handleClose={handleCloseDesactivateModal}
-        handleSave={handleDesactivate}
+        handleClick={handleDesactivateUser}
       >
         <div className="text-muted fs-5 m-auto px-3">
           <p>Are you sure you want to deactivate this account ? </p>
@@ -762,11 +723,11 @@ const [restoreType,setRestoreType] = useState(null);
 
 
    <ConfirmModal
-  headerTitle={`Deactivate ${restoreType}`}
+  headerTitle={`Restore ${restoreType}`}
   username={selectedUser?.username}
   show={isRestoreModalOpen}
   handleClose={handleCloseRestoreModal}
-  handleSave={() => handleRestoreMethod()(selectedUser?.username)}
+  handleClick={() => handleRestoreMethod()(selectedUser?.username)}
 >
   <div className="text-muted fs-5 m-auto px-3">
     <p>Are you sure you want to re-activate this {restoreType}?</p>

@@ -1,19 +1,17 @@
 import { Modal } from "react-bootstrap";
 import CoreButton from "../buttons/CoreButton";
-import { useCallback } from "react";
+import { useNotifications } from "reapop";
 
-const ConfirmModal = ({ show, handleClose, headerTitle, username, children, handleSave }) => {
-    const onDelete = useCallback(async () => {
-        try {
-            if (handleSave) await handleSave(username);
-            handleClose();
-        } catch (error) {
-            throw Promise.reject({
-                ok:false,
-                status:404,
-            })
-        }
-    }, [username, handleSave, handleClose]);
+const ConfirmModal = ({ show, handleClose, headerTitle, username, children,handleClick }) => {
+    
+    const {notify} = useNotifications();
+
+
+  
+
+
+
+
 
     return (
         <Modal show={show} onHide={handleClose} size="md" centered className="confirm-modal">
@@ -27,10 +25,10 @@ const ConfirmModal = ({ show, handleClose, headerTitle, username, children, hand
 
             <Modal.Footer className="d-flex flex-md-row flex-column justify-content-center align-items-center gap-3">
                 <div className="col-5">
-                    <CoreButton type='button' label='Confirm' onclick={onDelete} />
+                    <CoreButton type='button' label='Confirm' onClick={handleClick} />
                 </div>
                 <div className="col-5">
-                    <CoreButton variant="btn btn-light text-muted" label='Cancel' onclick={handleClose} />
+                    <CoreButton variant="btn btn-light text-muted" label='Cancel' onClick={handleClose} />
                 </div>
             </Modal.Footer>
         </Modal>
