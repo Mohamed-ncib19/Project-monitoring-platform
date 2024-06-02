@@ -8,7 +8,6 @@ const authenticate = async (request, reply) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     request.user = decoded;
-
     const userResponse = await userServices.userExists(request.user.username);
     if (!userResponse.ok || !userResponse.exists || !userResponse.user.active) {
       reply.status(403).send({ error: "Banned" });

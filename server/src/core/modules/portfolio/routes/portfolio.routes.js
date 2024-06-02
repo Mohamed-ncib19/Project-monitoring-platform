@@ -1,6 +1,5 @@
 require("dotenv").config();
 const autheticate = require("../../../middlewares/autheticate");
-
 const portfolioController = require("../controllers/portfolio.controller");
 
 async function routes(fastify, options) {
@@ -10,7 +9,10 @@ async function routes(fastify, options) {
     handler: portfolioController.createPortfolio,
   });
   //get porfolios
-  fastify.get("/portfolios", portfolioController.getPortfolios);
+  fastify.get("/portfolios", {
+    preHandler: autheticate,
+    handler: portfolioController.getPortfolios,
+  });
 }
 
 module.exports = routes;

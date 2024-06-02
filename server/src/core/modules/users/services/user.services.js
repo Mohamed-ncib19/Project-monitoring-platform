@@ -143,6 +143,7 @@ const userServices = {
       return { ok: false };
     }
   },
+
   async restoreUser(username, type) {
     try {
       const userModel = await UserModel();
@@ -163,6 +164,33 @@ const userServices = {
     } catch (error) {
       console.error("Error Restoring user", error);
       return { ok: false };
+    }
+  },
+
+  async managePorfolio(username, portfolioId) {
+    try {
+      console.log(username, "--", portfolioId);
+      const userModel = await UserModel();
+      const { user } = await userServices.userExists(username);
+      let result;
+      if (user.managedPortfolios) {
+        result = await userModel.updateOne(
+          { username: user.username },
+          { $addToSet: { managedPortfolios: portfolioId } }
+        );
+      } else {
+        result = await userModel.updateOne(
+          { username: username },
+          { $set: { managedPortfolios: [portfolioId] } }
+        );
+      }
+      if (result.acknowledged) return { ok: true };
+      else {
+        return { ok: false };
+      }
+    } catch (error) {
+      console.error("Error assigning manager to manage porfolio", error);
+      return { ok: false, status: httpStatus.NOT_MODIFIED };
     }
   },
 };

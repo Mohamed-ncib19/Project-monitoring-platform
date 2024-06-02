@@ -6,6 +6,7 @@ const portfolioServices = require("../services/portfolio.services");
 const portfolioController = {
   async createPortfolio(request, reply) {
     try {
+      const manager = request.user.username;
       const portfolioData = request.body;
       if (!portfolioData || !portfolioData.name) {
         return reply
@@ -21,7 +22,8 @@ const portfolioController = {
         });
       }
       const createResponse = await portfolioServices.createPortfolio(
-        portfolioData
+        portfolioData,
+        manager
       );
       if (createResponse.ok) {
         return reply
@@ -41,17 +43,18 @@ const portfolioController = {
   },
   async getPortfolios(request, reply) {
     try {
-      const { managerId } = request.params;
-      if (!managerId) {
+      const manager = request.user.username;
+      console.log(manager);
+      if (!manager) {
         return reply
           .status(httpStatus.BAD_REQUEST)
           .send({ message: "Missing managerId" });
       }
-
-      const portfolios = await portfolioServices.getPortfolios(managerId);
-
-      if (portfolios && portfolios.length > 0) {
-        return reply.status(httpStatus.OK).send({ portfolios });
+      const portfolios = await portfolioServices.getPortfolios(manager);
+      if (portfolios.ok && portfolios.portfolios.length > 0) {
+        return reply
+          .status(httpStatus.OK)
+          .send({ portfolios: portfolios.portfolios });
       } else {
         return reply
           .status(httpStatus.NOT_FOUND)
