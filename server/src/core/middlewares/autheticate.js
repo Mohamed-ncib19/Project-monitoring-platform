@@ -11,7 +11,7 @@ const authenticate = async (request, reply) => {
 
     const userResponse = await userServices.userExists(request.user.username);
     if (!userResponse.ok || !userResponse.exists || !userResponse.user.active) {
-      reply.status(401).send({ error: "Unauthorized" });
+      reply.status(403).send({ error: "Banned" });
     }
 
     return;

@@ -28,7 +28,6 @@ const portfolioServices = {
           details: zentaoResponse.details,
         };
       }
-      console.log(zentaoResponse);
       const portfolioId = uuidv4();
       const portfolioCollection = await PortfolioModel();
       const result = await portfolioCollection.insertOne({
@@ -38,14 +37,13 @@ const portfolioServices = {
         createdAt: new Date(),
         active: true,
       });
-
       if (result.acknowledged) {
         return { ok: true, message: "Portfolio created successfully" };
       } else {
         return { ok: false, message: "MongoDB error" };
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
 
       return {
         ok: false,
