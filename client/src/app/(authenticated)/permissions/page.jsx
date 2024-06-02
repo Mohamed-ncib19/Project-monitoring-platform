@@ -1,23 +1,26 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 
-import EditDotsIcon from '@/../public/icons/edit-dots-icon';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useNotifications } from 'reapop';
 
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
 import DataTable from '@/layout/DataTable';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
-import Link from 'next/link';
-import ViewIcon from '../../../../public/icons/ViewIcon';
+import ViewIcon from '@/../../public/icons/ViewIcon';
 import {AddModal} from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
 import {EditModal} from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
-import axios from 'axios';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 
+import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
 import usersNotFound from '@/../../public/images/users-not-found.png';
 import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
-import Image from 'next/image';
-import { useNotifications } from 'reapop';
+import clsx from 'clsx';
+
+
 
 const Permissions = () => {
 
@@ -65,7 +68,6 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleCloseEditModal = () => setIsEditModalOpen(false);
   const handleEditShow = (user) => {
-    console.log(user)
     setSelectedUser(user);
     setIsEditModalOpen(true);
   };
@@ -336,17 +338,11 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {
         return (
           <div
-            className={`${
-              row.original.role === 'Manager'
-                ? 'bg-danger col-11 m-auto '
-                : row.original.role === 'Team lead'
-                  ? 'tl col-9 m-auto'
-                  : row.original.role === 'Team member'
-                    ? 'dev col-10 m-auto '
-                    : ''
-            }
-            
-            text-white text-center p-2 rounded-5 fw-semibold custom-letter-spacing-small `}
+            className={clsx('text-white text-center m-auto col-11 p-2 rounded-5 fw-semibold custom-letter-spacing-small',{
+              'bg-danger' : row.original.role === 'Manager',
+              'tl' : row.original.role === 'Team lead',
+              'dev' : row.original.role === 'Team member'
+            })}
           >
             {`${row.original.role}`}
           </div>
@@ -515,16 +511,15 @@ const [restoreType,setRestoreType] = useState(null);
     if (selectedUser?.username) {
       try {
         const response = await desactivateUser(selectedUser?.username);
-        console.log(response)
         if(response.message === 'User banned successfuly'){
           notify({message : response.message, status:'success'})
           handleCloseDesactivateModal();
           setActiveTab('bannedUsers');
         }else{
-          notify({message : response.message, status:'error'})
+          notify({message : response.message, status:'danger'})
         }
       } catch (error) {
-        notify({message : 'server error', status:'error'})
+        notify({message : 'server error', status:'danger'})
 
       }
     }
@@ -539,11 +534,11 @@ const [restoreType,setRestoreType] = useState(null);
             handleCloseDeleteModal();
             setActiveTab('bannedUsers')
         }else{
-            notify({message : response.message , status:'error'});
+            notify({message : response.message , status:'danger'});
         }
     } catch (error) {
       console.log(error)
-        notify({message : 'internal server error' , status:'error'});
+        notify({message : 'internal server error' , status:'danger'});
     }
 }
 
@@ -558,11 +553,11 @@ const [restoreType,setRestoreType] = useState(null);
           notify({message : response.message, status : 'success'});
           setActiveTab('requests')
         }else{
-          notify({message : response.message, status : 'error'});
+          notify({message : response.message, status : 'danger'});
 
         }
       } catch (error) {
-        notify({message : 'server error' , status : 'error'});
+        notify({message : 'server error' , status : 'danger'});
       }
     }
   };
@@ -571,16 +566,15 @@ const [restoreType,setRestoreType] = useState(null);
     if (username) {
       try {
         const response = await restoreUser(username);
-        console.log(response)
         if(response.message === 'User Restored successfuly'){
           handleCloseRestoreModal();
           notify({message : response.message, status : 'success'});
           setActiveTab('users')
         }else{
-          notify({message : response.message, status : 'error'});
+          notify({message : response.message, status : 'danger'});
         }
       } catch (error) {
-        notify({message : 'server error', status:'error'})
+        notify({message : 'server error', status:'danger'})
 
       }
     }
@@ -594,9 +588,9 @@ const [restoreType,setRestoreType] = useState(null);
         <p className="light-text-custom-color">Users</p>
         <p className="fs-2 fw-bold">Permission</p>
       </div>
-      <div id="nav-links">
+      <div id="nav-links" className='col-md-12 col-5 d-flex flex-md-row flex-column m-auto'>
         <button
-          className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold px-4 p-2`}
+          className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold p-2`}
           onClick={() => setActiveTab('requests')}
         >
           Requests{' '}
@@ -605,7 +599,7 @@ const [restoreType,setRestoreType] = useState(null);
           </span>
         </button>
         <button
-          className={`${activeTab === 'users' ? 'users' : ' border-0'} fw-bold px-4 p-2`}
+          className={`${activeTab === 'users' ? 'users' : ' border-0'} fw-bold p-2`}
           onClick={() => setActiveTab('users')}
         >
           Users{' '}
@@ -614,7 +608,7 @@ const [restoreType,setRestoreType] = useState(null);
           </span>
         </button>
         <button
-          className={`${activeTab === 'bannedUsers' ? 'banned-user' : 'border-0'} fw-bold px-4 p-2`}
+          className={`${activeTab === 'bannedUsers' ? 'banned-user' : 'border-0'} fw-bold p-2`}
           onClick={() => setActiveTab('bannedUsers')}
         >
           Banned Users{' '}

@@ -1,37 +1,23 @@
-import { Modal } from 'react-bootstrap';
-import CoreButton from '@/components/buttons/CoreButton';
-import WarningIcon from '@/../../public/icons/warning-icon';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { SetupSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
-import CoreInput from '@/components/Inputs/CoreInput';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import { useNotifications } from 'reapop';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { Modal } from 'react-bootstrap';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+
+import { PositionOptions } from '@/app/(authenticated)/_selectOptions/positions.options';
+import { RolesOptions } from '@/app/(authenticated)/_selectOptions/role.options';
+
+import CoreButton from '@/components/buttons/CoreButton';
+import WarningIcon from '@/../../public/icons/warning-icon';
+import CoreInput from '@/components/Inputs/CoreInput';
+import { SetupSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
+
 
 export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, setActiveTab }) => {
   const { notify } = useNotifications();
-  const options = [
-    { value: 'Frontend Developer', label: 'Frontend Developer' },
-    { value: 'Backend Developer', label: 'Backend Developer' },
-    { value: 'Full-stack Developer', label: 'Full-stack Developer' },
-    { value: 'Mobile Developer (ANDROID)', label: 'Mobile Developer (ANDROID)' },
-    { value: 'Mobile Developer (IOS)', label: 'Mobile Developer (IOS)' },
-    { value: 'IT Business Analyst', label: 'IT Business Analyst' },
-    { value: 'Quality Assurance (QA) Engineer', label: 'Quality Assurance (QA) Engineer' },
-    { value: 'IT Project Manager', label: 'IT Project Manager' },
-    { value: 'Product Owner', label: 'Product Owner' },
-    { value: 'Scrum Master', label: 'Scrum Master' },
-    { value: 'Team Lead', label: 'Team Lead' },
-  ];
-
-  const rolesOptions = [
-    { value: 'Manager', label: 'Manager' },
-    { value: 'Team lead', label: 'Team lead' },
-    { value: 'Team member', label: 'Team member' },
-  ];
 
   const methods = useForm({
     resolver: yupResolver(SetupSchema),
@@ -74,10 +60,10 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
         handleClose();
         setActiveTab('users');
       } else {
-        notify({ message: response.message, status: 'error' });
+        notify({ message: response.message, status: 'danger' });
       }
     } catch (error) {
-      notify({ message: 'server error', status: 'error' });
+      notify({ message: 'server error', status: 'danger' });
     }
   });
 
@@ -154,11 +140,11 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
                       className={clsx('position-select', {
                         'is-invalid border-2 border-danger': !!errors.businessPosition,
                       })}
-                      options={options}
+                      options={PositionOptions}
                       {...field}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
-                      value={options.find((option) => option.value === field.value) || ''}
+                      value={PositionOptions.find((option) => option.value === field.value) || ''}
                     />
                   )}
                 />
@@ -191,11 +177,11 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
                     className={clsx(' ', {
                       'is-invalid border-2 border-danger': !!errors.role,
                     })}
-                    options={rolesOptions}
+                    options={RolesOptions}
                     {...field}
                     onChange={(option) => field.onChange(option ? option.value : '')}
                     onBlur={field.onBlur}
-                    value={rolesOptions.find((option) => option.value === field.value) || ''}
+                    value={RolesOptions.find((option) => option.value === field.value) || ''}
                   />
                 )}
               />

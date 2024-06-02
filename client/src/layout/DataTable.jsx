@@ -61,50 +61,48 @@ const DataTable = ({
 
   return (
     <>
-      <table
-        {...getTableProps()}
-        className="table table-striped table-bordered "
-      >
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="light-text-custom-color"
-                >
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
-                </th>
-              ))}
-            </tr>
+   <div className="table-responsive">
+  <table {...getTableProps()} className="table table-borderless table-hover table-bordered">
+    <thead>
+      {headerGroups.map((headerGroup) => (
+        <tr {...headerGroup.getHeaderGroupProps()}>
+          {headerGroup.headers.map((column) => (
+            <th
+              {...column.getHeaderProps(column.getSortByToggleProps())}
+              className="light-text-custom-color"
+            >
+              {column.render('Header')}
+              <span>
+                {column.isSorted
+                  ? column.isSortedDesc
+                    ? ' 🔽'
+                    : ' 🔼'
+                  : ''}
+              </span>
+            </th>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr className="user" {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()} className="text-secondary">
-                      {cell.render('Cell')}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+        </tr>
+      ))}
+    </thead>
+    <tbody {...getTableBodyProps()}>
+      {page.map((row, i) => {
+        prepareRow(row);
+        return (
+          <tr key={i} className="user alert-danger" {...row.getRowProps()}>
+            {row.cells.map((cell, i) => (
+              <td key={i} {...cell.getCellProps()} className="text-secondary">
+                {cell.render('Cell')}
+              </td>
+            ))}
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
 
-      <div className="pagination bg-white d-flex justify-content-between py-4">
+
+      <div className="pagination bg-light d-flex justify-content-between py-4">
         <div>
           <span className="mx-2 light-text-custom-color ">
             Showing{' '}

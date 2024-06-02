@@ -1,10 +1,8 @@
 import { Modal } from "react-bootstrap";
 import CoreButton from "../buttons/CoreButton";
-import { useNotifications } from "reapop";
 
 const ConfirmModal = ({ show, handleClose, headerTitle, children,handleClick }) => {
     
-    const {notify} = useNotifications();
 
 
     return (

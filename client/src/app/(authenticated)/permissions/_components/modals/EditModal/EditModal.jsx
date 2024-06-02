@@ -1,38 +1,25 @@
-import { Modal } from 'react-bootstrap';
-import CoreButton from '@/components/buttons/CoreButton';
-import WarningIcon from '@/../../public/icons/warning-icon';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { EditSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
-import CoreInput from '@/components/Inputs/CoreInput';
+import { useEffect } from 'react';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import { useNotifications } from 'reapop';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { Modal } from 'react-bootstrap';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+
+import { PositionOptions } from '@/app/(authenticated)/_selectOptions/positions.options';
+import { RolesOptions } from '@/app/(authenticated)/_selectOptions/role.options';
+
+import CoreButton from '@/components/buttons/CoreButton';
+import WarningIcon from '@/../../public/icons/warning-icon';
+import { EditSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
+import CoreInput from '@/components/Inputs/CoreInput';
+
 
 export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, setActiveTab }) => {
   const { notify } = useNotifications();
-  const options = [
-    { value: 'Frontend Developer', label: 'Frontend Developer' },
-    { value: 'Backend Developer', label: 'Backend Developer' },
-    { value: 'Full-stack Developer', label: 'Full-stack Developer' },
-    { value: 'Mobile Developer (ANDROID)', label: 'Mobile Developer (ANDROID)' },
-    { value: 'Mobile Developer (IOS)', label: 'Mobile Developer (IOS)' },
-    { value: 'IT Business Analyst', label: 'IT Business Analyst' },
-    { value: 'Quality Assurance (QA) Engineer', label: 'Quality Assurance (QA) Engineer' },
-    { value: 'IT Project Manager', label: 'IT Project Manager' },
-    { value: 'Product Owner', label: 'Product Owner' },
-    { value: 'Scrum Master', label: 'Scrum Master' },
-    { value: 'Team Lead', label: 'Team Lead' },
-  ];
 
-  const rolesOptions = [
-    { value: 'Manager', label: 'Manager' },
-    { value: 'Team lead', label: 'Team lead' },
-    { value: 'Team member', label: 'Team member' },
-  ];
-
+  
   const methods = useForm({
     resolver: yupResolver(EditSchema),
   });
@@ -52,6 +39,12 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
     }
   };
 
+  const checkChanges = (data) => {
+    return Object.keys(data).every(key => data[key] === user[key]);
+  };
+  
+
+
   useEffect(() => {
     if (user) {
       reset({
@@ -67,18 +60,24 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
   }, [user, reset]);
 
   const handleEdit = handleSubmit(async (formData) => {
+   
     try {
+      if(checkChanges(formData)){
+        notify({message : 'no changes' , status:'warning'});
+        handleClose();
+        return;
+       }else{
       const response = await EditUser(user?.username, formData);
-      console.log(response)
       if (response.message === 'Account setted up successfuly') {
-        notify({ message: 'Account updated successfully', status: 'success' });
+        notify({ message: response.message, status: 'success' });
         handleClose();
         setActiveTab('requests')
       } else {
-        notify({ message: 'Failed to setup user account', status: 'error' });
+        notify({ message: response.message, status: 'danger' });
       }
+    }
     } catch (error) {
-      notify({ message: 'server error', status: 'error' });
+      notify({ message: 'server error', status: 'danger' });
     }
   });
 
@@ -152,13 +151,13 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
                   control={control}
                   render={({ field }) => (
                     <Select
+                    {...field}
                       className={clsx(' ', {
                         'is-invalid border-2 border-danger': !!errors.businessPosition,
                       })}
-                      {...field}
-                      options={options}
+                      options={PositionOptions}
                       onChange={(option) => field.onChange(option ? option.value : '')}
-                      value={options.find((businessPosition) => businessPosition.value === field.value)}
+                      value={PositionOptions.find((businessPosition) => businessPosition.value === field.value)}
                     />
                   )}
                 />
@@ -192,9 +191,9 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
                       'is-invalid border-2 border-danger': !!errors.role,
                     })}
                     {...field}
-                    options={rolesOptions}
+                    options={RolesOptions}
                     onChange={(option) => field.onChange(option ? option.value : '')}
-                    value={rolesOptions.find((role) => role.value === field.value)}
+                    value={RolesOptions.find((role) => role.value === field.value)}
                   />
                 )}
               />

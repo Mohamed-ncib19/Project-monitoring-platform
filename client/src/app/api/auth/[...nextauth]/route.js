@@ -82,12 +82,12 @@ export const authOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }) {
+      console.log(user)
       return true;
     },  
 
     async jwt({ token, user, account, trigger }) {
     
-  console.log(token)
       if (trigger === 'update') {
         console.log(trigger)
         if (Date.now() < new Date(token.accessToken?.expiresAt)?.getTime()) {

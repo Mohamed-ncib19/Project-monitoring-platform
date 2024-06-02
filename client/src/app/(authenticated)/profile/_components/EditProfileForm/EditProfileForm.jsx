@@ -1,4 +1,4 @@
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import Image from 'next/image';
 
@@ -8,18 +8,18 @@ import CoreButton from '@/components/buttons/CoreButton';
 
 import { EditUserSchema } from '@/app/(authenticated)/profile/_shcemas/profile.schema';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Textarea from '@/components/Inputs/Textarea';
 import CoreInput from '@/components/Inputs/CoreInput';
 import TextareaInput from '@/components/Inputs/Textarea';
 import axios from 'axios';
 import { useNotifications } from 'reapop';
 
+
 export const EditProfileForm = ({dataProvider}) =>{
   const { notify } = useNotifications();
+
     const {
         register,
         handleSubmit,
-        control,
         formState: { errors },
       } = useForm({
         resolver: yupResolver(EditUserSchema),
@@ -42,9 +42,20 @@ export const EditProfileForm = ({dataProvider}) =>{
     }
   };
 
+ const checkChanges = (data) => {
+  return Object.values(data).every(value => value === '');
+};
+
    const onSubmit = async (data) => {
 
+
     try {
+      if(checkChanges(data)){
+        notify({message : 'no chnages' , status:'warning'});
+        return;
+      }else{
+
+      
 
       if(data.firstname === ''){
         data.firstname = dataProvider?.firstname
@@ -60,22 +71,20 @@ export const EditProfileForm = ({dataProvider}) =>{
       }
 
 
-      console.log(data)
-
       if (Object.keys(data).length > 0) {
         const resUpdateUser = await editUserInfo(data);
-        console.log(resUpdateUser)
         if (resUpdateUser.status === 200) {
-          notify({message: 'Saved', status:'success'});
+          notify({message: 'Your profile updated successfully', status:'success'});
         } else {
-          notify({message: 'failed', status:'error'});
+          notify({message: 'Profile update failed. Please try again', status:'danger'});
         }
       } else {
-        notify({message: 'no changes', status:'info'});
+        notify({message: 'No updates made to your profile', status:'warning'});
       }
+    }
     } catch (error) {
       console.log(error);
-      notify({message: 'server error', status:'error'});
+      notify({message: 'An unexpected error occurred', status:'danger'});
     }
   }; 
     return(
@@ -85,7 +94,7 @@ export const EditProfileForm = ({dataProvider}) =>{
           <div className="border-2 py-4 border-top border-bottom border-secondary-subtle">
             <div className="col-lg-8 col-md-9 d-flex flex-md-row flex-column justify-content-between align-items-center">
               <div>
-                <h2 className="fw-bold fs-4">Your Photo</h2>
+                <h2 className="fw-bold   row-label">Your Photo</h2>
                 <p className="text-soft-black">This will be displayed on your profile</p>
               </div>
 
@@ -104,15 +113,15 @@ export const EditProfileForm = ({dataProvider}) =>{
 
           <div className="border-2 py-4 border-bottom border-secondary-subtle">
             <div className="col-lg-8 col-md-9 d-flex flex-md-row flex-column justify-content-between align-items-center">
-              <h2 className="fw-bold fs-4">Username</h2>
+              <h2 className="fw-bold   row-label ">Username</h2>
               <div className="col-lg-6 col-md-7 col-12">
                 <label className="fs-6 mb-2 text-soft-black">username</label>
             
                     <CoreInput 
-                    readOnly={true}
                     name='username'
+                    readOnly={true}
                     placeholder='Username'
-                    defaultValue={dataProvider?.username}
+                    defaultValue={dataProvider && dataProvider?.username}
                     />
                 
               </div>
@@ -122,7 +131,7 @@ export const EditProfileForm = ({dataProvider}) =>{
           <div className="border-2 py-4 border-bottom border-secondary-subtle">
             <div className="col-lg-8 col-md-9 d-flex flex-md-row flex-column justify-content-between align-items-center">
               <div>
-                <h2 className="fw-bold fs-4">Your Bio</h2>
+                <h2 className="fw-bold   row-label">Your Bio</h2>
                 <span className="text-soft-black">Write a short introduction</span>
               </div>
               <div className="col-lg-6 col-md-7 col-12">
@@ -130,7 +139,7 @@ export const EditProfileForm = ({dataProvider}) =>{
                   <TextareaInput
                     name="bio"
                     placeholder="Your bio"
-                    defaultValue={dataProvider?.bio}
+                    defaultValue={dataProvider && dataProvider?.bio}
                     register={register}
                     errors={errors}
                   />
@@ -141,7 +150,7 @@ export const EditProfileForm = ({dataProvider}) =>{
 
           <div className="border-2 py-4 border-bottom border-secondary-subtle">
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center">
-              <h2 className="fw-bold fs-4">Fullname</h2>
+              <h2 className="fw-bold   row-label">Fullname</h2>
 
               <div className="row d-flex justify-content-start col-8 mx-2">
                 <div className="col-4">
@@ -150,31 +159,26 @@ export const EditProfileForm = ({dataProvider}) =>{
                         <CoreInput
                         name="firstname"
                         placeholder='firstname'
-                        defaultValue={dataProvider?.firstname}
+                        defaultValue={dataProvider && dataProvider?.firstname}
                         register={register}
                         errors={errors}
-                        
                         />
+                     
                 
                 </div>
 
                 <div className="col-4">
                   <label className="fs-6 mb-2 text-soft-black">Last Name</label>
               
-                      {/*defaultValue={{ value: dataProvider?.businessPosition, label: dataProvider?.businessPosition }}*/}
-                      
-
-                      <Controller
-                      name="businessPosition"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          options={rolesOptions}
-                          isDisabled
-                         defaultValue={dataProvider?.businessPosition}
-                        />
-                      )}
-                    />
+                  <CoreInput
+                        name="lastname"
+                        placeholder='lastname'
+                        defaultValue={dataProvider && dataProvider?.lastname}
+                        register={register}
+                        errors={errors}
+                        
+                        />                     
+                
                   
               
                 </div>
@@ -184,7 +188,7 @@ export const EditProfileForm = ({dataProvider}) =>{
 
           <div className="border-2 py-4 border-bottom border-secondary-subtle">
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center">
-              <h2 className="fw-bold fs-4">Contact information</h2>
+              <h2 className="fw-bold   row-label">Contact information</h2>
 
               <div className="row d-flex justify-content-start col-8 mx-2">
                 <div className="col-4">
@@ -194,7 +198,7 @@ export const EditProfileForm = ({dataProvider}) =>{
                         readOnly={true}
                         name='email'
                         placeholder='email'
-                        defaultValue={dataProvider?.email}
+                        defaultValue={ dataProvider && dataProvider?.email}
                         />
                 </div>
 
@@ -205,7 +209,7 @@ export const EditProfileForm = ({dataProvider}) =>{
                         readOnly={true}
                         name='phone'
                         placeholder='phone'
-                        defaultValue={dataProvider?.phone}
+                        defaultValue={dataProvider && dataProvider?.phone}
                       
                         />
                    
@@ -216,31 +220,18 @@ export const EditProfileForm = ({dataProvider}) =>{
 
           <div className="border-2 py-4 border-bottom border-secondary-subtle">
             <div className="d-flex flex-md-row flex-column justify-content-between align-items-center">
-              <h2 className="fw-bold fs-4">Business position/role</h2>
+              <h2 className="fw-bold   row-label ">Business position / role</h2>
 
               <div className="row d-flex justify-content-start col-8 mx-2">
                 <div className="col-4">
                   <label className="fs-6 mb-2 py-1 text-soft-black">Business Position</label>
-                  <SelectInput
-                      name="businessPosition"
-                      defaultValue={{ value: dataProvider?.businessPosition, label: dataProvider?.businessPosition }}
-                      readOnly={true}
-                      placeholder="Select a business position"
-                    />
 
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={rolesOptions}
-                    value={rolesOptions.find(option => option.value === field.value)}
-                    onChange={(selectedOption) => {
-                      field.onChange(selectedOption.value);
-                    }}
-                  />
-                )}
-              />
+               <CoreInput
+               name='businessPosition'
+               placeholder='Business Position'
+               readOnly={true}
+               defaultValue={dataProvider && dataProvider?.businessPosition}
+               />
                             </div>
 
                 <div className="col-4">
@@ -249,9 +240,9 @@ export const EditProfileForm = ({dataProvider}) =>{
                   
                         <CoreInput
                         name='role'
-                        placeholder='role'
+                        placeholder='Role'
                         readOnly={true}
-                        defaultValue={dataProvider?.role}
+                        defaultValue={dataProvider && dataProvider?.role}
                         />
                                    </div>
                 </div>
