@@ -10,7 +10,7 @@ const generateToken = function generateToken(username, role = null) {
       role: role,
     };
 
-    const expiresIn = "10m"; // Set the expiration time
+    const expiresIn = "30m"; // Set the expiration time
 
     // Calculate the expiration date
     const now = new Date();

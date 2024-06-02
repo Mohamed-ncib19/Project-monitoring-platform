@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const { ObjectId } = require("mongodb");
 const UserModel = require("../models/user");
+const { v4: uuidv4 } = require("uuid");
 
 const userServices = {
   async userExists(username) {
@@ -20,7 +21,9 @@ const userServices = {
   async createUser(user) {
     try {
       const userModel = await UserModel();
+      const userId = uuidv4();
       const result = await userModel.insertOne({
+        _id: userId,
         ...user,
         status: "pending",
         joinedAt: new Date(),

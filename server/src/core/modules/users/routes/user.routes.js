@@ -40,7 +40,6 @@ async function routes(fastify, options) {
 
   // Unban a specific user by username
   fastify.put("/users/:username/restore", {
-    preHandler: autheticate,
     handler: userController.restoreUser,
   });
 }
