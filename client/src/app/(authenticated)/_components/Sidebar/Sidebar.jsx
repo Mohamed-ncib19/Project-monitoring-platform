@@ -45,12 +45,8 @@ export const Sidebar = () => {
   }, [isOpen]);
   return (
     <>
-      <div
-        className={clx('position-fixed z-index-999', {
-          'sidebar-backdrop': isOpen,
-        })}
-      >
-        <div ref={sidebarRef} className="backdrop-background position-fixed">
+      <div>
+        <div ref={sidebarRef} className="backdrop-background position-sticky">
           <div className="custom-sidebar-background border-end-5 border shadow float-start d-flex flex-column justify-content-between align-items-center min-vh-100">
             <div>
               <div className="p-3">
