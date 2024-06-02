@@ -15,13 +15,11 @@ const portfolioController = {
       const { exists } = await portfolioServices.portfolioExists(
         portfolioData.name
       );
-
       if (exists) {
         return reply.status(httpStatus.CONFLICT).send({
           message: "Portfolio name already taken",
         });
       }
-
       const createResponse = await portfolioServices.createPortfolio(
         portfolioData
       );
