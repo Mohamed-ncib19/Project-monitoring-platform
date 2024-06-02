@@ -1,28 +1,30 @@
 'use client';
-import React, { useEffect, useState } from 'react';
 
-import EditDotsIcon from '@/../public/icons/edit-dots-icon';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useNotifications } from 'reapop';
 
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
-import DataTable from '@/layout/DataTable/';
+import DataTable from '@/layout/DataTable';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
-import Link from 'next/link';
-import ViewIcon from '../../../../public/icons/ViewIcon';
-import AddModal from '@/app/(authenticated)/permissions/_components/modals/AddModal';
-import EditModal from '@/app/(authenticated)/permissions/_components/modals/EditModal';
-import axios from 'axios';
+import ViewIcon from '@/../../public/icons/ViewIcon';
+import {AddModal} from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
+import {EditModal} from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
 import ConfirmModal from '@/components/modals/ConfirmModal';
-import { useRouter } from 'next/navigation';
 
+import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
 import usersNotFound from '@/../../public/images/users-not-found.png';
 import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
-import Image from 'next/image';
-import { notify } from 'reapop';
+import clsx from 'clsx';
+
 
 
 const Permissions = () => {
-  const router = useRouter();
+
+  const {notify} = useNotifications();
 
   const [users, setUsers] = useState([]);
   const [userRequests, setUserRequests] = useState([]);
@@ -45,8 +47,6 @@ const [restoreType,setRestoreType] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [setupSubmitForm, setSetupSubmitForm] = useState(null);
-  const [editSubmitForm, setEditSubmitForm] = useState(null);
 
   const handleClose = () => setIsModalOpen(false);
   const handleShow = (user) => {
@@ -56,14 +56,12 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleCloseDeleteModal = () => setIsDeleteModalOpen(false);
   const handleShowDeleteModal = (user) => {
-    console.log(user)
     setIsDeleteModalOpen(true);
     setSelectedUser(user);
   };
 
   const handleCloseDesactivateModal = () => setIsDesactivateModalOpen(false);
   const handleShowDesactivateModal = (user) => {
-    console.log(user)
     setIsDesactivateModalOpen(true);
     setSelectedUser(user)
   }
@@ -340,17 +338,11 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {
         return (
           <div
-            className={`${
-              row.original.role === 'Manager'
-                ? 'bg-danger col-11 m-auto '
-                : row.original.role === 'Team lead'
-                  ? 'tl col-9 m-auto'
-                  : row.original.role === 'Team member'
-                    ? 'dev col-10 m-auto '
-                    : ''
-            }
-            
-            text-white text-center p-2 rounded-5 fw-semibold custom-letter-spacing-small `}
+            className={clsx('text-white text-center m-auto col-11 p-2 rounded-5 fw-semibold custom-letter-spacing-small',{
+              'bg-danger' : row.original.role === 'Manager',
+              'tl' : row.original.role === 'Team lead',
+              'dev' : row.original.role === 'Team member'
+            })}
           >
             {`${row.original.role}`}
           </div>
@@ -516,35 +508,37 @@ const [restoreType,setRestoreType] = useState(null);
 
 
   const handleDesactivateUser = async () => {
-    console.log(selectedUser?.username)
     if (selectedUser?.username) {
       try {
         const response = await desactivateUser(selectedUser?.username);
         if(response.message === 'User banned successfuly'){
+          notify({message : response.message, status:'success'})
           handleCloseDesactivateModal();
           setActiveTab('bannedUsers');
         }else{
-          alert('failed to desavtivate user')
+          notify({message : response.message, status:'danger'})
         }
       } catch (error) {
-        alert('internal server');
+        notify({message : 'server error', status:'danger'})
+
       }
     }
   };
 
   const handleDeleteRequest = async () =>{
-    console.log(username)
     try {
-        const response = await deleteRequest(username);
-        if(response.message === 'request deleted successfuly'){
+        const response = await deleteRequest(selectedUser?.username);
+        console.log(response)
+        if(response.message === 'User banned successfuly'){
             notify({message : response.message , status:'success'});
-            handleClose();
+            handleCloseDeleteModal();
             setActiveTab('bannedUsers')
         }else{
-            notify({message : response.message , status:'error'});
+            notify({message : response.message , status:'danger'});
         }
     } catch (error) {
-        notify({message : 'internal server error' , status:'error'});
+      console.log(error)
+        notify({message : 'internal server error' , status:'danger'});
     }
 }
 
@@ -559,40 +553,44 @@ const [restoreType,setRestoreType] = useState(null);
           notify({message : response.message, status : 'success'});
           setActiveTab('requests')
         }else{
-          notify({message : response.message, status : 'error'});
+          notify({message : response.message, status : 'danger'});
 
         }
       } catch (error) {
-        notify({message : 'server error' , status : 'error'});
+        notify({message : 'server error' , status : 'danger'});
       }
     }
   };
 
   const handleRestoreUser = async (username) => {
-    console.log(username)
     if (username) {
       try {
-        console.log(username);
         const response = await restoreUser(username);
         if(response.message === 'User Restored successfuly'){
+          handleCloseRestoreModal();
+          notify({message : response.message, status : 'success'});
           setActiveTab('users')
+        }else{
+          notify({message : response.message, status : 'danger'});
         }
       } catch (error) {
-        console.log(error);
+        notify({message : 'server error', status:'danger'})
+
       }
     }
   };
 
 
+
   return (
     <>
-      <div className="pb-4">
+      <div className="pb-2 fs-6">
         <p className="light-text-custom-color">Users</p>
         <p className="fs-2 fw-bold">Permission</p>
       </div>
-      <div id="nav-links" className="mb-5  ">
+      <div id="nav-links" className='col-md-12 col-5 d-flex flex-md-row flex-column m-auto'>
         <button
-          className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold px-4 p-2`}
+          className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold p-2`}
           onClick={() => setActiveTab('requests')}
         >
           Requests{' '}
@@ -601,7 +599,7 @@ const [restoreType,setRestoreType] = useState(null);
           </span>
         </button>
         <button
-          className={`${activeTab === 'users' ? 'users' : ' border-0'} fw-bold px-4 p-2`}
+          className={`${activeTab === 'users' ? 'users' : ' border-0'} fw-bold p-2`}
           onClick={() => setActiveTab('users')}
         >
           Users{' '}
@@ -610,7 +608,7 @@ const [restoreType,setRestoreType] = useState(null);
           </span>
         </button>
         <button
-          className={`${activeTab === 'bannedUsers' ? 'banned-user' : 'border-0'} fw-bold px-4 p-2`}
+          className={`${activeTab === 'bannedUsers' ? 'banned-user' : 'border-0'} fw-bold p-2`}
           onClick={() => setActiveTab('bannedUsers')}
         >
           Banned Users{' '}
@@ -625,7 +623,7 @@ const [restoreType,setRestoreType] = useState(null);
           (userRequests.length > 0 ? (
             <DataTable columns={Requestcolumns} data={userRequests} />
           ) : (
-            <div className='m-auto d-flex flex-column justify-content-center align-items-center'>
+            <div className='m-auto d-flex flex-column justify-content-start align-items-center'>
             <Image
               src={requestsNotFound}
               alt='Not Found'

@@ -10,35 +10,33 @@
 }
 
 
-.requests{
-    border: none;
-    border-bottom: .2rem solid #689F63;
-}
 .nb-requests{
     color: #689F63;
 }
 
+.nb-users{
+    color: #3573C7;
+}
 
+.nb-banned-users{
+    color: #D63939;
+}
+
+.requests{
+    border: none;
+    border-bottom: .2rem solid #689F63;
+}
 
 .users{
     border: none;
     border-bottom:.2rem solid #3573C7;
 }
-.nb-users{
-    color: #3573C7;
-}
-
-
-
 
 .banned-user{
     border: none;
     border-bottom:.2rem solid #D63939;
 }
 
-.nb-banned-users{
-    color: #D63939;
-}
 
 .tl{
     background-color: #1DA1F2;

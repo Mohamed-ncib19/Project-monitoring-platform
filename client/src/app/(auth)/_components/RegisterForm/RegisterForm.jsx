@@ -32,9 +32,9 @@ export const RegisterForm = async ({ userName }) => {
         phone: data.phoneNumber,
         email: data.email,
       });
-
       if (res.data.status === 'pending') {
         push('/pending');
+        return;
       }
     } catch (error) {
       if (error.response.status === 403) {

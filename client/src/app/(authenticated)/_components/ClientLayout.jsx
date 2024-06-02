@@ -6,6 +6,7 @@ const endpointUrl = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 axios.defaults.baseURL = endpointUrl;
 const ClientLayout = ({ children, data }) => {
   const session = useSession();
+  console.log(session)
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
       Authorization: `${data?.accessToken?.token}`,
@@ -14,6 +15,7 @@ const ClientLayout = ({ children, data }) => {
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {
+        console.log(err)
         const originalConfig = err.config;
         if (err.response?.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;

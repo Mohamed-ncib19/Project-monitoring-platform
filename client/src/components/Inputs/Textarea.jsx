@@ -14,7 +14,7 @@ const TextareaInput = ({
         name={name}
         placeholder={placeholder}
         readOnly={readOnly}
-        spellCheck
+        rows={6}
         className={clsx('form-control focus-blue-bottom-border rounded z-0', {
           'is-invalid': !readOnly && errors[name]
         })}
