@@ -13,13 +13,13 @@ const Layout = async ({ children }) => {
 
   return (
     <ClientLayout data={user}>
-      <div className="sidebar">
+      <div className="d-flex">
         <Sidebar />
+        <div className="w-100">
+          <Navbar user={user} />
+          <div className="layout">{children}</div>
+        </div>
       </div>
-      <div className="main-content">
-        <Navbar user={user} />
-      </div>
-      <div className="layout m-0">{children}</div>
     </ClientLayout>
   );
 };
