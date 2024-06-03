@@ -16,9 +16,7 @@ const Layout = async ({ children }) => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="main-content">
         <Navbar user={user} />
-      </div>
       <div className="layout m-0">{children}</div>
     </ClientLayout>
   );

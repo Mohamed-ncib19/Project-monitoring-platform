@@ -1,18 +1,20 @@
+'use client';
 import { useState } from 'react';
-import Select from 'react-select';
-
 import CoreButton from '@/components/buttons/CoreButton';
 import { AddModal } from '@/app/(authenticated)/_components/Modals/AddModal/';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CoreInput from '@/components/Inputs/CoreInput';
-import { yupResolver } from '@hookform/resolvers/yup';
 import TextareaInput from '@/components/Inputs/Textarea';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-export const PortfolioHeader = ({ color, name }) => {
+import Select from 'react-select';
+
+export const ProductHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+ 
   const fakeManagers = [
     {value: 'manager1', label: 'manager1'},
     {value: 'manager2', label: 'manager2'},];
@@ -30,7 +32,10 @@ export const PortfolioHeader = ({ color, name }) => {
         } = methods;
 
 
+
+
   return (
+    <>
     <div
       className={`bg-light flex-md-row flex-column p-3 px-5 m-3 border-4 border-start border-${color} d-flex justify-content-md-between justify-content-center `}
     >
@@ -42,10 +47,11 @@ export const PortfolioHeader = ({ color, name }) => {
       </div>
       <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
         <CoreButton type="button" label={`Add ${name}`} onClick={handleShow} />
-       
       </div>
 
-      <AddModal show={show} handleClose={handleClose} headerTitle='Create Portfolio' >
+      
+    </div>
+    <AddModal show={show} handleClose={handleClose} headerTitle='Create Product' >
       <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' >
 
@@ -94,6 +100,6 @@ export const PortfolioHeader = ({ color, name }) => {
           </form>
         </FormProvider>
       </AddModal>
-    </div>
+    </>
   );
 };

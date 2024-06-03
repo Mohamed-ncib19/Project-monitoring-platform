@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
-import Logo from '@/../public/images/Logo.svg';
-import LogoSvg from '@/../public/images/Logo-icon.svg';
+import Logo from '@/../../public/Logo/Logo.svg';
+import LogoSvg from '@/../../public/Logo/Logo-icon.svg';
 
 import CalendarIcon from '../../../../../public/icons/sidebar-icons/calendar-icon';
 import CompanyBalanceIcon from '../../../../../public/icons/sidebar-icons/compony-balance-icon';
@@ -50,7 +50,7 @@ export const Sidebar = () => {
       >
         <div className={`backdrop-background  position-fixed`} ref={sidebarRef}>
           <div
-            className={`custom-sidebar-background border-end-5 border shadow float-start d-flex flex-column justify-content-between   align-items-center min-vh-100 ${
+            className={`custom-sidebar border-end-5 border shadow float-start d-flex flex-column justify-content-between   align-items-center min-vh-100 ${
               isOpen
                 ? 'col-xl-2 col-lg-2 col-md-4 col-sm-4 col-xs-4 col-7 w-100 '
                 : ''
@@ -62,8 +62,8 @@ export const Sidebar = () => {
                   <Link href="/dashboard">
                     <Image
                       src={isOpen ? Logo : LogoSvg}
-                      width={isOpen ? 100 : 30}
                       alt="logo"
+                      width={!isOpen && 30 }
                       loading="lazy"
                       className="w-100"
                     />
@@ -93,10 +93,9 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
-                {userRole === 'manager' && (
                   <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
-                      href="/programs"
+                      href="/portfolio"
                       className={`d-flex text-center justify-content-between ${
                         !isOpen ? 'justify-content-center' : ''
                       } align-items-center gap-2 p-2`}
@@ -105,7 +104,7 @@ export const Sidebar = () => {
                         <div className="d-flex align-items-center gap-2 justify-content-center">
                           <ProgramIcon />
                           <span className="h5 text-custom-color mt-2 text-decoration-none">
-                            Program
+                            Portfolio
                           </span>
                         </div>
                       ) : (
@@ -114,9 +113,8 @@ export const Sidebar = () => {
                       {isOpen && <ArrowRightIcon />}
                     </Link>
                   </div>
-                )}
+                
 
-                {userRole !== 'developper' && (
                   <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
                       href="/products"
@@ -137,7 +135,7 @@ export const Sidebar = () => {
                       {isOpen && <ArrowRightIcon />}
                     </Link>
                   </div>
-                )}
+                
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link

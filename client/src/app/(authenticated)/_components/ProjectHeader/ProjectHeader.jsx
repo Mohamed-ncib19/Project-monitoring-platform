@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
 import CoreButton from '@/components/buttons/CoreButton';
-import { SelectInput } from '@/app/(authenticated)/_components/SelectInput';
 
 export const ProjectHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);
@@ -20,14 +19,14 @@ export const ProjectHeader = ({ color, name }) => {
       </div>
       <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
         <CoreButton type="button" label={`Add ${name}`} onClick={handleShow} />
-        <SelectInput
+       {/*  <SelectInput
           hookForm={false}
           content={[
             { text: 'filter1', value: 'filter1' },
             { text: 'filter2', value: 'filter2' },
             { text: 'filter3', value: 'filter3' },
           ]}
-        />
+        /> */}
       </div>
 
       <Modal show={show} onHide={handleClose} backdrop={false} size="xl">

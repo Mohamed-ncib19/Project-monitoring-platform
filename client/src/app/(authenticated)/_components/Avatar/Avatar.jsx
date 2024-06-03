@@ -1,4 +1,4 @@
-export const Avatar = ({ name, background, rounded, textColor }) => {
+export const Avatar = ({ name, variant, rounded, textColor }) => {
   const initials = name
     ? name
         .split(' ')
@@ -6,10 +6,12 @@ export const Avatar = ({ name, background, rounded, textColor }) => {
         .join('')
     : '';
   return (
+    <>
     <span
-      className={` ${'bg-' + background} avatar ${'rounded-' + rounded} p-3 text-${textColor} fw-bold  `}
+      className={` ${'bg-' + variant} avatar ${'rounded-' + rounded} p-3 text-${textColor} text-decoration-none fw-bold  `}
     >
       {initials}
     </span>
+    </>
   );
 };
