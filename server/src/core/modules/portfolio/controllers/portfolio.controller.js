@@ -44,11 +44,9 @@ const portfolioController = {
       });
     }
   },
-
   async getPortfolios(request, reply) {
     try {
       const manager = request.user.username;
-
       if (!manager) {
         return reply
           .status(httpStatus.BAD_REQUEST)
@@ -65,6 +63,102 @@ const portfolioController = {
         return reply
           .status(httpStatus.NOT_FOUND)
           .send({ message: "No portfolios found for this manager" });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async getPortfolioById(request, reply) {
+    try {
+      const { portfolioId } = request.params;
+
+      if (!portfolioId) {
+        return reply
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing portfolio ID" });
+      }
+
+      const portfolioResponse = await portfolioServices.getPortfolioById(
+        portfolioId
+      );
+
+      if (!portfolioResponse.ok || !portfolioResponse.portfolio) {
+        return reply
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "Portfolio not found" });
+      }
+
+      return reply
+        .status(httpStatus.OK)
+        .send({ portfolio: portfolioResponse.portfolio });
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async deletePortfolio(request, reply) {
+    try {
+      const { portfolioId } = request.params;
+      if (!portfolioId) {
+        return reply
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing portfolio ID" });
+      }
+      const deleteResponse = await portfolioServices.deletePortfolio(
+        portfolioId
+      );
+
+      if (deleteResponse.ok) {
+        return reply
+          .status(httpStatus.OK)
+          .send({ message: "Portfolio deleted successfully" });
+      } else {
+        return reply
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "Failed to delete portfolio" });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async editPortfolio(request, reply) {
+    try {
+      const { portfolioId } = request.params;
+      const portfolioData = request.body;
+
+      if (!portfolioId) {
+        return reply
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing portfolio ID" });
+      }
+
+      if (!portfolioData) {
+        return reply
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing portfolio data" });
+      }
+
+      const editResponse = await portfolioServices.editPortfolio(
+        portfolioId,
+        portfolioData
+      );
+
+      if (editResponse.ok) {
+        return reply
+          .status(httpStatus.OK)
+          .send({ message: "Portfolio edited successfully" });
+      } else {
+        return reply
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "Failed to edit portfolio" });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
