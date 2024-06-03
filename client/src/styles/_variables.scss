@@ -67,3 +67,29 @@ $light-text-custom-color: #5a5a5a;
 .layout{
   padding:1rem 0rem 0 5rem;
 }
+
+.dropdown-toggle::after {
+  background-color: transparent;
+  display: none; 
+}
+
+.image {
+  width: var(--image-width);
+  height: auto;
+}
+
+.image {
+  --image-width: 30%;
+}
+
+@media (max-width: 1181px) {
+  .image {
+    --image-width: 40%;
+  }
+}
+
+@media (max-width: 650px) {
+  .image {
+    --image-width: 100%;
+  }
+}

@@ -1,5 +1,5 @@
 import { Modal } from "react-bootstrap";
-import CoreButton from "../buttons/CoreButton";
+import CoreButton from "@/components/buttons/CoreButton";
 
 const ConfirmModal = ({ show, handleClose, headerTitle, children,handleClick }) => {
     

@@ -1,1 +1,1 @@
-export {ProductHeader} from './PortfolioHeader';
+export {ProductHeader} from './ProductHeader';

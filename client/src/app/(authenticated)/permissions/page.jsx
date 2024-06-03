@@ -12,7 +12,7 @@ import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import ViewIcon from '@/../../public/icons/ViewIcon';
 import {AddModal} from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
 import {EditModal} from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
-import ConfirmModal from '@/components/modals/ConfirmModal';
+import ConfirmModal from '@/app/(authenticated)/_components/Modals/ConfirmModal/ConfirmModal';
 
 import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
@@ -289,7 +289,7 @@ const [restoreType,setRestoreType] = useState(null);
             <span>
               <Avatar
                 name={`${row.original.firstname + ' ' + row.original.lastname}`}
-                background={'light'}
+                variant={'light'}
                 rounded={'circle'}
               />
             </span>
@@ -398,7 +398,7 @@ const [restoreType,setRestoreType] = useState(null);
             <span>
               <Avatar
                 name={`${row.original.firstname + ' ' + row.original.lastname}`}
-                background={'light'}
+                variant={'light'}
                 rounded={'circle'}
               />
             </span>
@@ -586,9 +586,9 @@ const [restoreType,setRestoreType] = useState(null);
     <>
       <div className="pb-2 fs-6">
         <p className="light-text-custom-color">Users</p>
-        <p className="fs-2 fw-bold">Permission</p>
+        <p className=" fs-5 fw-bold">Permission</p>
       </div>
-      <div id="nav-links" className='col-md-12 col-5 d-flex flex-md-row flex-column m-auto'>
+      <div id="nav-links" className=' d-flex flex-md-row flex-column justify-content-start align-items-start'>
         <button
           className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold p-2`}
           onClick={() => setActiveTab('requests')}
@@ -627,11 +627,9 @@ const [restoreType,setRestoreType] = useState(null);
             <Image
               src={requestsNotFound}
               alt='Not Found'
+              className='image'
               loading='lazy'
-              width={600}
               placeholder='blur'
-              quality={80}
-
             />
             <p className='text-center fs-1 fw-bold text-muted'>No requests found</p>
           </div>
@@ -640,14 +638,13 @@ const [restoreType,setRestoreType] = useState(null);
           (users.length > 0 ? (
             <DataTable columns={UsersColumns} data={users} />
           ) : (
-            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+            <div  className=' m-auto d-flex flex-column justify-content-center align-items-center' >
             <Image
-            src={usersNotFound}
-            alt='Not Found'
-            loading='lazy'
-            width={600}
-            placeholder='blur'
-            
+              src={usersNotFound}
+              alt='Not Found'
+              className='image'
+              loading='lazy'
+              placeholder='blur'
             />
           <p className=" text-center fs-1 fw-bold text-muted">no users found</p>
           </div>  
@@ -660,11 +657,10 @@ const [restoreType,setRestoreType] = useState(null);
               <Image
               src={bannedUsersNotFound}
               alt='Not Found'
+              className='image'
               loading='lazy'
-              width={600}
               placeholder='blur'
-              
-              />
+            />
             <p className=" text-center fs-1 fw-bold text-muted">no banned users found</p>
             </div>  
           ))}

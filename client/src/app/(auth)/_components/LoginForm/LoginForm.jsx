@@ -41,6 +41,7 @@ export const LoginForm = () => {
         redirect: false,
         ...data,
       });
+      console.log(response)
       const error = JSON.parse(response.error);
       if (error?.status === 422) {
         push(`/?username=${data.username}`);

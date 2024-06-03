@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
 import { ToggleNotification } from '@/app/(authenticated)/_components/ToggleNotification';
+import { Dropdown, Button } from 'react-bootstrap';
 
 export const Navbar = ({ user }) => {
   const { profile } = user;
@@ -45,38 +46,38 @@ export const Navbar = ({ user }) => {
   ];
 
   return (
-    <div className="custom-bg-primary py-4 w-100 d-flex flex-md-row flex-column justify-content-between px-5 align-items-center">
+    <div className="custom-bg-primary custom-navbar py-4 d-flex justify-content-end align-items-center">
+      <div className='col-10 d-flex d-flex flex-md-row flex-column justify-content-between align-items-center' >
       <input
         type="text"
-        placeholder="search"
-        className="p-3 mx-5 rounded-3 border-0"
+        placeholder="Search"
+        className="p-3 col-8 col-lg-3 col-md-4 rounded-3 border-0"
       />
 
-      <div className="d-flex justify-content-end align-items-center gap-4">
+      <div className="d-flex justify-content-end align-items-center gap-4 mx-5">
         <ToggleNotification data={notifications} />
 
-        <ToggleDropdown
-          button={
-            <button className=" user-dropdown px-2 py-4 rounded-circle border-0">
-              <Avatar
-                name={
-                  profile
-                    ? `${profile.firstName} ${profile.lastName}`
-                    : 'Pixel Bord'
-                }
-                rounded={'circle'}
-              />
-            </button>
-          }
-          items={[
-            { content: 'Profile', link: '/profile' },
-            { content: 'Settings', onclick: 'function' },
-            { content: 'Log out', onclick: handleSignOut },
-          ]}
-          lastItemDivide={true}
-          nbItemsAfterDivide={1}
+        <Dropdown>
+      <Dropdown.Toggle as={Button} className=' btn btn-light py-4 rounded-circle'>
+        <Avatar
+          name={(profile && profile?.firstname)+' '+(profile && profile?.lastname)}
+          variant="light"
+          rounded='circle'
         />
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu className='mt-2' >
+        <Dropdown.Item href={`/profile/${user?.username}`}>Profile</Dropdown.Item>
+        <Dropdown.Item href="/profile">Edit Profile</Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item onClick={handleSignOut}>Log out</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
       </div>
+
+
+
+    </div>
     </div>
   );
 };

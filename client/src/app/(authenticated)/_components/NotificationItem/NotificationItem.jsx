@@ -17,7 +17,7 @@ export const NotificationItem = ({ isread, name, type, background }) => {
       className={`list-group-item  px-4 py-1 ${!isread ? 'bg-soft-tertiary-color' : ''} `}
     >
       <div className="d-flex justify-content-start align-items-center">
-        <Avatar background={background} name={name} rounded={'5'} />
+        <Avatar variant={background} name={name} rounded={'5'} />
         <div className="mx-2 mt-4">
           <p
             className="text-dark-gray"

@@ -137,11 +137,11 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
                   control={control}
                   render={({ field }) => (
                     <Select
+                    {...field}
                       className={clsx('position-select', {
                         'is-invalid border-2 border-danger': !!errors.businessPosition,
                       })}
                       options={PositionOptions}
-                      {...field}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
                       value={PositionOptions.find((option) => option.value === field.value) || ''}

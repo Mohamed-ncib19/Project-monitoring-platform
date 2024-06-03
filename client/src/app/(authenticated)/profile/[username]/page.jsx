@@ -39,7 +39,7 @@ const ProfileCard = ({ params }) => {
           <div className="bg-light p-5 rounded-circle shadow-sm">
             <Avatar
               name={'mohamed ncib'}
-              background={'light'}
+              variant={'light'}
               rounded="3"
               textColor={'secondary'}
             />
