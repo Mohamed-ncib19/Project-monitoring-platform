@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const httpStatus = require("http-status");
 const portfolioServices = require("../services/portfolio.services");
 
@@ -8,6 +7,7 @@ const portfolioController = {
     try {
       const manager = request.user.username;
       const portfolioData = request.body;
+
       if (!portfolioData || !portfolioData.name) {
         return reply
           .status(httpStatus.BAD_REQUEST)
@@ -16,15 +16,18 @@ const portfolioController = {
       const { exists } = await portfolioServices.portfolioExists(
         portfolioData.name
       );
+
       if (exists) {
-        return reply.status(httpStatus.CONFLICT).send({
-          message: "Portfolio name already taken",
-        });
+        return reply
+          .status(httpStatus.CONFLICT)
+          .send({ message: "Portfolio name already taken" });
       }
+
       const createResponse = await portfolioServices.createPortfolio(
         portfolioData,
         manager
       );
+
       if (createResponse.ok) {
         return reply
           .status(httpStatus.CREATED)
@@ -41,24 +44,27 @@ const portfolioController = {
       });
     }
   },
+
   async getPortfolios(request, reply) {
     try {
       const manager = request.user.username;
-      console.log(manager);
+
       if (!manager) {
         return reply
           .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing managerId" });
+          .send({ message: "Missing manager username" });
       }
-      const portfolios = await portfolioServices.getPortfolios(manager);
-      if (portfolios.ok && portfolios.portfolios.length > 0) {
+
+      const portfoliosRes = await portfolioServices.getPortfolios(manager);
+
+      if (portfoliosRes.ok && portfoliosRes.portfolios.length > 0) {
         return reply
           .status(httpStatus.OK)
-          .send({ portfolios: portfolios.portfolios });
+          .send({ portfolios: portfoliosRes.portfolios });
       } else {
         return reply
           .status(httpStatus.NOT_FOUND)
-          .send({ message: "No portfolios found for this managerId" });
+          .send({ message: "No portfolios found for this manager" });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
