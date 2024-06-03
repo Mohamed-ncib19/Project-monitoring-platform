@@ -1,7 +1,9 @@
 const authController = require("../controllers/auth.controller");
 const loginSchema = require("../schemas/login.schema");
 const registerSchema = require("../schemas/registration.schema");
-const autheticate = require("../../../middlewares/autheticate");
+const verifyJWT = require("../../../middlewares/verifyJWT");
+const checkUserActive = require("../../../middlewares/checkUserActive ");
+
 const refreshTokenSchema = require("../schemas/refreshToken.schema");
 require("dotenv").config();
 
@@ -11,7 +13,7 @@ async function routes(fastify, options) {
   fastify.post("/register", authController.register);
 
   fastify.post("/refresh_token", {
-    prehandler: autheticate,
+    preHandler: [verifyJWT, checkUserActive],
     handler: authController.refreshToken,
   });
 }
