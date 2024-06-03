@@ -6,7 +6,9 @@ const TextareaInput = ({
   readOnly = false,
   errors,
   register,
-  defaultValue
+  defaultValue,
+  rows = 10,  
+  cols = 50   
 }) => {
   return (
     <div className="form-group form-floating">
@@ -14,7 +16,8 @@ const TextareaInput = ({
         name={name}
         placeholder={placeholder}
         readOnly={readOnly}
-        rows={6}
+        rows={rows}
+        cols={cols}
         className={clsx('form-control focus-blue-bottom-border rounded z-0', {
           'is-invalid': !readOnly && errors[name]
         })}
