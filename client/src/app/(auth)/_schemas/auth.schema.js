@@ -19,7 +19,4 @@ export const RegisterSchema = Yup.object().shape({
     .matches(/^\d+$/, 'Phone number must contain only numeric characters')
     .required('Phone number is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
-
-  /*   position: Yup.string().required('Position is required'),
-  skills: Yup.array().of(Yup.string()).min(1, 'At least one skill is required').required('Skills are required') */
 });

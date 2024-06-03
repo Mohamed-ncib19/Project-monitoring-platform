@@ -7,6 +7,8 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CoreInput from '@/components/Inputs/CoreInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TextareaInput from '@/components/Inputs/Textarea';
+import { PortfolioShcema } from '@/app/(authenticated)/_shcemas/portfolio.shcema';
+import axios from 'axios';
 
 export const PortfolioHeader = ({ color, name }) => {
   const [show, setShow] = useState(false);
@@ -20,8 +22,11 @@ export const PortfolioHeader = ({ color, name }) => {
 
 
   const methods = useForm({
-    resolver: yupResolver(),
+    resolver: yupResolver(PortfolioShcema),
   });
+
+
+
 
   const { handleSubmit,
           formState: { errors },
@@ -29,6 +34,19 @@ export const PortfolioHeader = ({ color, name }) => {
           control
         } = methods;
 
+
+      /*   const addPortfolio = async () =>{
+          try {
+            const response = await axios.post('/')
+          } catch (error) {
+            
+          }
+        } */
+
+
+        const onSubmit = handleSubmit(async (data) => {
+          console.log('submit', data);
+        });
 
   return (
     <div
@@ -45,12 +63,12 @@ export const PortfolioHeader = ({ color, name }) => {
        
       </div>
 
-      <AddModal show={show} handleClose={handleClose} headerTitle='Create Portfolio' >
+      <AddModal show={show} handleClose={handleClose} headerTitle='Create Portfolio' onSubmit={onSubmit} >
       <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' >
 
             <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-5 align-items-center m-auto ' >
-              <label htmlFor="name" className=' text-muted' >Name</label>
+              <label htmlFor="name" className=' text-muted' >Name<span className='text-danger' >*</span></label>
               <div className='col-lg-7 col-12' >
               <CoreInput
               name='name'
@@ -87,9 +105,11 @@ export const PortfolioHeader = ({ color, name }) => {
               name='description'
               register={register}
               errors={errors}
+              rows={15}
+              cols={60}
               />
             </div>
-            </div>
+          </div>
 
           </form>
         </FormProvider>
