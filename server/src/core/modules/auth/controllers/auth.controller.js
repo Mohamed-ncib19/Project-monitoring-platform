@@ -10,7 +10,6 @@ const authController = {
   async login(request, reply) {
     try {
       const { username, password } = request.body;
-
       const response = await authServices.loginService(username, password);
       if (!response.ok) {
         if (response.status) {
@@ -24,9 +23,9 @@ const authController = {
       }
       const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
         response.tokens;
-      const { user } = await userService.userExists(username);
+      const { user } = await userService.userExists(username, 1);
       return reply.status(response.statusCode).send({
-        username,
+        id: user._id,
         accessToken: {
           token,
           expiresAt: tokenExpiresIn,
@@ -36,6 +35,7 @@ const authController = {
           expiresAt: refreshTokenExpiresIn,
         },
         profile: {
+          username: user.username || null,
           firstName: user.firstname || null,
           lastName: user.lastname || null,
           email: user.email || null,
@@ -78,7 +78,7 @@ const authController = {
       const { token, tokenExpiresIn, refreshToken, refreshTokenExpiresIn } =
         registerResponse.tokens;
       return reply.status(httpStatus.OK).send({
-        username: userData.username,
+        id: userData._id,
         accessToken: {
           token,
           expiresAt: tokenExpiresIn,
@@ -88,6 +88,7 @@ const authController = {
           expiresAt: refreshTokenExpiresIn,
         },
         profile: {
+          username: userData.username || null,
           firstName: userData.firstname || null,
           lastName: userData.lastname || null,
           email: userData.email || null,
@@ -114,7 +115,7 @@ const authController = {
           .send({ error: { message: "missing refresh token" } });
       }
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const newAccessToken = generateToken(decoded.username, decoded.role);
+      const newAccessToken = generateToken(decoded.id, decoded.role);
       reply.status(httpStatus.CREATED).send({
         accessToken: {
           token: newAccessToken.token,

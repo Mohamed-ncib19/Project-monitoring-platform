@@ -4,10 +4,15 @@ const UserModel = require("../models/user");
 const { v4: uuidv4 } = require("uuid");
 
 const userServices = {
-  async userExists(username) {
+  async userExists(username, byUsername = 0) {
     try {
       const userModel = await UserModel();
-      const user = await userModel.findOne({ username: username });
+      let user;
+      if (byUsername) {
+        user = await userModel.findOne({ username: username });
+      } else {
+        user = await userModel.findOne({ _id: username });
+      }
       if (user) {
         return { ok: true, exists: true, user: user };
       }
@@ -28,7 +33,7 @@ const userServices = {
         status: "pending",
         joinedAt: new Date(),
       });
-      if (result.acknowledged) return { ok: true };
+      if (result.acknowledged) return { ok: true, userId: result.insertedId };
       else {
         return { ok: false };
       }
@@ -58,7 +63,7 @@ const userServices = {
     }
   },
 
-  async updateProfile(username, updates) {
+  async updateProfile(id, updates) {
     try {
       const userModel = await UserModel();
       const updateObject = {};
@@ -72,7 +77,7 @@ const userServices = {
         }
       }
       const result = await userModel.updateOne(
-        { username: username },
+        { _id: id },
         { $set: updateObject }
       );
       if (result.acknowledged) return { ok: true };
@@ -85,7 +90,7 @@ const userServices = {
     }
   },
 
-  async setUpUser(username, updates) {
+  async setUpUser(id, updates) {
     try {
       const userModel = await UserModel();
       const updateObject = {};
@@ -107,7 +112,7 @@ const userServices = {
       }
 
       const result = await userModel.updateOne(
-        { username: username },
+        { _id: id },
         {
           $set: {
             ...updateObject,
@@ -124,14 +129,14 @@ const userServices = {
     }
   },
 
-  async banUser(username, type) {
+  async banUser(id, type) {
     try {
       const updateField =
         type === "request" ? { status: "declined" } : { active: false };
 
       const userModel = await UserModel();
       const result = await userModel.updateOne(
-        { username: username },
+        { _id: id },
         { $set: { ...updateField, bannedAt: new Date() } }
       );
       if (result.acknowledged) return { ok: true };
@@ -144,7 +149,7 @@ const userServices = {
     }
   },
 
-  async restoreUser(username, type) {
+  async restoreUser(id, type) {
     try {
       const userModel = await UserModel();
       const updateField =
@@ -153,10 +158,7 @@ const userServices = {
           : { active: true, status: "approved" };
       const updateObject = { $set: updateField, $unset: { bannedAt: "" } };
 
-      const result = await userModel.updateOne(
-        { username: username },
-        updateObject
-      );
+      const result = await userModel.updateOne({ _id: id }, updateObject);
       if (result.acknowledged) return { ok: true };
       else {
         return { ok: false };
@@ -167,20 +169,20 @@ const userServices = {
     }
   },
 
-  async managePorfolio(username, portfolioId) {
+  async managePorfolio(id, portfolioId) {
     try {
-      console.log(username, "--", portfolioId);
+      console.log(id, "--", portfolioId);
       const userModel = await UserModel();
-      const { user } = await userServices.userExists(username);
+      const { user } = await userServices.userExists(id);
       let result;
       if (user.managedPortfolios) {
         result = await userModel.updateOne(
-          { username: user.username },
+          { _id: user.id },
           { $addToSet: { managedPortfolios: portfolioId } }
         );
       } else {
         result = await userModel.updateOne(
-          { username: username },
+          { _id: id },
           { $set: { managedPortfolios: [portfolioId] } }
         );
       }

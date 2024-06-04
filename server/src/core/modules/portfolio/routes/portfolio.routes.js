@@ -9,19 +9,26 @@ async function routes(fastify, options) {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.createPortfolio,
   });
+
   //get porfolios
+  fastify.get("/portfolios/me", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: portfolioController.getCurrentUserPortfolios,
+  });
+
   fastify.get("/portfolios", {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.getPortfolios,
-  });
-  fastify.delete("/portfolios/:portfolioId", {
-    preHandler: [verifyJWT, checkUserActive],
-    handler: portfolioController.deletePortfolio,
   });
   fastify.get("/portfolios/:portfolioId", {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.getPortfolioById,
   });
+  fastify.delete("/portfolios/:portfolioId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: portfolioController.deletePortfolio,
+  });
+
   fastify.put("/portfolios/:portfolioId", {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.editPortfolio,

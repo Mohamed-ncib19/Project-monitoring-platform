@@ -21,8 +21,8 @@ const userController = {
   },
   async getCurrentUser(request, reply) {
     try {
-      const { username } = request.user;
-      const response = await userServices.userExists(username);
+      const { id } = request.user;
+      const response = await userServices.userExists(id);
       if (response.ok) {
         return reply.status(httpStatus.OK).send({ user: response.user });
       } else {
@@ -65,9 +65,9 @@ const userController = {
   },
   async setUpUser(request, reply) {
     try {
-      const { username } = request.params;
+      const { id } = request.params;
       const userUpdates = request.body;
-      const response = await userServices.setUpUser(username, userUpdates);
+      const response = await userServices.setUpUser(id, userUpdates);
       if (!response.ok) {
         return reply.status(httpStatus.NOT_FOUND).send({
           message: "Failed to setup user account",
@@ -85,9 +85,9 @@ const userController = {
   },
   async updateProfile(request, reply) {
     try {
-      const { username } = request.user;
+      const { id } = request.user;
       const updates = request.body;
-      const response = await userServices.updateProfile(username, updates);
+      const response = await userServices.updateProfile(id, updates);
       if (!response.ok) {
         return reply.status(httpStatus.NOT_FOUND).send({
           error: { message: "Failed to Update user informations" },
@@ -105,15 +105,18 @@ const userController = {
   },
   async banUser(request, reply) {
     try {
-      const { username } = request.params;
+      const { id } = request.params;
       const { type } = request.query;
+      const user = await userServices.userExists(id);
+      const { username } = user.user;
+      console.log(username);
       const blockResponse = await ldapServices.disableUser(username);
       if (!blockResponse.ok) {
         return reply.status(httpStatus.NOT_MODIFIED).send({
           error: { message: "Failed to Ban User" },
         });
       }
-      const banResponse = await userServices.banUser(username, type);
+      const banResponse = await userServices.banUser(id, type);
       if (!banResponse.ok) {
         return reply.status(httpStatus.NOT_MODIFIED).send({
           error: { message: "Failed to Ban User" },
@@ -131,15 +134,17 @@ const userController = {
   },
   async restoreUser(request, reply) {
     try {
-      const { username } = request.params;
+      const { id } = request.params;
       const { type } = request.query;
+      const user = await userServices.userExists(id);
+      const { username } = user.user;
       const unblockResponse = await ldapServices.enableUser(username);
       if (!unblockResponse.ok) {
         return reply.status(httpStatus.NOT_MODIFIED).send({
           error: { message: "Failed to Restore User" },
         });
       }
-      const banResponse = await userServices.restoreUser(username, type);
+      const banResponse = await userServices.restoreUser(id, type);
       if (!banResponse.ok) {
         return reply.status(httpStatus.NOT_MODIFIED).send({
           error: { message: "Failed to Restore User" },

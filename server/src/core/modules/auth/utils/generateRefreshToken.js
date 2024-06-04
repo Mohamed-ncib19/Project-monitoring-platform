@@ -2,14 +2,11 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 
-const generateRefreshToken = function generateRefreshToken(
-  username,
-  role = null
-) {
+const generateRefreshToken = function generateRefreshToken(id, role = null) {
   try {
     const secretKey = process.env.JWT_REFRESH_SECRET;
     const payload = {
-      username: username,
+      id: id,
       role: role,
     };
 
