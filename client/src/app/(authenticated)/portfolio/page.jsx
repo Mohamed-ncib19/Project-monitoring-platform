@@ -8,156 +8,139 @@ import { EditModal } from '@/app/(authenticated)/_components/Modals/EditModal/';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CoreInput from '@/components/Inputs/CoreInput';
 import TextareaInput from '@/components/Inputs/Textarea';
-
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PortfolioShcema } from '../_shcemas/portfolio.shcema';
 import { ConfirmModal } from '../_components/Modals/ConfirmModal';
-import { PortfolioCard } from './_components/PortfolioCard';
+import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
 
 const Portfolio = () => {
-
   const fakeManagers = [
-    {value: 'manager1', label: 'manager1'},
-    {value: 'manager2', label: 'manager2'},];
+    { value: 'manager1', label: 'manager1' },
+    { value: 'manager2', label: 'manager2' },
+  ];
 
+  const [currentPortfolio, setCurrentPortfolio] = useState(null);
+  const { notify } = useNotifications();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [portfolios, setPortfolios] = useState([]);
 
+  const methods = useForm({
+    resolver: yupResolver(PortfolioShcema),
+  });
 
-const { notify } = useNotifications();
- 
-const [show,setShow] = useState(false);
-const handleClose = ()=> setShow(false);
-const handleShow = ()=> setShow(true);
+  const { handleSubmit, formState: { errors }, register, control } = methods;
 
-const [showDelete,setShowDelete] = useState(false);
-const handleCloseDelete = ()=> setShowDelete(false);
-const handleShowDelete = ()=> setShowDelete(true);
-
-const methods = useForm({
-  resolver : yupResolver(PortfolioShcema),
-});
-
-const {
-  handleSubmit,
-  formState : {errors},
-  register,
-  control
-} = methods;
-
-   const [portfolios, setPortfolios] = useState([]);
- 
-   const getPortfolios = async () => {
-     try {
-       const response = await axios.get('/portfolios');
-       setPortfolios(response.data.portfolios);
-     } catch (error) {
-       notify({message : JSON.parse(error.request.response).message , status : 'warning'});
-     }
-   };
- 
-   useEffect(() => {
- 
-     const fetchPortfolios = async () => {
-       
-         await getPortfolios();
-       
-     };
- 
-     fetchPortfolios();
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      try {
+        const response = await axios.get('/portfolios');
+        setPortfolios(response.data.portfolios);
+      } catch (error) {
+        notify({ message: JSON.parse(error.request.response).message, status: 'warning' });
+      }
+    };
+    fetchPortfolios();
   }, []);
 
-
-
-  const onSubmit = handleSubmit(async (data) =>{
+  const onSubmit = handleSubmit(async (data) => {
     console.log(data);
-  })
+  });
 
+  const handleEditModalShow = (portfolio) => {
+    setCurrentPortfolio(portfolio);
+    setShowEditModal(true);
+  };
+
+  const handleDeleteModalShow = (portfolio) => {
+    setCurrentPortfolio(portfolio);
+    setShowDeleteModal(true);
+  };
 
   return (
     <>
       <div>
-          <PortfolioHeader color={'success'} name={'Portfolio'} />
-
-        <div className="mx-5 ">
-          <div className=" portfolio-container row justify-content-start m-auto">
+        <PortfolioHeader color={'success'} name={'Portfolio'} />
+        <div className="mx-5">
+          <div className="portfolio-container row justify-content-start m-auto">
             {portfolios.length > 0 ? (
               portfolios.map((portfolio) => (
-               <PortfolioCard dataProvider={portfolio} handleFunctions={[
-                {editModal : handleShow},
-                {deleteModal : handleShowDelete}
-               ]} />
+                <PortfolioCard
+                  key={portfolio.id}
+                  dataProvider={portfolio}
+                  handleFunctions={{
+                    editModal: () => handleEditModalShow(portfolio),
+                    deleteModal: () => handleDeleteModalShow(portfolio._id),
+                  }}
+                />
               ))
             ) : (
-              <div className=" d-flex flex-column justify-content-center align-items-center gap-3 mt-5">
-                <Image
-                  priority
-                  src={PortfolioNotFound}
-                  alt='Portfolio Not Found'
-                />
-                <p className=" text-dark-gray fw-bolder text-center fs-1">No portfolio  Found</p>
+              <div className="d-flex flex-column justify-content-center align-items-center gap-3 mt-5">
+                <Image priority src={PortfolioNotFound} alt="Portfolio Not Found" />
+                <p className="text-dark-gray fw-bolder text-center fs-1">No portfolio Found</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-        
-      <EditModal show={show} handleClose={handleClose} headerTitle='Edit Portfolio' onSubmit={onSubmit} >
-      <FormProvider {...methods}>
-          <form className='d-flex flex-column gap-5 py-5' >
-
-            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-5 align-items-center m-auto ' >
-              <label htmlFor="name" className=' text-muted' >Name<span className='text-danger' >*</span></label>
-              <div className='col-lg-7 col-12' >
-              <CoreInput
-              name='name'
-              placeholder='Required'
-              register={register}
-              errors={errors}
-              />
+      <EditModal show={showEditModal} handleClose={() => setShowEditModal(false)} headerTitle="Edit Portfolio" onSubmit={onSubmit}>
+        <FormProvider {...methods}>
+          <form className="d-flex flex-column gap-5 py-5">
+            <div className="d-flex flex-lg-row flex-column justify-content-start col-10 gap-5 align-items-center m-auto">
+              <label htmlFor="name" className="text-muted">Name<span className="text-danger">*</span></label>
+              <div className="col-lg-7 col-12">
+                <CoreInput
+                  name="name"
+                  placeholder="Required"
+                  register={register}
+                  errors={errors}
+                  defaultValue={currentPortfolio?.name}
+                />
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-4 align-items-center m-auto ' >
-              <label htmlFor="manager" className='text-muted' >Manager</label>
-              <div className='col-lg-7 col-12' >
-              <Controller
-                name='manager'
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    isClearable
-                    options={fakeManagers}
-                    onChange={(option) => field.onChange(option ? option.value : '')}
-                    onBlur={field.onBlur}
-                    value={fakeManagers.find((option) => option.value === field.value) || ''}
-                  />
-                )}
-              />
+            <div className="d-flex flex-lg-row flex-column justify-content-start col-10 gap-4 align-items-center m-auto">
+              <label htmlFor="manager" className="text-muted">Manager</label>
+              <div className="col-lg-7 col-12">
+                <Controller
+                  name="manager"
+                  control={control}
+                  //defaultValue={currentPortfolio ? { value:currentPortfolio.manager, label: currentPortfolio.manager } : {value:'test',label:'test'}}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      isClearable
+                      options={fakeManagers}
+                      onBlur={field.onBlur}
+                      onChange={(option) => field.onChange(option ? option.value : '')}
+                      value={fakeManagers.find((option) => option.value === field.value)}
+                    />
+                  )}
+                />
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-2 align-items-center m-auto ' >
-              <label htmlFor="description" className='text-muted' >Description</label>
-              <div className='col-lg-7 col-12' >
-              <TextareaInput
-              name='description'
-              register={register}
-              errors={errors}
-              />
+            <div className="d-flex flex-lg-row flex-column justify-content-start col-10 gap-2 align-items-center m-auto">
+              <label htmlFor="description" className="text-muted">Description</label>
+              <div className="col-lg-7 col-12">
+                <TextareaInput
+                  name="description"
+                  register={register}
+                  errors={errors}
+                  defaultValue={currentPortfolio?.description}
+                />
+              </div>
             </div>
-          </div>
-
           </form>
         </FormProvider>
       </EditModal>
 
-        
-<ConfirmModal show={showDelete} handleClose={handleCloseDelete} headerTitle='Delete portfolio' handleClick={()=>console.log('deleted')} >
-  <p>This portfolio is empty. Are you sure you want to delete it ?</p>
-</ConfirmModal>
+      <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio" handleClick={() => console.log('deleted')}>
+        <p>This portfolio is empty. Are you sure you want to delete it?</p>
+      </ConfirmModal>
     </>
   );
 };
