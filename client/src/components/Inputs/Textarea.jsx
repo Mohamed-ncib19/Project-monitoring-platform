@@ -1,4 +1,6 @@
+import React from 'react';
 import clsx from 'clsx';
+import Form from 'react-bootstrap/Form';
 
 const TextareaInput = ({
   name,
@@ -8,37 +10,30 @@ const TextareaInput = ({
   register,
   defaultValue,
   rows = 10,  
-  cols = 50   
+  cols = 30   
 }) => {
   return (
-    <div className="form-group form-floating">
-      <textarea 
+    <Form.Group className="mb-3">
+      <Form.Label>{placeholder}</Form.Label>
+      <Form.Control 
+        as="textarea" 
         name={name}
         placeholder={placeholder}
         readOnly={readOnly}
         rows={rows}
         cols={cols}
         className={clsx('form-control focus-blue-bottom-border rounded z-0', {
-          'is-invalid': !readOnly && errors[name]
+          'is-invalid':!readOnly && errors[name]
         })}
-        {...(readOnly ? {} : register(name))}
+        {...(readOnly? {} : register(name))}
         defaultValue={defaultValue}
       />
-      {!readOnly && (
-        <label
-          htmlFor={`floating-input-${name}`}
-          className="light-text-custom-color"
-        >
-          {placeholder}
-        </label>
-      )}
-
       {!readOnly && errors[name] && (
-        <p className="invalid-feedback">
-          {!readOnly && errors[name].message}
-        </p>
+        <Form.Text className="text-danger">
+          {errors[name].message}
+        </Form.Text>
       )}
-    </div>
+    </Form.Group>
   );
 };
 

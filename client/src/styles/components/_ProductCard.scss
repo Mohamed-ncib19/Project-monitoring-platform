@@ -1,0 +1,25 @@
+
+  .edit-product:hover{
+    background-color: rgba(254, 254, 254, 0.963);
+    
+  }
+   
+  
+  .product-card {
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.182);
+  }
+  
+  .product-card:hover {
+    background-color: rgba(255, 255, 255, 0.665);
+    cursor: pointer;
+    box-shadow: 0 0 10px #d9534f;
+  }
+  
+  .product-card:hover .check-products {
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.198);
+    cursor: pointer;
+  }
+  

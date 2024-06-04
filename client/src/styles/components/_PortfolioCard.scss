@@ -1,0 +1,40 @@
+.line {
+    background-color: #275EBD;
+    height: 5px;
+  }
+  
+  .edit-protfolio:hover{
+    background-color: rgba(254, 254, 254, 0.963);
+    
+  }
+  .portfolio-container{
+    gap: 4rem;
+  }
+  
+  .edit-button:hover {
+    background-color: rgba(113, 113, 113, 0.244);
+    backdrop-filter: blur(5px);
+  }
+  .protfolio-children-length{
+    color: #275EBD;
+  }
+  
+  
+  .portfolio-card {
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.182);
+  }
+  
+  .portfolio-card:hover {
+    background-color: rgba(255, 255, 255, 0.665);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(24, 99, 41, 0.553);
+  }
+  
+  .portfolio-card:hover .check-products {
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.198);
+    cursor: pointer;
+  }
+  

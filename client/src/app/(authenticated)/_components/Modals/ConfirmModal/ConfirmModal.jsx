@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import CoreButton from "@/components/buttons/CoreButton";
 
-const ConfirmModal = ({ show, handleClose, headerTitle, children,handleClick }) => {
+export const ConfirmModal = ({ show, handleClose, headerTitle, children,handleClick }) => {
     
 
 
@@ -26,5 +26,3 @@ const ConfirmModal = ({ show, handleClose, headerTitle, children,handleClick }) 
         </Modal>
     );
 }
-
-export default ConfirmModal;

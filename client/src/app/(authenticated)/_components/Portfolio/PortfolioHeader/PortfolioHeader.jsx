@@ -9,15 +9,22 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import TextareaInput from '@/components/Inputs/Textarea';
 import { PortfolioShcema } from '@/app/(authenticated)/_shcemas/portfolio.shcema';
 import axios from 'axios';
+import { useNotifications } from 'reapop';
+import { useRouter } from 'next/navigation';
 
 export const PortfolioHeader = ({ color, name }) => {
+
+  const { notify } = useNotifications();
+  const { refresh } = useRouter();
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const fakeManagers = [
     {value: 'manager1', label: 'manager1'},
-    {value: 'manager2', label: 'manager2'},];
+    {value: 'manager2', label: 'manager2'},
+  ];
 
 
 
@@ -35,17 +42,34 @@ export const PortfolioHeader = ({ color, name }) => {
         } = methods;
 
 
-      /*   const addPortfolio = async () =>{
+        const addPortfolio = async (data) =>{
           try {
-            const response = await axios.post('/')
+            const response = await axios.post('/portfolios',data);
+            if(response.status === 201){
+              return {ok:true, message: response.data.message};
+            }else{
+              return {ok:false, message: response.data.message};
+            }
           } catch (error) {
-            
+            return {ok:false, message: JSON.parse(error.request.response).message};
           }
-        } */
+        }
 
 
         const onSubmit = handleSubmit(async (data) => {
-          console.log('submit', data);
+          try {
+            const res = await addPortfolio(data);
+            if (res.ok) {
+              notify({ message: res.message, status: 'success' });
+              handleClose();
+              refresh();
+            } else {
+              notify({ message: res.message, status: 'danger' });
+            }
+          } catch (error) {
+            console.log(error)
+            notify({ message: 'Server error', status: 'danger' });
+          }
         });
 
   return (
@@ -88,6 +112,7 @@ export const PortfolioHeader = ({ color, name }) => {
                 render={({ field }) => (
                   <Select
                     {...field}
+                    isClearable
                     options={fakeManagers}
                     onChange={(option) => field.onChange(option ? option.value : '')}
                     onBlur={field.onBlur}
@@ -105,8 +130,7 @@ export const PortfolioHeader = ({ color, name }) => {
               name='description'
               register={register}
               errors={errors}
-              rows={15}
-              cols={60}
+
               />
             </div>
           </div>
