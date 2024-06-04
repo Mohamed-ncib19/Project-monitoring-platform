@@ -1,10 +1,16 @@
-'use client'
-import { ProductHeader } from "@/app/(authenticated)/_components/Product/ProductHeader";
+'use client';
+
+import { ProductHeader } from '@/app/(authenticated)/_components/Product/ProductHeader';
+
 import ProductNotFound from '@/../../public/SVG/Product-not-found.svg'  
-import Image from "next/image";
-import { ProductCard } from "../_components/Product/ProductCard";
-const Products = () => {
-  const ProductsData = [
+import Image from 'next/image';
+import { ProjectCard } from '@/app/(authenticated)/_components/Project/ProjectCard';
+
+
+const ProjectsByProducts = ({ params }) => {
+  const { ProductId } = params;
+
+  const ProjectsData = [
     {
       name: "Product name 1",
       description: "This indicates the product intro for lorem lorem lorem lorme lorem lorme lorem",
@@ -24,16 +30,18 @@ const Products = () => {
       projectMembers: ["M", "N", "O", "P", "+5"]
     },
   ];
+  
   return (
     <>
-    <div>
-      <ProductHeader color={'danger'} name={'Product'} />
+      <ProductHeader color={'warning'} name={'projects'} />
+      <p>product ID: {ProductId}</p>
+
 
       <div className="mx-5 ">
           <div className=" portfolio-container row justify-content-start m-auto">
-            {ProductsData.length > 0 ? (
-              ProductsData.map((portfolio) => (
-              <ProductCard dataProvider={portfolio} />
+            {ProjectsData.length > 0 ? (
+              ProjectsData.map((portfolio) => (
+              <ProjectCard dataProvider={portfolio} />
               ))
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">
@@ -48,10 +56,8 @@ const Products = () => {
             )}
           </div>
         </div>
-    </div>
-    
     </>
   );
 };
 
-export default Products;
+export default ProjectsByProducts;

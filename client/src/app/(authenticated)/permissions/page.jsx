@@ -338,8 +338,8 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {
         return (
           <div
-            className={clsx('text-white text-center m-auto col-11 p-2 rounded-5 fw-semibold custom-letter-spacing-small',{
-              'bg-danger' : row.original.role === 'Manager',
+            className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
+              'manager' : row.original.role === 'Manager',
               'tl' : row.original.role === 'Team lead',
               'dev' : row.original.role === 'Team member'
             })}
@@ -447,20 +447,14 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {
         return (
           <div
-            className={`${
-              row.original.role === 'Manager'
-                ? 'bg-danger col-11 m-auto '
-                : row.original.role === 'Team lead'
-                  ? 'tl col-9 m-auto'
-                  : row.original.role === 'Team member'
-                    ? 'dev col-10 m-auto '
-                    : ''
-            }
-            ${row.original.role && 'text-white'}
-             text-center p-2 rounded-5 fw-semibold custom-letter-spacing-small `}
-          >
-            {`${row.original.role || '-----'}`}
-          </div>
+          className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
+            'manager' : row.original.role === 'Manager',
+            'tl' : row.original.role === 'Team lead',
+            'dev' : row.original.role === 'Team member'
+          })}
+        >
+          {`${row.original.role || '-----' }`}
+        </div>
         );
       },
     },

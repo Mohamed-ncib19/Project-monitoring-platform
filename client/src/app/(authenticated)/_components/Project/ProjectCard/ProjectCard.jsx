@@ -2,34 +2,23 @@ import { Dropdown } from "react-bootstrap";
 import ArrowRightIcon from "@/../../public/icons/arrows/arrow-right-icon";
 import EditDotsIcon from "@/../../public/icons/edit-dots-icon";
 import { Avatar } from "@/app/(authenticated)/_components/Avatar";
-import Link from "next/link";
 
-export const ProductCard = ({dataProvider,handleFunctions})=>{
+export const ProjectCard = ({dataProvider,handleFunctions})=>{
     console.log(dataProvider)
-
-    const stopPropagation = (e) =>{
-      e.stopPropagation();
-      e.preventDefault();
-    }
     //const handleShow = handleFunctions.find(func => func.hasOwnProperty('editModal'))?.editModal;
     //const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
       
-    /*
-    /portfolio/:id/products/:id/projects
-    /products
-    */
     return(
         <>
-         <Link
-                  href={`/portfolio/${dataProvider?.parent}/products/${dataProvider?._id}/projects`}
+         <div
                   key={dataProvider._id}
-                  className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
+                  className="project-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
                 >
                   <div className="d-flex justify-content-end ">
                     
                     <div >
-                      <Dropdown onClick={stopPropagation} >
-                        <Dropdown.Toggle as='button' className='border-0 edit-product m-2 fs-5 text-muted rounded-circle px-2 py-1' >
+                      <Dropdown>
+                        <Dropdown.Toggle as='button' className='border-0 edit-project m-2 fs-5 text-muted rounded-circle px-2 py-1' >
                         <EditDotsIcon />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -71,11 +60,6 @@ export const ProductCard = ({dataProvider,handleFunctions})=>{
                     </p>
                     <div className="line rounded w-25   mb-3"></div>
                   </div>
-                  <span
-                    className=" check-products align-self-end justify-content-end border-0 rounded-circle px-2 py-1 fs-4  text-dark-gray"
-                  >
-                    <ArrowRightIcon />
-                  </span>
-                </Link></>
+                </div></>
     );
 }
