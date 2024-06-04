@@ -67,8 +67,7 @@ export const Navbar = ({ user }) => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu className='mt-2' >
-        <Dropdown.Item href={`/profile/${user?.username}`}>Profile</Dropdown.Item>
-        <Dropdown.Item href="/profile">Edit Profile</Dropdown.Item>
+        <Dropdown.Item href="/profile">Manage Profile</Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item onClick={handleSignOut}>Log out</Dropdown.Item>
       </Dropdown.Menu>

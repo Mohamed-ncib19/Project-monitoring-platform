@@ -7,7 +7,7 @@ export const ConfirmModal = ({ show, handleClose, headerTitle, children,handleCl
 
     return (
         <Modal show={show} onHide={handleClose} size="md" centered className="confirm-modal">
-            <Modal.Header closeButton className="confirm-modal-header">
+            <Modal.Header className="confirm-modal-header">
                 <Modal.Title>{headerTitle}</Modal.Title>
             </Modal.Header>
 

@@ -14,7 +14,6 @@ const ClientLayout = ({ children, data }) => {
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {
-        console.log(err);
         if(err?.request.status === 403 && JSON.parse(err?.request.response)?.error === 'Banned'){
               await signOut({ redirect: true });
           
@@ -33,8 +32,8 @@ const ClientLayout = ({ children, data }) => {
             };
             return axios(originalConfig);
           }
-        }else{
-          await signOut({redirect:true});
+        }else if(err?.request.status === 401){
+          await signOut({redirect : true});
         }
         return Promise.reject(err);
       },

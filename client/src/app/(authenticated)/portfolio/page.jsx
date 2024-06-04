@@ -5,33 +5,44 @@ import { PortfolioHeader } from '@/app/(authenticated)/_components/Portfolio/Por
 import axios from 'axios';
 import { useNotifications } from 'reapop';
 import { EditModal } from '@/app/(authenticated)/_components/Modals/EditModal/';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import CoreInput from '@/components/Inputs/CoreInput';
 import TextareaInput from '@/components/Inputs/Textarea';
-import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PortfolioShcema } from '../_shcemas/portfolio.shcema';
 import { ConfirmModal } from '../_components/Modals/ConfirmModal';
 import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
+import { AlertModal } from '../_components/Modals/AlertModal';
 
 const Portfolio = () => {
-  const fakeManagers = [
-    { value: 'manager1', label: 'manager1' },
-    { value: 'manager2', label: 'manager2' },
-  ];
 
-  const [currentPortfolio, setCurrentPortfolio] = useState(null);
   const { notify } = useNotifications();
+  
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAlertModal , setShowAlertModal] = useState(false);
+
+  const [currentPortfolio, setCurrentPortfolio] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
 
   const methods = useForm({
     resolver: yupResolver(PortfolioShcema),
   });
+  
+  const { handleSubmit, formState: { errors }, register,reset } = methods;
 
-  const { handleSubmit, formState: { errors }, register, control } = methods;
+  useEffect(() => {
+    if (currentPortfolio) {
+      reset({
+        name: currentPortfolio.name,
+        description: currentPortfolio.description,
+      });
+    }
+  }, [currentPortfolio, reset]);
+  
+  
+
 
   useEffect(() => {
     const fetchPortfolios = async () => {
@@ -44,6 +55,9 @@ const Portfolio = () => {
     };
     fetchPortfolios();
   }, []);
+
+
+  
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
@@ -59,12 +73,19 @@ const Portfolio = () => {
     setShowDeleteModal(true);
   };
 
+  const handleAlertModalShow = ()=>{
+    setShowAlertModal(true);
+  }
+
+  const handleDelete = (portfolio) => portfolio.description ? handleAlertModalShow() : handleDeleteModalShow(portfolio);
+
   return (
     <>
       <div>
         <PortfolioHeader color={'success'} name={'Portfolio'} />
         <div className="mx-5">
-          <div className="portfolio-container row justify-content-start m-auto">
+          <div className="portfolio-container row justify-content-start align-items-center">
+          
             {portfolios.length > 0 ? (
               portfolios.map((portfolio) => (
                 <PortfolioCard
@@ -72,7 +93,7 @@ const Portfolio = () => {
                   dataProvider={portfolio}
                   handleFunctions={{
                     editModal: () => handleEditModalShow(portfolio),
-                    deleteModal: () => handleDeleteModalShow(portfolio._id),
+                    deleteModal: () => handleDelete(portfolio),
                   }}
                 />
               ))
@@ -82,6 +103,7 @@ const Portfolio = () => {
                 <p className="text-dark-gray fw-bolder text-center fs-1">No portfolio Found</p>
               </div>
             )}
+          
           </div>
         </div>
       </div>
@@ -102,26 +124,6 @@ const Portfolio = () => {
               </div>
             </div>
 
-            <div className="d-flex flex-lg-row flex-column justify-content-start col-10 gap-4 align-items-center m-auto">
-              <label htmlFor="manager" className="text-muted">Manager</label>
-              <div className="col-lg-7 col-12">
-                <Controller
-                  name="manager"
-                  control={control}
-                  //defaultValue={currentPortfolio ? { value:currentPortfolio.manager, label: currentPortfolio.manager } : {value:'test',label:'test'}}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      isClearable
-                      options={fakeManagers}
-                      onBlur={field.onBlur}
-                      onChange={(option) => field.onChange(option ? option.value : '')}
-                      value={fakeManagers.find((option) => option.value === field.value)}
-                    />
-                  )}
-                />
-              </div>
-            </div>
 
             <div className="d-flex flex-lg-row flex-column justify-content-start col-10 gap-2 align-items-center m-auto">
               <label htmlFor="description" className="text-muted">Description</label>
@@ -139,8 +141,13 @@ const Portfolio = () => {
       </EditModal>
 
       <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio" handleClick={() => console.log('deleted')}>
-        <p>This portfolio is empty. Are you sure you want to delete it?</p>
+        <p className='text-muted' >This portfolio is empty. Are you sure you want to delete it?</p>
       </ConfirmModal>
+
+      <AlertModal show={showAlertModal} handleClose={()=>setShowAlertModal(false)} headerTitle='Portfolio Not Empty' >
+        <p className='text-muted' >The portfolio cannot be deleted because it currently contains <b>products</b>. To delete the portfolio, you'll need to remove all associated products first.</p>
+      </AlertModal>
+
     </>
   );
 };

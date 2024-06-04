@@ -3,10 +3,13 @@
     height: 5px;
   }
   
-  .edit-protfolio:hover{
-    background-color: rgba(254, 254, 254, 0.963);
-    
+  .edit-protfolio{
+    background-color: transparent;
   }
+  .edit-protfolio:hover{
+    background-color: rgba(217, 217, 217, 0.485);
+  }
+
   .portfolio-container{
     gap: 4rem;
   }
@@ -38,3 +41,7 @@
     cursor: pointer;
   }
   
+  .larger-tooltip .tooltip-inner {
+    font-size: 16px; /* Adjust the font size as needed */
+    max-width: 400px; /* Adjust the maximum width as needed */
+  }

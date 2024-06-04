@@ -59,14 +59,14 @@ export const PortfolioHeader = ({ color, name }) => {
         const onSubmit = handleSubmit(async (data) => {
           try {
             console.log(data)
-           /*  const res = await addPortfolio(data);
+            const res = await addPortfolio(data);
             if (res.ok) {
               notify({ message: res.message, status: 'success' });
               handleClose();
               refresh();
             } else {
               notify({ message: res.message, status: 'danger' });
-            } */
+            }
           } catch (error) {
             console.log(error)
             notify({ message: 'Server error', status: 'danger' });
@@ -104,26 +104,6 @@ export const PortfolioHeader = ({ color, name }) => {
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-4 align-items-center m-auto ' >
-              <label htmlFor="manager" className='text-muted' >Manager</label>
-              <div className='col-lg-7 col-12' >
-              <Controller
-      name='manager'
-      control={control}
-      render={({ field }) => (
-        <Select
-          {...field}
-          isClearable
-          isMulti
-          options={fakeManagers}
-          onChange={(selectedOptions) => field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : [])}
-          onBlur={field.onBlur}
-          value={fakeManagers.filter(option => field.value?.includes(option.value))}
-        />
-      )}
-    />
-              </div>
-            </div>
 
             <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-2 align-items-center m-auto ' >
               <label htmlFor="description" className='text-muted' >Description</label>
