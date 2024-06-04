@@ -5,9 +5,7 @@ const portfolioServices = require("../services/portfolio.services");
 const portfolioController = {
   async createPortfolio(request, reply) {
     try {
-      const manager = request.user.username;
       const portfolioData = request.body;
-
       if (!portfolioData || !portfolioData.name) {
         return reply
           .status(httpStatus.BAD_REQUEST)
@@ -22,10 +20,9 @@ const portfolioController = {
           .status(httpStatus.CONFLICT)
           .send({ message: "Portfolio name already taken" });
       }
-
       const createResponse = await portfolioServices.createPortfolio(
         portfolioData,
-        manager
+        request.user.id
       );
 
       if (createResponse.ok) {
@@ -44,18 +41,37 @@ const portfolioController = {
       });
     }
   },
-  async getPortfolios(request, reply) {
+  async getCurrentUserPortfolios(request, reply) {
     try {
-      const manager = request.user.username;
+      const manager = request.user.id;
       if (!manager) {
         return reply
           .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing manager username" });
+          .send({ message: "Missing manager id" });
       }
-
       const portfoliosRes = await portfolioServices.getPortfolios(manager);
 
-      if (portfoliosRes.ok && portfoliosRes.portfolios.length > 0) {
+      if (portfoliosRes.ok) {
+        return reply
+          .status(httpStatus.OK)
+          .send({ portfolios: portfoliosRes.portfolios });
+      } else {
+        return reply
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "No portfolios found for this manager" });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async getPortfolios(request, reply) {
+    try {
+      const portfoliosRes = await portfolioServices.getPortfolios();
+      console.log(portfoliosRes);
+      if (portfoliosRes.ok) {
         return reply
           .status(httpStatus.OK)
           .send({ portfolios: portfoliosRes.portfolios });

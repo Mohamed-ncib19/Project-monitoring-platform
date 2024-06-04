@@ -40,30 +40,16 @@ const portfolioServices = {
 
       const portfolioId = uuidv4();
       const portfolioCollection = await PortfolioModel();
-
       const portfolioResult = await portfolioCollection.insertOne({
-        ...portfolio,
-        zentaoId: zentaoResponse.data.id,
         _id: portfolioId,
+        zentaoId: zentaoResponse.data.id,
+        name: portfolio.name,
         createdAt: new Date(),
+        manager,
         active: true,
-        managerUsername: manager,
       });
 
       if (portfolioResult.acknowledged) {
-        const userResult = await userServices.managePorfolio(
-          manager,
-          portfolioId
-        );
-
-        if (!userResult.ok) {
-          console.error(
-            "Error managing portfolio for user:",
-            userResult.message
-          );
-          return { ok: false, message: "Error managing portfolio for user" };
-        }
-
         return { ok: true, message: "Portfolio created successfully" };
       } else {
         return { ok: false, message: "MongoDB error" };
@@ -78,14 +64,23 @@ const portfolioServices = {
     }
   },
 
-  async getPortfolios(manager) {
+  async getPortfolios(manager = 0) {
     try {
       const portfolioModel = await PortfolioModel();
-      const portfolios = await portfolioModel
-        .find({ managerUsername: manager })
-        .toArray();
-
-      if (portfolios && portfolios.length > 0) {
+      let portfolios;
+      if (manager === 0) {
+        portfolios = await portfolioModel.find({ active: true }).toArray();
+      } else {
+        portfolios = await portfolioModel
+          .find({
+            $and: [
+              { managers: { $elemMatch: { $eq: manager } } },
+              { active: true },
+            ],
+          })
+          .toArray();
+      }
+      if (portfolios) {
         return { ok: true, portfolios };
       }
 

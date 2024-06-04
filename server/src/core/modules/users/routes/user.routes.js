@@ -11,7 +11,7 @@ async function routes(fastify, options) {
   });
 
   // Get a specific user by username
-  fastify.get("/users/:username", {
+  fastify.get("/users/:id", {
     preHandler: [verifyJWT, checkUserActive],
     handler: userController.getUser,
   });
@@ -23,7 +23,7 @@ async function routes(fastify, options) {
   });
 
   // Setup or update a specific user by username (by manager)
-  fastify.put("/users/:username", {
+  fastify.put("/users/:id", {
     preHandler: [verifyJWT, checkUserActive],
     handler: userController.setUpUser,
   });
@@ -35,14 +35,14 @@ async function routes(fastify, options) {
   });
 
   // Ban a specific user by username
-  fastify.delete("/users/:username/ban", {
+  fastify.delete("/users/:id/ban", {
     preHandler: [verifyJWT, checkUserActive],
     handler: userController.banUser,
   });
 
   // Unban a specific user by username
-  fastify.put("/users/:username/restore", {
-    preHandler: [verifyJWT, checkUserActive],
+  fastify.put("/users/:id/restore", {
+    preHandler: [verifyJWT],
     handler: userController.restoreUser,
   });
 }
