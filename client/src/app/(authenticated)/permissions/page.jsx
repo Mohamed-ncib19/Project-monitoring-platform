@@ -12,7 +12,7 @@ import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import ViewIcon from '@/../../public/icons/ViewIcon';
 import {AddModal} from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
 import {EditModal} from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
-import ConfirmModal from '@/app/(authenticated)/_components/Modals/ConfirmModal/ConfirmModal';
+import {ConfirmModal} from '@/app/(authenticated)/_components/Modals/ConfirmModal/ConfirmModal';
 
 import EditDotsIcon from '@/../public/icons/edit-dots-icon';
 import requestsNotFound from '@/../../public/images/requests-not-found.png'; 

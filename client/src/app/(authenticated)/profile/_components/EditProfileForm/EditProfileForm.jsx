@@ -2,7 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import Image from 'next/image';
 
-import logo from '@/../public/images/Logo.png';
+import logo from '@/../../public/Logo/Logo.svg';
 import CoreButton from '@/components/buttons/CoreButton';
 
 

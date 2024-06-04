@@ -5,8 +5,8 @@ import { Avatar } from "@/app/(authenticated)/_components/Avatar";
 import Link from "next/link";
 
 export const PortfolioCard = ({dataProvider,handleFunctions})=>{
-    const handleShow = handleFunctions.find(func => func.hasOwnProperty('editModal'))?.editModal;
-    const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
+  const handleShow = handleFunctions.editModal;
+  const handleShowDelete = handleFunctions.deleteModal;
       return(
         <>
          <div

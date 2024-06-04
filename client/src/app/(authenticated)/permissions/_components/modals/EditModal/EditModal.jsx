@@ -152,6 +152,7 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
                   render={({ field }) => (
                     <Select
                     {...field}
+                    isClearable
                       className={clsx(' ', {
                         'is-invalid border-2 border-danger': !!errors.businessPosition,
                       })}
