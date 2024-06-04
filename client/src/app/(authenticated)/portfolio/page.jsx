@@ -1,79 +1,78 @@
 'use client';
-import { Suspense, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Dropdown, Modal } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+import { useEffect, useState } from 'react';
+import PortfolioNotFound from '@/../../public/SVG/Portfolio-not-found.svg';
+import { PortfolioHeader } from '@/app/(authenticated)/_components/Portfolio/PortfolioHeader';
+import axios from 'axios';
+import { useNotifications } from 'reapop';
+import { EditModal } from '@/app/(authenticated)/_components/Modals/EditModal/';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import CoreInput from '@/components/Inputs/CoreInput';
+import TextareaInput from '@/components/Inputs/Textarea';
 
-import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
-import EditDotsIcon from '@/../public/icons/edit-dots-icon';
-import EmptyProgramSVG from '@/../public/icons/empty-program';
-import { Avatar } from '@/app/(authenticated)/_components/Avatar';
-import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown/Dropdown';
-import { PortfolioHeader } from '@/app/(authenticated)/_components/PortfolioHeader';
-import Loading from '@/app/loading';
-import CoreButton from '@/components/buttons/CoreButton';
-import EditIcon from '../../../../public/icons/edit-icon';
+import Select from 'react-select';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { PortfolioShcema } from '../_shcemas/portfolio.shcema';
+import { ConfirmModal } from '../_components/Modals/ConfirmModal';
+import { PortfolioCard } from './_components/PortfolioCard';
+import Image from 'next/image';
 
 const Portfolio = () => {
-  //const [programs, setPrograms] = useState([]);
-  const [show, setShow] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
-  const programs = [
-    {
-      id: 1,
-      name: "Program 1",
-      desc: "Description of Program 1",
-      begin: "2024-05-01",
-      products: 10,
-      projects: 5
-    },
-    {
-      id: 2,
-      name: "Program 2",
-      desc: "Description of Program 2",
-      begin: "2024-05-05",
-      products: 15,
-      projects: 7
-    },
-    {
-      id: 3,
-      name: "Program 3",
-      desc: "Description of Program 3",
-      begin: "2024-05-05",
-      products: 15,
-      projects: 7
-    },
-    {
-      id: 4,
-      name: "Program 4",
-      desc: "Description of Program 4",
-      begin: "2024-05-05",
-      products: 15,
-      projects: 7
-    }, 
-   ];
-  
-/*   useEffect(() => {
-    const getAllPrograms = async () => {
-      const res = await getPrograms();
-      if (res.ok && res.status === 200) {
-        setPrograms(res.data);
-      } else if (!res.ok && res.status === 500) {
-        await setErrorMsg('System Error!');
-        Swal.fire({
-          icon: 'error',
-          title: 'System Error',
-        });
-      } else {
-        await setErrorMsg('No Program Found');
-      }
-    };
+  const fakeManagers = [
+    {value: 'manager1', label: 'manager1'},
+    {value: 'manager2', label: 'manager2'},];
 
-    getAllPrograms();
-  }, []); */
+
+
+const { notify } = useNotifications();
+ 
+const [show,setShow] = useState(false);
+const handleClose = ()=> setShow(false);
+const handleShow = ()=> setShow(true);
+
+const [showDelete,setShowDelete] = useState(false);
+const handleCloseDelete = ()=> setShowDelete(false);
+const handleShowDelete = ()=> setShowDelete(true);
+
+const methods = useForm({
+  resolver : yupResolver(PortfolioShcema),
+});
+
+const {
+  handleSubmit,
+  formState : {errors},
+  register,
+  control
+} = methods;
+
+   const [portfolios, setPortfolios] = useState([]);
+ 
+   const getPortfolios = async () => {
+     try {
+       const response = await axios.get('/portfolios');
+       setPortfolios(response.data.portfolios);
+     } catch (error) {
+       notify({message : JSON.parse(error.request.response).message , status : 'warning'});
+     }
+   };
+ 
+   useEffect(() => {
+ 
+     const fetchPortfolios = async () => {
+       
+         await getPortfolios();
+       
+     };
+ 
+     fetchPortfolios();
+  }, []);
+
+
+
+  const onSubmit = handleSubmit(async (data) =>{
+    console.log(data);
+  })
+
 
   return (
     <>
@@ -82,75 +81,21 @@ const Portfolio = () => {
 
         <div className="mx-5 ">
           <div className=" portfolio-container row justify-content-start m-auto">
-            {programs.length > 0 ? (
-              programs.map((program) => (
-                <div
-                  key={program.id}
-                  className="portfolio-card col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column gap-1 rounded-2"
-                >
-                  <div className="d-flex justify-content-end ">
-                    
-                    <div >
-                      <Dropdown>
-                        <Dropdown.Toggle as='button' className='border-0 edit-protfolio m-2 fs-5 text-muted rounded-circle px-2 py-1 shadow-sm' >
-                        <EditDotsIcon />
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item onClick={()=>console.log('edit modal')} >Edit</Dropdown.Item>
-                          <Dropdown.Item onClick={()=>console.log('delete modal')} >Delete</Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-
-                  </div>
-                  <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
-                    <Avatar
-                      name={program.name}
-                      variant={'info'}
-                      rounded={'1'}
-                      textColor={'dark'}
-                    />
-                    <p className="fw-bold fs-5 text-dark ">{program.name}</p>
-                  </div>
-                  <div className="d-flex flex-column px-4 py-3">
-                    <p className="text-dark-gray">
-                      {program.desc.split(' ').length > 15
-                        ? `${program.desc.split(' ').slice(0, 15).join(' ')}...`
-                        : program.desc}
-                    </p>
-                  </div>
-                  <div className="d-flex flex-column px-4 pt-5">
-                    <p>
-                      <span className="protfolio-children-length fw-semibold">
-                        Number of Products :
-                      </span>{' '}
-                      <span className="fw-bolder text-dark">
-                        {program.products}
-                      </span>
-                    </p>
-                    <div className="line rounded w-25   mb-3"></div>
-                    <p>
-                      <span className="protfolio-children-length fw-semibold">
-                        Number of Projects :
-                      </span>{' '}
-                      <span className="fw-bolder text-dark">
-                        {program.projects}
-                      </span>
-                    </p>
-                  </div>
-                  <Link
-                    href={`/My/portfolio/${program.id}/products`}
-                    p
-                    className=" check-products align-self-end border-0 rounded-circle px-2 py-1 fs-4  text-dark-gray"
-                  >
-                    <ArrowRightIcon />
-                  </Link>
-                </div>
+            {portfolios.length > 0 ? (
+              portfolios.map((portfolio) => (
+               <PortfolioCard dataProvider={portfolio} handleFunctions={[
+                {editModal : handleShow},
+                {deleteModal : handleShowDelete}
+               ]} />
               ))
             ) : (
-              <div className=" d-flex flex-column justify-content-center align-items-center w-100 vh-100">
-                <EmptyProgramSVG />
-                <p className=" text-dark-gray fw-bolder fs-1">{errorMsg}</p>
+              <div className=" d-flex flex-column justify-content-center align-items-center gap-3 mt-5">
+                <Image
+                  priority
+                  src={PortfolioNotFound}
+                  alt='Portfolio Not Found'
+                />
+                <p className=" text-dark-gray fw-bolder text-center fs-1">No portfolio  Found</p>
               </div>
             )}
           </div>
@@ -158,7 +103,61 @@ const Portfolio = () => {
       </div>
 
         
+      <EditModal show={show} handleClose={handleClose} headerTitle='Edit Portfolio' onSubmit={onSubmit} >
+      <FormProvider {...methods}>
+          <form className='d-flex flex-column gap-5 py-5' >
 
+            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-5 align-items-center m-auto ' >
+              <label htmlFor="name" className=' text-muted' >Name<span className='text-danger' >*</span></label>
+              <div className='col-lg-7 col-12' >
+              <CoreInput
+              name='name'
+              placeholder='Required'
+              register={register}
+              errors={errors}
+              />
+              </div>
+            </div>
+
+            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-4 align-items-center m-auto ' >
+              <label htmlFor="manager" className='text-muted' >Manager</label>
+              <div className='col-lg-7 col-12' >
+              <Controller
+                name='manager'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    isClearable
+                    options={fakeManagers}
+                    onChange={(option) => field.onChange(option ? option.value : '')}
+                    onBlur={field.onBlur}
+                    value={fakeManagers.find((option) => option.value === field.value) || ''}
+                  />
+                )}
+              />
+              </div>
+            </div>
+
+            <div className='d-flex flex-lg-row flex-column justify-content-start col-10 gap-2 align-items-center m-auto ' >
+              <label htmlFor="description" className='text-muted' >Description</label>
+              <div className='col-lg-7 col-12' >
+              <TextareaInput
+              name='description'
+              register={register}
+              errors={errors}
+              />
+            </div>
+          </div>
+
+          </form>
+        </FormProvider>
+      </EditModal>
+
+        
+<ConfirmModal show={showDelete} handleClose={handleCloseDelete} headerTitle='Delete portfolio' handleClick={()=>console.log('deleted')} >
+  <p>This portfolio is empty. Are you sure you want to delete it ?</p>
+</ConfirmModal>
     </>
   );
 };

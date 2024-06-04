@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 
-import { ProductHeader } from '@/app/(authenticated)/_components/ProductHeader';
+import { ProductHeader } from '@/app/(authenticated)/_components/Product/ProductHeader';
 
 import { getProductsByPrograms } from '../../../../api/routes/routesEndpoints';
 
