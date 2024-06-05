@@ -83,7 +83,6 @@ export const EditProfileForm = ({dataProvider}) =>{
       }
     }
     } catch (error) {
-      console.log(error);
       notify({message: 'An unexpected error occurred', status:'danger'});
     }
   }; 

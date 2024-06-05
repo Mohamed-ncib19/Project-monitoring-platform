@@ -12,6 +12,7 @@ const Products = () => {
       endDate: "12/04/2025",
       numberOfProjects: 4,
       parent:'84a257d5-8199-427a-9ca0-29ab0f5bb031',
+      parentName : 'test',
       projectMembers: ["E", "J", "A", "R", "+8"]
     },
     {
@@ -21,6 +22,7 @@ const Products = () => {
       endDate: "01/01/2024",
       numberOfProjects: 3,
       parent:2,
+      parentName:'test',
       projectMembers: ["M", "N", "O", "P", "+5"]
     },
   ];
@@ -30,10 +32,10 @@ const Products = () => {
       <ProductHeader color={'danger'} name={'Product'} />
 
       <div className="mx-5 ">
-          <div className=" portfolio-container row justify-content-start m-auto">
+          <div className=" product-container row justify-content-start m-auto">
             {ProductsData.length > 0 ? (
-              ProductsData.map((portfolio) => (
-              <ProductCard dataProvider={portfolio} />
+              ProductsData.map((product) => (
+              <ProductCard dataProvider={product} productKey={product._id} />
               ))
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">

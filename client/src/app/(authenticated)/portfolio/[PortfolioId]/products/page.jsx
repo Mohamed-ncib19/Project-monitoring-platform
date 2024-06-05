@@ -3,31 +3,32 @@
 import { ProductHeader } from '@/app/(authenticated)/_components/Product/ProductHeader';
 import { ProductCard } from '@/app/(authenticated)/_components/Product/ProductCard';
 
-import ProductNotFound from '@/../../public/SVG/Product-not-found.svg'  
-
+import ProductNotFound from '@/../../public/SVG/Product-not-found.svg';
 
 const ProductsByPorftolio = ({ params }) => {
   const { PortfolioId } = params;
 
   const ProductsData = [
     {
-        _id:1,
+      _id:1,
       name: "Product name 1",
       description: "This indicates the product intro for lorem lorem lorem lorme lorem lorme lorem",
       startDate: "12/04/2024",
       endDate: "12/04/2025",
       numberOfProjects: 4,
       parent:'84a257d5-8199-427a-9ca0-29ab0f5bb031',
+      parentName : 'test',
       projectMembers: ["E", "J", "A", "R", "+8"]
     },
     {
-        _id:2,
+      _id:2,
       name: "Product name 2",
       description: "This indicates the product intro for lorem lorem lorem lorme lorem lorme lorem",
       startDate: "01/01/2023",
       endDate: "01/01/2024",
       numberOfProjects: 3,
       parent:2,
+      parentName:'test',
       projectMembers: ["M", "N", "O", "P", "+5"]
     },
   ];
@@ -39,10 +40,10 @@ const ProductsByPorftolio = ({ params }) => {
 
 
       <div className="mx-5 ">
-          <div className=" portfolio-container row justify-content-start m-auto">
+          <div className=" product-container row justify-content-start m-auto">
             {ProductsData.length > 0 ? (
-              ProductsData.map((portfolio) => (
-              <ProductCard dataProvider={portfolio} />
+              ProductsData.map((product) => (
+              <ProductCard dataProvider={product} supportBreadCumb={true} productKey={product._id} />
               ))
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">

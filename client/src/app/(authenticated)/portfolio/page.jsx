@@ -14,10 +14,18 @@ import { ConfirmModal } from '../_components/Modals/ConfirmModal';
 import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
 import { AlertModal } from '../_components/Modals/AlertModal';
+import { useBreadCumb } from '../_context/BreadcrumbsContext';
 
 const Portfolio = () => {
 
   const { notify } = useNotifications();
+
+  const { show,setShow } = useBreadCumb();
+
+
+  useEffect(()=>{
+     !show && setShow(true);
+  },[]);
   
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -57,10 +65,44 @@ const Portfolio = () => {
   }, []);
 
 
+  const EditPortfolio = async (id,data) =>{
+    try {
+        const response = await axios.put(`/portfolios/${id}`,data);
+        if(response.status === 200){
+          return Promise.resolve({
+            ok:true,
+            message:response.data.message
+          });
+        }else{
+          return Promise.resolve({
+            ok:false,
+            message:response.data.message
+          });
+        }
+    } catch (error) {
+      return Promise.reject({
+        ok:false,
+        message:JSON.parse(error?.request.response).message
+      });
+    }
+  }
+
+
   
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
+    try {
+      const response = await EditPortfolio(currentPortfolio?._id,data);
+      if(response.ok){
+        notify({ message: response.message, status: 'success' });
+        setShowEditModal(false);
+      }else{
+        notify({ message: response.message, status: 'danger' });
+      }
+    } catch (error) {
+      notify({ message: error.message, status: 'danger' });
+      
+    }
   });
 
   const handleEditModalShow = (portfolio) => {
@@ -89,7 +131,7 @@ const Portfolio = () => {
             {portfolios.length > 0 ? (
               portfolios.map((portfolio) => (
                 <PortfolioCard
-                  key={portfolio.id}
+                  portfolioKey={portfolio._id}
                   dataProvider={portfolio}
                   handleFunctions={{
                     editModal: () => handleEditModalShow(portfolio),

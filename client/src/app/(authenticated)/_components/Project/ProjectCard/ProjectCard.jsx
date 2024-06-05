@@ -3,15 +3,14 @@ import ArrowRightIcon from "@/../../public/icons/arrows/arrow-right-icon";
 import EditDotsIcon from "@/../../public/icons/edit-dots-icon";
 import { Avatar } from "@/app/(authenticated)/_components/Avatar";
 
-export const ProjectCard = ({dataProvider,handleFunctions})=>{
-    console.log(dataProvider)
+export const ProjectCard = ({dataProvider,handleFunctions,projectKey})=>{
     //const handleShow = handleFunctions.find(func => func.hasOwnProperty('editModal'))?.editModal;
     //const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
       
     return(
         <>
          <div
-                  key={dataProvider._id}
+                  key={projectKey}
                   className="project-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
                 >
                   <div className="d-flex justify-content-end ">

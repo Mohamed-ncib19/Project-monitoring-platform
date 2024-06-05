@@ -26,15 +26,15 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
 
   const { handleSubmit, formState: { errors }, control, register, reset } = methods;
 
-  const EditUser = async (username, data) => {
+  const EditUser = async (id, data) => {
     try {
-      const response = await axios.put(`/users/${username}`, data);
+      const response = await axios.put(`/users/${id}`, data);
       return response.data;
     } catch (error) {
       return Promise.reject({
         ok: false,
         status: 500,
-        msg: 'internal server',
+        msg: JSON.parse(error?.request.response).message,
       });
     }
   };
@@ -67,7 +67,7 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
         handleClose();
         return;
        }else{
-      const response = await EditUser(user?.username, formData);
+      const response = await EditUser(user?._id, formData);
       if (response.message === 'Account setted up successfuly') {
         notify({ message: response.message, status: 'success' });
         handleClose();
@@ -77,7 +77,7 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
       }
     }
     } catch (error) {
-      notify({ message: 'server error', status: 'danger' });
+      notify({ message: error.msg, status: 'danger' });
     }
   });
 

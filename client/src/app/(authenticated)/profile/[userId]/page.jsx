@@ -5,33 +5,38 @@ import Link from 'next/link';
 import axios from 'axios';
 
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+import { useNotifications } from 'reapop';
 
 const ProfileCard = ({ params }) => {
-  const username = params.username;
+
+  const {userId} = params;
+
+  const { notify } = useNotifications();
+
 
   const [user, setUser] = useState({});
   const [userSession, setUserSession] = useState(false);
 
-  const getUser = async (username) => {
+  const getUser = async (userId) => {
     try {
-      const response = await axios.get(`/users/${username}`);
-      if (response && response.data) {
+      const response = await axios.get(`/users/${userId}`);
+      if (response && response.status === 200 && response.data) {
         const fetchedUser = response.data.user;
         setUser(fetchedUser);
 
         const session = await getSession();
-        setUserSession(session.username === fetchedUser.username);
+        setUserSession(session.profile.username === fetchedUser.username);
       }
     } catch (error) {
-      console.log(error);
+      notify({ message: 'Failed to load information. Please try again later.', status: 'danger' });
     }
   };
 
   useEffect(() => {
-    if (username) {
-      getUser(username);
+    if (userId) {
+      getUser(userId);
     }
-  }, [username]);
+  }, [userId]);
 
   return (
       <div className="profile-card d-flex flex-column gap-4 bg-white rounded-4 p-4  col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 mx-auto shadow-sm">
@@ -93,7 +98,7 @@ const ProfileCard = ({ params }) => {
               <i className="bi bi-person fs-3 text-muted"></i>
               <p className="mb-0 text-secondary fw-bold">Username</p>
             </div>
-            <p className="mb-0 custom-value-field">{username}</p>
+            <p className="mb-0 custom-value-field">{user?.username}</p>
           </div>
 
           <div className="d-flex flex-md-row flex-column justify-content-between align-items-center">
