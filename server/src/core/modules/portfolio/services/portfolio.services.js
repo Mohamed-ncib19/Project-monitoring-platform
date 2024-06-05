@@ -9,11 +9,7 @@ const portfolioServices = {
       const portfolioModel = await PortfolioModel();
       const portfolio = await portfolioModel.findOne({ name });
 
-      if (portfolio) {
-        return { ok: true, exists: true, portfolio };
-      }
-
-      return { ok: true, exists: false, message: "Portfolio does not exist" };
+      return { ok: true, exists: Boolean(portfolio), portfolio };
     } catch (error) {
       console.error("Error checking if portfolio exists:", error);
       return {
@@ -29,12 +25,11 @@ const portfolioServices = {
       const zentaoResponse = await zentaoServices.createPortfolio(
         portfolio.name
       );
-
       if (!zentaoResponse.ok) {
         return {
           ok: false,
           message: "Zentao error",
-          details: zentaoResponse.details,
+          details: zentaoResponse,
         };
       }
 
@@ -49,13 +44,11 @@ const portfolioServices = {
         active: true,
       });
 
-      if (portfolioResult.acknowledged) {
-        return { ok: true, message: "Portfolio created successfully" };
-      } else {
-        return { ok: false, message: "MongoDB error" };
-      }
+      return portfolioResult.acknowledged
+        ? { ok: true, message: "Portfolio created successfully" }
+        : { ok: false, message: "MongoDB error: Failed to create portfolio" };
     } catch (error) {
-      console.error("Internal server error:", error);
+      console.error("Error creating portfolio:", error);
       return {
         ok: false,
         message: "Internal server error",
@@ -67,24 +60,15 @@ const portfolioServices = {
   async getPortfolios(manager = 0) {
     try {
       const portfolioModel = await PortfolioModel();
-      let portfolios;
-      if (manager === 0) {
-        portfolios = await portfolioModel.find({ active: true }).toArray();
-      } else {
-        portfolios = await portfolioModel
-          .find({
-            $and: [
-              { managers: { $elemMatch: { $eq: manager } } },
-              { active: true },
-            ],
-          })
-          .toArray();
-      }
-      if (portfolios) {
-        return { ok: true, portfolios };
-      }
+      const query = manager
+        ? { managers: { $elemMatch: { $eq: manager } }, active: true }
+        : { active: true };
 
-      return { ok: false, message: "No portfolios found for this manager" };
+      const portfolios = await portfolioModel.find(query).toArray();
+
+      return portfolios.length
+        ? { ok: true, portfolios }
+        : { ok: false, message: "No portfolios found" };
     } catch (error) {
       console.error("Error getting portfolios:", error);
       return {
@@ -99,12 +83,9 @@ const portfolioServices = {
     try {
       const portfolioModel = await PortfolioModel();
       const portfolio = await portfolioModel.findOne({ _id: portfolioId });
-
-      if (portfolio) {
-        return { ok: true, portfolio };
-      }
-
-      return { ok: false, message: "Portfolio not found" };
+      return portfolio
+        ? { ok: true, portfolio }
+        : { ok: false, message: "Portfolio not found" };
     } catch (error) {
       console.error("Error getting portfolio by ID:", error);
       return {
@@ -118,13 +99,12 @@ const portfolioServices = {
   async deletePortfolio(portfolioId) {
     try {
       const portfolioCollection = await PortfolioModel();
-      // Find the portfolio to delete it from Zentao as well
       const portfolio = await portfolioCollection.findOne({ _id: portfolioId });
+
       if (!portfolio) {
         return { ok: false, message: "Portfolio not found" };
       }
 
-      // Delete the portfolio from Zentao
       const zentaoResponse = await zentaoServices.deletePortfolio(
         portfolio.zentaoId
       );
@@ -136,21 +116,16 @@ const portfolioServices = {
         };
       }
 
-      // Delete the portfolio from the database
       const deleteResult = await portfolioCollection.updateOne(
         { _id: portfolioId },
         { $set: { active: false } }
       );
-      if (deleteResult.modifiedCount === 1) {
-        return { ok: true, message: "Portfolio deleted successfully" };
-      } else {
-        return {
-          ok: false,
-          message: "MongoDB error: Failed to delete portfolio",
-        };
-      }
+
+      return deleteResult.modifiedCount === 1
+        ? { ok: true, message: "Portfolio deleted successfully" }
+        : { ok: false, message: "MongoDB error: Failed to delete portfolio" };
     } catch (error) {
-      console.error("Internal server error:", error);
+      console.error("Error deleting portfolio:", error);
       return {
         ok: false,
         message: "Internal server error",
@@ -158,16 +133,16 @@ const portfolioServices = {
       };
     }
   },
+
   async editPortfolio(portfolioId, portfolioData) {
     try {
       const portfolioCollection = await PortfolioModel();
-      // Find the portfolio to edit it
       const portfolio = await portfolioCollection.findOne({ _id: portfolioId });
+
       if (!portfolio) {
         return { ok: false, message: "Portfolio not found" };
       }
 
-      // Update the portfolio in Zentao if needed
       const zentaoResponse = await zentaoServices.editPortfolio(
         portfolio.zentaoId,
         portfolioData
@@ -180,21 +155,43 @@ const portfolioServices = {
         };
       }
 
-      // Update the portfolio in the database
       const updateResult = await portfolioCollection.updateOne(
         { _id: portfolioId },
         { $set: portfolioData }
       );
-      if (updateResult.modifiedCount === 1) {
-        return { ok: true, message: "Portfolio edited successfully" };
-      } else {
-        return {
-          ok: false,
-          message: "MongoDB error: Failed to edit portfolio",
-        };
-      }
+
+      return updateResult.modifiedCount === 1
+        ? { ok: true, message: "Portfolio edited successfully" }
+        : { ok: false, message: "MongoDB error: Failed to edit portfolio" };
     } catch (error) {
-      console.error("Internal server error:", error);
+      console.error("Error editing portfolio:", error);
+      return {
+        ok: false,
+        message: "Internal server error",
+        details: error.message,
+      };
+    }
+  },
+
+  async addProduct(portfolioId, productId) {
+    try {
+      console.log(portfolioId);
+      const portfolioCollection = await PortfolioModel();
+      const portfolio = await portfolioCollection.findOne({ _id: portfolioId });
+      console.log(portfolio);
+      if (!portfolio) {
+        return { ok: false, message: "Portfolio not found" };
+      }
+      const updateResult = await portfolioCollection.updateOne(
+        { _id: portfolioId },
+        { $addToSet: { products: productId } }
+      );
+      console.log(updateResult);
+      return updateResult.modifiedCount === 1
+        ? { ok: true, message: "product added" }
+        : { ok: false, message: "MongoDB error: Failed to add product" };
+    } catch (error) {
+      console.error("Error adding produt to porfolio:", error);
       return {
         ok: false,
         message: "Internal server error",

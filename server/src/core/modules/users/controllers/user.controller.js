@@ -6,8 +6,8 @@ const ldapServices = require("../services/ldap.services");
 const userController = {
   async getUser(request, reply) {
     try {
-      const { username } = request.params;
-      const response = await userServices.userExists(username);
+      const { id } = request.params;
+      const response = await userServices.userExists(id);
       if (response.ok) {
         return reply.status(200).send({ user: response.user });
       } else {
@@ -36,19 +36,36 @@ const userController = {
       });
     }
   },
-  async getUsers(request, reply) {
+  async getUsersByStatus(request, reply) {
     try {
       let response;
-      const { active, pending, banned } = request.query;
-      const status =
-        active === "true"
-          ? "active"
-          : pending === "true"
-          ? "pending"
-          : banned === "true"
-          ? "banned"
-          : false;
-      response = await userServices.getUsers(status);
+      const { status } = request.params;
+
+      response = await userServices.getUsersByStatus(status);
+
+      if (response.ok) {
+        return reply.status(httpStatus.OK).send({ users: response.users });
+      } else {
+        return reply
+          .status(httpStatus.NOT_FOUND)
+          .send({ error: { message: "Users not found" } });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        error: { message: "Internal server error", details: error.message },
+      });
+    }
+  },
+  async getUsersByRole(request, reply) {
+    try {
+      let response;
+      const { role } = request.params;
+      console.log(first)
+      if (role !== "all") {
+        response = role !== (await userServices.getUsersByRole(role));
+      } else {
+        response = role !== (await userServices.getUsersByRole());
+      }
 
       if (response.ok) {
         return reply.status(httpStatus.OK).send({ users: response.users });
