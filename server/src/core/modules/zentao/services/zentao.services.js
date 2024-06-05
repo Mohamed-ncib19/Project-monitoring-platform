@@ -21,7 +21,7 @@ const zentaoServices = {
         data: data,
       };
       const response = await axios.request(config);
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         return { ok: true, data: response.data };
       } else {
         console.log(response);
@@ -68,6 +68,61 @@ const zentaoServices = {
           Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
         },
         data: portfolioData,
+      };
+      const response = await axios.request(config);
+      if (response.status === 200 || response.status === 204) {
+        return { ok: true, data: response.data };
+      } else {
+        console.log(response);
+        return { ok: false };
+      }
+    } catch (error) {
+      console.log(error.response);
+      return { ok: false, message: "Error: ", error };
+    }
+  },
+  async createProduct(product, porfolioZentaoId) {
+    try {
+      let data = {
+        name: product.name,
+        desc: product.desc,
+        program: porfolioZentaoId,
+        acl: "open",
+        code: product.code,
+      };
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/products`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      if (response.status === 201 || response.status === 200) {
+        return { ok: true, data: response.data };
+      } else {
+        return { ok: false };
+      }
+    } catch (error) {
+      return { ok: false, message: error.response.data.error };
+    }
+  },
+  async editProduct(productId, productData) {
+    try {
+      let config = {
+        method: "put",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/products/${productId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+        data: productData,
       };
       const response = await axios.request(config);
       if (response.status === 200 || response.status === 204) {

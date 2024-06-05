@@ -5,9 +5,14 @@ const checkUserActive = require("../../../middlewares/checkUserActive ");
 
 async function routes(fastify, options) {
   // Get all users
-  fastify.get("/users", {
+  fastify.get("/users/status/:status", {
     preHandler: [verifyJWT, checkUserActive],
-    handler: userController.getUsers,
+    handler: userController.getUsersByStatus,
+  });
+
+  fastify.get("/users/roles/:role", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: userController.getUsersByRole,
   });
 
   // Get a specific user by username

@@ -42,7 +42,7 @@ const userServices = {
     }
   },
 
-  async getUsers(option = null) {
+  async getUsersByStatus(option = null) {
     try {
       let users;
       const userModel = await UserModel();
@@ -56,6 +56,22 @@ const userServices = {
           : {};
 
       users = await userModel.find(query).toArray();
+      return { ok: true, users: users };
+    } catch (error) {
+      console.error("Error getting users:", error);
+      return { ok: false, status: httpStatus.NOT_FOUND };
+    }
+  },
+
+  async getUsersByRole(role = null) {
+    try {
+      let users;
+      const userModel = await UserModel();
+      if (role !== null) {
+        users = await userModel.find({ role: role, active: true }).toArray();
+      } else {
+        users = await userModel.find({ active: true }).toArray();
+      }
       return { ok: true, users: users };
     } catch (error) {
       console.error("Error getting users:", error);
