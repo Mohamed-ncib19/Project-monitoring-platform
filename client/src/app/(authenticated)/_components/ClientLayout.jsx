@@ -19,8 +19,8 @@ const ClientLayout = ({ children, data }) => {
           
         }
         const originalConfig = err.config;
-        if (err.response?.status === 401 && !originalConfig._retry) {
-          originalConfig._retry = true;
+        if (err.response?.status === 401 && originalConfig._retry) {
+          //originalConfig._retry = true;
           const newSession = await session.update();
           if (newSession?.error) {
             await signOut({ redirect: false });

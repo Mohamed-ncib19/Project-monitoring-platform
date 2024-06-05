@@ -25,9 +25,9 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
 
   const { handleSubmit, formState: { errors }, control, register, reset } = methods;
 
-  const setupUser = async (username, data) => {
+  const setupUser = async (id, data) => {
     try {
-      const response = await axios.put(`/users/${username}`, data);
+      const response = await axios.put(`/users/${id}`, data);
       return response.data;
     } catch (error) {
       return Promise.reject({
@@ -54,7 +54,7 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
 
   const handleSetup = handleSubmit(async (formData) => {
     try {
-      const response = await setupUser(user?.username, formData);
+      const response = await setupUser(user?._id, formData);
       if (response.message === 'Account setted up successfuly') {
         notify({ message: response.message, status: 'success' });
         handleClose();
@@ -63,7 +63,7 @@ export const AddModal = ({ show, handleClose, headerTitle, buttonLabel, user, se
         notify({ message: response.message, status: 'danger' });
       }
     } catch (error) {
-      notify({ message: 'server error', status: 'danger' });
+      notify({ message: 'Something went wrong', status: 'danger' });
     }
   });
 

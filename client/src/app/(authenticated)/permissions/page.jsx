@@ -141,10 +141,10 @@ const [restoreType,setRestoreType] = useState(null);
 
   };
 
-  const deleteRequest = async(username) => {
+  const deleteRequest = async(id) => {
     try {
       const response = await axios.delete(
-        `/users/${username}/ban?type=request`,
+        `/users/${id}/ban?type=request`,
       );
       return response.data;
     } catch (error) {
@@ -155,9 +155,9 @@ const [restoreType,setRestoreType] = useState(null);
       });
     }
   };
-  const desactivateUser = async (username) => {
+  const desactivateUser = async (id) => {
     try {
-      const response = await axios.delete(`/users/${username}/ban?type=user`);
+      const response = await axios.delete(`/users/${id}/ban?type=user`);
       return response.data;
     } catch (error) {
       return Promise.reject({
@@ -168,9 +168,9 @@ const [restoreType,setRestoreType] = useState(null);
     }
   };
 
-  const restoreRequest =async (username) => {
+  const restoreRequest =async (id) => {
     try {
-      const response = await axios.put(`/users/${username}/restore?type=request`);
+      const response = await axios.put(`/users/${id}/restore?type=request`);
       return response.data;
     } catch (error) {
       return Promise.reject({
@@ -181,9 +181,9 @@ const [restoreType,setRestoreType] = useState(null);
     }
   };
 
-  const restoreUser = async (username) => {
+  const restoreUser = async (id) => {
     try {
-      const response = await axios.put(`/users/${username}/restore?type=user`);
+      const response = await axios.put(`/users/${id}/restore?type=user`);
       return response.data;
     } catch (error) {
       return Promise.reject({
@@ -352,10 +352,11 @@ const [restoreType,setRestoreType] = useState(null);
     {
       Header: ' ',
       Cell: ({ row }) => {
-        return (
+          return (
           <Link
             className="view-profile p-2 rounded-2"
-            href={`/profile/${row.original.username}`}
+            href={`/profile/${row.original._id}`}
+            
           >
             View profile <ViewIcon />
           </Link>
@@ -464,7 +465,7 @@ const [restoreType,setRestoreType] = useState(null);
         return row.original.role ? (
           <Link
             className="view-profile p-2 rounded-2"
-            href={`/profile/${row.original.username}`}
+            href={`/profile/${row.original._id}`}
           >
             View profile <ViewIcon />
           </Link>
@@ -502,9 +503,9 @@ const [restoreType,setRestoreType] = useState(null);
 
 
   const handleDesactivateUser = async () => {
-    if (selectedUser?.username) {
+    if (selectedUser?._id) {
       try {
-        const response = await desactivateUser(selectedUser?.username);
+        const response = await desactivateUser(selectedUser?._id);
         if(response.message === 'User banned successfuly'){
           notify({message : response.message, status:'success'})
           handleCloseDesactivateModal();
@@ -513,7 +514,7 @@ const [restoreType,setRestoreType] = useState(null);
           notify({message : response.message, status:'danger'})
         }
       } catch (error) {
-        notify({message : 'server error', status:'danger'})
+        notify({ message: 'Something went wrong', status: 'danger' });
 
       }
     }
@@ -521,8 +522,7 @@ const [restoreType,setRestoreType] = useState(null);
 
   const handleDeleteRequest = async () =>{
     try {
-        const response = await deleteRequest(selectedUser?.username);
-        console.log(response)
+        const response = await deleteRequest(selectedUser?._id);
         if(response.message === 'User banned successfuly'){
             notify({message : response.message , status:'success'});
             handleCloseDeleteModal();
@@ -531,17 +531,16 @@ const [restoreType,setRestoreType] = useState(null);
             notify({message : response.message , status:'danger'});
         }
     } catch (error) {
-      console.log(error)
-        notify({message : 'internal server error' , status:'danger'});
+      notify({ message: 'Something went wrong', status: 'danger' });
     }
 }
 
 
 
-  const handleRestoreRequest = async (username) => {
-    if (username) {
+  const handleRestoreRequest = async (id) => {
+    if (id) {
       try {
-        const response = await restoreRequest(username);
+        const response = await restoreRequest(id);
         if(response.message === 'User Restored successfuly'){
           handleCloseRestoreModal();
           notify({message : response.message, status : 'success'});
@@ -551,15 +550,15 @@ const [restoreType,setRestoreType] = useState(null);
 
         }
       } catch (error) {
-        notify({message : 'server error' , status : 'danger'});
+        notify({ message: 'Something went wrong', status: 'danger' });
       }
     }
   };
 
-  const handleRestoreUser = async (username) => {
-    if (username) {
+  const handleRestoreUser = async (id) => {
+    if (id) {
       try {
-        const response = await restoreUser(username);
+        const response = await restoreUser(id);
         if(response.message === 'User Restored successfuly'){
           handleCloseRestoreModal();
           notify({message : response.message, status : 'success'});
@@ -568,7 +567,7 @@ const [restoreType,setRestoreType] = useState(null);
           notify({message : response.message, status : 'danger'});
         }
       } catch (error) {
-        notify({message : 'server error', status:'danger'})
+        notify({ message: 'Something went wrong', status: 'danger' });
 
       }
     }
@@ -671,7 +670,6 @@ const [restoreType,setRestoreType] = useState(null);
 
       <ConfirmModal
         headerTitle="Delete request"
-        username={selectedUser?.username}
         show={isDeleteModalOpen}
         handleClose={handleCloseDeleteModal}
        handleClick={handleDeleteRequest}
@@ -697,7 +695,6 @@ const [restoreType,setRestoreType] = useState(null);
    
       <ConfirmModal
         headerTitle="Deactivate acount"
-        username={selectedUser?.username}
         show={isDesactivateModalOpen}
         handleClose={handleCloseDesactivateModal}
         handleClick={handleDesactivateUser}
@@ -712,10 +709,9 @@ const [restoreType,setRestoreType] = useState(null);
 
    <ConfirmModal
   headerTitle={`Restore ${restoreType}`}
-  username={selectedUser?.username}
   show={isRestoreModalOpen}
   handleClose={handleCloseRestoreModal}
-  handleClick={() => handleRestoreMethod()(selectedUser?.username)}
+  handleClick={() => handleRestoreMethod()(selectedUser?._id)}
 >
   <div className="text-muted fs-5 m-auto px-3">
     <p>Are you sure you want to re-activate this {restoreType}?</p>

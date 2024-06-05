@@ -3,11 +3,17 @@ import ArrowRightIcon from "@/../../public/icons/arrows/arrow-right-icon";
 import EditDotsIcon from "@/../../public/icons/edit-dots-icon";
 import { Avatar } from "@/app/(authenticated)/_components/Avatar";
 import Link from "next/link";
+import { useBreadCumb } from "@/app/(authenticated)/_context/BreadcrumbsContext";
 
-export const PortfolioCard = ({ dataProvider, handleFunctions }) => {
-  
+
+export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) => {
+  const { setBreadCumbItem } = useBreadCumb();
+
+
+
   const handleShow = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
+
 
   const stopPropagation = (e) => {
     e.stopPropagation();
@@ -19,13 +25,14 @@ export const PortfolioCard = ({ dataProvider, handleFunctions }) => {
       {dataProvider?.description}
     </Tooltip>
   );
-
   return (
+  <>
     <Link
       href={`/portfolio/${dataProvider._id}/products`}
-      key={dataProvider._id}
-  className="text-decoration-none portfolio-card col-12 col-xl-3 col-lg-12 col-md-12 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
-    >
+      key={portfolioKey}
+      className="text-decoration-none portfolio-card col-12 col-xl-3 col-lg-12 col-md-12 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
+      onClick={() => setBreadCumbItem(prev => [...prev, {portfolio:dataProvider.name , portfolioLink : `/portfolio` }])}
+      >
       <div className="d-flex justify-content-end">
         <div onClick={stopPropagation}>
           <Dropdown>
@@ -84,5 +91,6 @@ export const PortfolioCard = ({ dataProvider, handleFunctions }) => {
         <ArrowRightIcon />
       </span>
     </Link>
+    </>
   );
 };

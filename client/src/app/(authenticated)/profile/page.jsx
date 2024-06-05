@@ -17,7 +17,7 @@ const [userData,setUserData] = useState(null);
       const response = await axios.get('/users/me');
       setUserData(response.data.user);
     } catch (error) {
-       notify({message : 'server error' , status : 'danger'})
+      notify({ message: 'Failed to load information. Please try again later.', status: 'danger' });
     }
   }
 

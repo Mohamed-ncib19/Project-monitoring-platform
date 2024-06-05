@@ -11,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 export const RegisterForm = async ({ userName }) => {
   const { push } = useRouter();
   const { notify } = useNotifications();
-
   const form = useForm({
     resolver: yupResolver(RegisterSchema),
   });

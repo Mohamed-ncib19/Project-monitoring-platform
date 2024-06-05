@@ -11,7 +11,6 @@ export const Navbar = ({ user }) => {
   const handleSignOut = async () => {
     await signOut();
   };
-
   const notifications = [
     {
       id: 1,
@@ -45,6 +44,8 @@ export const Navbar = ({ user }) => {
     },
   ];
 
+
+
   return (
     <div className="custom-bg-primary custom-navbar py-4 d-flex justify-content-end align-items-center">
       <div className='col-10 d-flex d-flex flex-md-row flex-column justify-content-between align-items-center' >
@@ -60,7 +61,7 @@ export const Navbar = ({ user }) => {
         <Dropdown>
       <Dropdown.Toggle as={Button} className=' btn btn-light py-4 rounded-circle'>
         <Avatar
-          name={(profile && profile?.firstname)+' '+(profile && profile?.lastname)}
+          name={profile.firstName + ' ' + profile.lastName}
           variant="light"
           rounded='circle'
         />
