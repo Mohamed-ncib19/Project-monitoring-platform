@@ -8,7 +8,7 @@ const ClientLayout = ({ children, data }) => {
   const session = useSession();
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
-      Authorization: `${data?.accessToken}`,
+      Authorization: ` ${data?.accessToken}`,
     };
 
     axios.interceptors.response.use(
@@ -19,8 +19,8 @@ const ClientLayout = ({ children, data }) => {
           
         }
         const originalConfig = err.config;
-        if (err.response?.status === 401 && originalConfig._retry) {
-          //originalConfig._retry = true;
+        if (err.response?.status === 401 && !originalConfig._retry) {
+          originalConfig._retry = true;
           const newSession = await session.update();
           if (newSession?.error) {
             await signOut({ redirect: false });
@@ -32,9 +32,9 @@ const ClientLayout = ({ children, data }) => {
             };
             return axios(originalConfig);
           }
-        }else if(err?.request.status === 401){
+        }/* else if(err?.request.status === 401){
           await signOut({redirect : true});
-        }
+        } */
         return Promise.reject(err);
       },
     );

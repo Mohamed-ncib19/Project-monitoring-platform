@@ -43,8 +43,6 @@ const ProjectsByProducts = ({ params }) => {
   return (
     <>
       <ProductHeader color={'warning'} name={'projects'} />
-      <p>product ID: {ProductId}</p>
-
       <div className="mx-5 ">
         <div className="project-container row justify-content-start m-auto">
           {ProjectsData.length > 0 ? (
@@ -58,6 +56,7 @@ const ProjectsByProducts = ({ params }) => {
                 src={ProductNotFound}
                 alt="Product not found"
                 width={400}
+                draggable={false}
               />
               <p className="text-dark-gray fw-bolder text-center fs-1">No Product Found</p>
             </div>

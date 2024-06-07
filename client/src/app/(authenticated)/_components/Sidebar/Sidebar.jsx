@@ -66,6 +66,7 @@ export const Sidebar = () => {
                       width={!isOpen && 30 }
                       loading="lazy"
                       className="w-100"
+                      draggable={false}
                     />
                   </Link>
                 </Suspense>

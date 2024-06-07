@@ -91,7 +91,7 @@ const [restoreType,setRestoreType] = useState(null);
   const api = {
     async getPendingUsers() {
       try {
-        const response = await axios.get('/users?pending=true');
+        const response = await axios.get('/users/status/pending');
         return response.data.users;
       } catch (error) {
         throw new Error(
@@ -106,7 +106,7 @@ const [restoreType,setRestoreType] = useState(null);
 
     async getUsers() {
       try {
-        const response = await axios.get('/users?active=true');
+        const response = await axios.get('/users/status/active');
         return response.data.users;
       } catch (error) {
         throw new Error(
@@ -120,7 +120,7 @@ const [restoreType,setRestoreType] = useState(null);
     },
     async getBannedUsers() {
       try {
-        const response = await axios.get('/users?banned=true');
+        const response = await axios.get('/users/status/banned');
         return response.data.users;
       } catch (error) {
         throw new Error(
@@ -335,13 +335,13 @@ const [restoreType,setRestoreType] = useState(null);
     },
     {
       Header: 'Statut',
-      Cell: ({ row }) => {
+      Cell: ({ row }) => {   
         return (
           <div
             className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
               'manager' : row.original.role === 'Manager',
-              'tl' : row.original.role === 'Team lead',
-              'dev' : row.original.role === 'Team member'
+              'tl' : row.original.role === 'teamlead',
+              'dev' : row.original.role === 'teammember'
             })}
           >
             {`${row.original.role}`}
@@ -450,8 +450,8 @@ const [restoreType,setRestoreType] = useState(null);
           <div
           className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
             'manager' : row.original.role === 'Manager',
-            'tl' : row.original.role === 'Team lead',
-            'dev' : row.original.role === 'Team member'
+            'tl' : row.original.role === 'teamlead',
+            'dev' : row.original.role === 'teamleadmember'
           })}
         >
           {`${row.original.role || '-----' }`}
@@ -623,6 +623,7 @@ const [restoreType,setRestoreType] = useState(null);
               className='image'
               loading='lazy'
               placeholder='blur'
+              draggable={false}
             />
             <p className='text-center fs-1 fw-bold text-muted'>No requests found</p>
           </div>
@@ -638,6 +639,7 @@ const [restoreType,setRestoreType] = useState(null);
               className='image'
               loading='lazy'
               placeholder='blur'
+              draggable={false}
             />
           <p className=" text-center fs-1 fw-bold text-muted">no users found</p>
           </div>  
@@ -653,6 +655,7 @@ const [restoreType,setRestoreType] = useState(null);
               className='image'
               loading='lazy'
               placeholder='blur'
+              draggable={false}
             />
             <p className=" text-center fs-1 fw-bold text-muted">no banned users found</p>
             </div>  

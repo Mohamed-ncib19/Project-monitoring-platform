@@ -9,6 +9,7 @@ import { useBreadCumb } from "@/app/(authenticated)/_context/BreadcrumbsContext"
 export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) => {
   const { setBreadCumbItem } = useBreadCumb();
 
+  console.log(dataProvider);
 
 
   const handleShow = handleFunctions.editModal;
@@ -56,17 +57,30 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
         <p className="fw-bold fs-5 text-dark">{dataProvider.name}</p>
       </div>
       <div className="d-flex flex-column px-4 py-3">
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 250, hide: 400 }}
-          overlay={renderTooltip}
-        >
-          <p className="text-dark-gray">
-            {dataProvider.description.length > 90
-              ? `${dataProvider.description.slice(0, 70)}...`
-              : dataProvider.description}
-          </p>
-        </OverlayTrigger>
+        
+      {
+        !dataProvider.description 
+          ? (
+            <p className="text-dark-gray text-center">
+              <span>No description available</span>
+            </p>
+          )
+          : (
+            <OverlayTrigger
+              placement="left-end"
+              delay={{ show: 250, hide: 400 }}
+              overlay={renderTooltip}
+            >
+              <p className="text-dark-gray">
+                {dataProvider.description.length > 90
+                  ? `${dataProvider.description.slice(0, 90)}...`
+                  : dataProvider.description
+                }
+              </p>
+            </OverlayTrigger>
+          )
+      }
+
       </div>
       <div className="d-flex flex-column px-4 pt-5">
         <p>
@@ -74,7 +88,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
             Number of Products:
           </span>{' '}
           <span className="fw-bolder text-dark">
-            {dataProvider.products || 0}
+            {dataProvider.products ? dataProvider.products.length : 0 }
           </span>
         </p>
         <div className="line rounded w-25 mb-3"></div>

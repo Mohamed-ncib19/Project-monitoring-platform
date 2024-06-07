@@ -90,9 +90,9 @@ export const PortfolioHeader = ({ color, name }) => {
       <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' >
 
-          <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center ' >
+          <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="name" className=' text-muted' >Name<span className='text-danger' >*</span></label>
-              <div className='col-lg-7 col-12' >
+              <div className='col-lg-8 col-12' >
               <CoreInput
               name='name'
               placeholder='Required'
@@ -103,11 +103,12 @@ export const PortfolioHeader = ({ color, name }) => {
             </div>
 
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center ' >
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="description" className='text-muted' >Description</label>
-              <div className='col-lg-7 col-12' >
+              <div className='col-lg-8 col-12' >
               <TextareaInput
               name='description'
+              placeholder='Describe yout Client`s Portfolio...'
               register={register}
               errors={errors}
 

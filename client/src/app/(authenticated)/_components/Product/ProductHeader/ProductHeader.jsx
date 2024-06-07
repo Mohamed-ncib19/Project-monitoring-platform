@@ -12,20 +12,33 @@ import axios from 'axios';
 import { useNotifications } from 'reapop';
 import { teamLeadsOptions } from '@/app/(authenticated)/_selectOptions/teamleads.options';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
+import { useRouter } from 'next/navigation';
 
 
-export const ProductHeader = ({ color, name }) => {
+export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPortfolio }) => {
+  
   const { notify } = useNotifications();
+  
+  const {refresh} = useRouter();
+
   const [portfolios, setPortfolios] = useState([]);
   const [productName, setProductName] = useState('');
   const [productCode, setProductCode] = useState('');
   const [show, setShow] = useState(false);
-
+  
   const methods = useForm({
     resolver: yupResolver(ProductSchema),
   });
 
-  const { handleSubmit, formState: { errors }, register, control } = methods;
+  const { handleSubmit, formState: { errors }, register, control,reset } = methods;
+
+  useEffect(() => {
+    if (!productRootLayer && defaultPortfolio) {
+      reset({
+        portfolio: defaultPortfolio
+      });
+    }
+  }, [reset, defaultPortfolio]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -44,7 +57,7 @@ export const ProductHeader = ({ color, name }) => {
       }
     };
     fetchPortfolios();
-  }, [notify]);
+  }, []);
 
   useEffect(() => {
     const generateProductCode = (name) => {
@@ -56,20 +69,41 @@ export const ProductHeader = ({ color, name }) => {
     setProductCode(generateProductCode(productName));
   }, [productName]);
 
-const CreateProduct = async () =>{
+const CreateProduct = async (data) =>{
   try {
-    const response = await axios.post(`/product`)
+    const response = await axios.post(`/products`,data);
+    if(response.status === 201){
+      return Promise.resolve({
+        ok:true,
+        message:response.data.message,
+      })
+    }else{
+      return Promise.reject({
+        ok:false,
+        message:response.data.message,
+      })
+    }
   } catch (error) {
-    
+    return Promise.reject({
+      ok:false,
+      message:JSON.parse(error?.request.response).message,
+    })
   }
 }
 
   const onSubmit = handleSubmit( async (data) => {
     try {
-      const productData = {...data , productCode : productCode};
-
+      const productData = {...data , code : productCode};
+      const response = await CreateProduct(productData);
+      if(response.ok){
+        notify({message : response.message,status:'success'});
+        handleClose();
+        refresh();
+      }else{
+        notify({message : response.message,status:'danger'});
+      }
     } catch (error) {
-      console.log(error);
+      notify({message : error?.message , status:'danger'});
     }
   }
 );
@@ -90,9 +124,9 @@ const CreateProduct = async () =>{
         <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' onSubmit={handleSubmit(onSubmit)} >
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
-              <label htmlFor="portfolio" className='text-muted'>Portfolio</label>
-              <div className='col-lg-7 col-12 z-index-999'>
+          <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
+              <label htmlFor="portfolio" className='text-muted'>Portfolio<span className='text-danger'>*</span></label>
+              <div className='col-lg-8 col-12 z-index-999'>
                 <Controller
                   name='portfolio'
                   control={control}
@@ -103,6 +137,7 @@ const CreateProduct = async () =>{
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
                       value={portfolios.find((option) => option.value === field.value) || ''}
+                    
                     />
                   )}
                 />
@@ -110,9 +145,9 @@ const CreateProduct = async () =>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="name" className='text-muted'>Product name<span className='text-danger'>*</span></label>
-              <div className="col-lg-7 col-12">
+              <div className="col-lg-8 col-12 mx-4">
                 <CoreInput
                   name="name"
                   placeholder="Required"
@@ -123,11 +158,11 @@ const CreateProduct = async () =>{
               </div>
             </div>
 
-            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center">
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="prodcode" className="text-danger">Product Code</label>
-              <div className="col-lg-7 col-12">
+              <div className="col-lg-8 col-12 mx-3">
                 <CoreInput
-                  name="prodcode"
+                  name="code"
                   placeholder="prd001"
                   readOnly={true}
                   value={productCode}
@@ -135,9 +170,9 @@ const CreateProduct = async () =>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="budget" className='text-muted'>Budget</label>
-              <div className='col-lg-7 col-12'>
+              <div className='col-lg-8 col-12 px-2'>
                 <ComboBoxInput
                   name='budget'
                   placeholder='Budget'
@@ -154,34 +189,36 @@ const CreateProduct = async () =>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-7 col-12 align-items-center'>
-              <label htmlFor="date" className='text-muted'>Duration<span className='text-danger'>*</span></label>
-              <div className='d-flex flex-lg-row flex-column col-lg-6 col-12'>
-                <div className='col-lg-10 col-12'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
+              <label htmlFor="date" className='text-muted text-end '>Duration<span className='text-danger'>*</span></label>
+              <div className='d-flex flex-lg-row flex-column col-lg-8 col-12'>
+                <div className='col-lg-7 col-12 px-1'>
                   <CoreInput
                     name='startDate'
                     placeholder='Start date'
                     type='date'
                     register={register}
                     errors={errors}
+                    onChange={(e)=> setStartDateValue(e.target.value) }
                   />
                 </div>
-                <span className='bg-soft-gray d-flex align-self-center px-2 py-3 text-center'>to</span>
-                <div className='col-lg-10 col-12'>
+                <span className='bg-soft-gray px-2 py-3 text-center'>To</span>
+                  <div className='col-lg-7 col-12'>
                   <CoreInput
                     name='endDate'
                     placeholder='End date'
                     type='date'
                     register={register}
                     errors={errors}
+                    onChange={(e)=> setEndDateValue(e.target.value) }
                   />
                 </div>
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="teamlead" className='text-muted'>Team lead</label>
-              <div className='col-lg-7 col-12 z-index-999'>
+              <div className='col-lg-8 col-12 z-index-999'>
                 <Controller
                   name='teamlead'
                   control={control}
@@ -195,15 +232,16 @@ const CreateProduct = async () =>{
                     />
                   )}
                 />
-                {errors.teamLead && <span className="text-danger">{errors.teamLead.message}</span>}
+                {errors.teamlead && <span className="text-danger">{errors.teamlead.message}</span>}
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="description" className='text-muted'>Description</label>
-              <div className='col-lg-7 col-12'>
+              <div className='col-lg-8 col-12'>
                 <TextareaInput
                   name='description'
+                  placeholder='Describe The Product , Technologies , Core Features ....'
                   register={register}
                   errors={errors}
                 />

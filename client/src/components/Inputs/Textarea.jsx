@@ -10,11 +10,10 @@ const TextareaInput = ({
   register,
   defaultValue,
   rows = 10,  
-  cols = 30   
+  cols   
 }) => {
   return (
     <Form.Group className="mb-3">
-      <Form.Label>{placeholder}</Form.Label>
       <Form.Control 
         as="textarea" 
         name={name}

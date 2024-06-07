@@ -1,4 +1,4 @@
 export const RolesOptions = [
-    { value: 'Team lead', label: 'Team lead' },
-    { value: 'Team member', label: 'Team member' },
+    { value: 'teamlead', label: 'Team lead' },
+    { value: 'teammember', label: 'Team member' },
   ];
