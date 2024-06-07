@@ -23,13 +23,10 @@ const zentaoServices = {
       const response = await axios.request(config);
       if (response.status === 201 || response.status === 200) {
         return { ok: true, data: response.data };
-      } else {
-        console.log(response);
-        return { ok: false };
       }
     } catch (error) {
-      console.log(error);
-      return { ok: false, message: "Error: ", error };
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
     }
   },
   async deletePortfolio(portfolioId) {
@@ -47,13 +44,10 @@ const zentaoServices = {
       const response = await axios.request(config);
       if (response.status === 200 || response.status === 204) {
         return { ok: true, data: response.data };
-      } else {
-        console.log(response);
-        return { ok: false };
       }
     } catch (error) {
-      console.log(error.response);
-      return { ok: false, message: "Error: ", error };
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
     }
   },
   async editPortfolio(portfolioId, portfolioData) {
@@ -72,13 +66,10 @@ const zentaoServices = {
       const response = await axios.request(config);
       if (response.status === 200 || response.status === 204) {
         return { ok: true, data: response.data };
-      } else {
-        console.log(response);
-        return { ok: false };
       }
     } catch (error) {
-      console.log(error.response);
-      return { ok: false, message: "Error: ", error };
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
     }
   },
   async createProduct(product, porfolioZentaoId) {
@@ -104,10 +95,9 @@ const zentaoServices = {
       const response = await axios.request(config);
       if (response.status === 201 || response.status === 200) {
         return { ok: true, data: response.data };
-      } else {
-        return { ok: false };
       }
     } catch (error) {
+      console.log(error.response.data.error);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -127,13 +117,66 @@ const zentaoServices = {
       const response = await axios.request(config);
       if (response.status === 200 || response.status === 204) {
         return { ok: true, data: response.data };
-      } else {
-        console.log(response);
-        return { ok: false };
       }
     } catch (error) {
-      console.log(error.response);
-      return { ok: false, message: "Error: ", error };
+      console.log(error);
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
+    }
+  },
+  async deletePortfolio(productId) {
+    try {
+      let config = {
+        method: "delete",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/products/${productId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+      };
+      const response = await axios.request(config);
+      if (response.status === 200 || response.status === 204) {
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
+    }
+  },
+  async createProject(project, productZentaoId) {
+    try {
+      console.log("zentao request started.....");
+      let data = {
+        name: project.name,
+        desc: project.description,
+        parent: productZentaoId,
+        code: project.code,
+        begin: project.startDate,
+        end: project.endDate,
+        model: project.model,
+        products: [null],
+      };
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/projects`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      if (response.status === 201 || response.status === 200) {
+        console.log("zentao request ended...");
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error);
+      return { ok: false, message: error.response };
     }
   },
 };

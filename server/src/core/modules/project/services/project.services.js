@@ -1,4 +1,6 @@
 const ProjectModel = require("../models/project");
+const zentaoServices = require("../../zentao/services/zentao.services");
+const { v4: uuidv4 } = require("uuid");
 
 const projectServices = {
   async projectExists(name) {
@@ -14,20 +16,45 @@ const projectServices = {
       return { ok: false, message: "Error checking if project exists" };
     }
   },
-  async createProject(project) {
+  async createProject(project, teamleader, productZentaoId) {
     try {
-      const projectModel = await ProjectModel();
-      const result = await projectModel.insertOne({
+      const zentaoResponse = await zentaoServices.createProject(
+        project,
+        productZentaoId
+      );
+      if (!zentaoResponse.ok) {
+        console.log(zentaoResponse);
+        return {
+          ok: false,
+          message: "Zentao error",
+          details: zentaoResponse.details,
+        };
+      }
+      const projectId = uuidv4();
+      const projectCollection = await ProjectModel();
+      const projectResult = await projectCollection.insertOne({
+        _id: projectId,
+        zentaoId: zentaoResponse.data.id,
+        active: true,
         ...project,
-        createdAt: new Date(),
+        creator: teamleader,
       });
-      if (result.acknowledged) return { ok: true };
-      else {
-        return { ok: false };
+      if (projectResult.acknowledged) {
+        return {
+          ok: true,
+          message: "project created successfully",
+          id: projectResult.insertedId,
+        };
+      } else {
+        return { ok: false, message: "MongoDB error" };
       }
     } catch (error) {
-      console.error("Error creating project:", error);
-      return { ok: false };
+      console.error("Internal server error:", error);
+      return {
+        ok: false,
+        message: "Internal server error",
+        details: error.message,
+      };
     }
   },
   async getProjects(product) {
