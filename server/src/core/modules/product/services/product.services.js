@@ -1,5 +1,4 @@
 const ProductModel = require("../models/product");
-const PorfolioServices = require("../../portfolio/services/portfolio.services");
 const zentaoServices = require("../../zentao/services/zentao.services");
 
 const { v4: uuidv4 } = require("uuid");
@@ -71,26 +70,48 @@ const productServices = {
     try {
       const productModel = await ProductModel();
 
-      let products;
-      if (portfolioId === null) {
-        products = await productModel.find({ active: true }).toArray();
-      } else {
-        const { portfolio } = await PorfolioServices.getPortfolioById(
-          portfolioId
-        );
-        const productIds = portfolio.products;
-        products = await productModel
-          .find({
-            _id: { $in: productIds },
-            active: true,
-          })
-          .toArray();
-      }
-      if (products) {
-        return { ok: true, products };
-      }
+      const result = await productModel
+        .aggregate([
+          {
+            $match: portfolioId
+              ? { active: true, portfolio: portfolioId }
+              : { active: true },
+          },
 
-      return { ok: false, message: "No products" };
+          {
+            $lookup: {
+              from: "projects",
+              localField: "_id",
+              foreignField: "product",
+              as: "projects",
+              pipeline: [{ $match: { active: true } }],
+            },
+          },
+          {
+            $addFields: {
+              projectCount: { $size: "$projects" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              desc: 1,
+              startDate: 1,
+              endDate: 1,
+              projectCount: 1,
+              teamleader: 1,
+              portfolio: 1,
+              budget: 1,
+              description: 1,
+              creator: 1,
+              zentaoId: 1,
+            },
+          },
+        ])
+        .toArray();
+      const products = result;
+      return { ok: true, products: products };
     } catch (error) {
       console.error("Error getting products:", error);
       return {
@@ -101,18 +122,18 @@ const productServices = {
     }
   },
 
-  async deletePortfolio(portfolioId) {
+  async deleteProduct(productId) {
     try {
-      const portfolioCollection = await PortfolioModel();
+      const productCollection = await ProductModel();
       // Find the portfolio to delete it from Zentao as well
-      const portfolio = await portfolioCollection.findOne({ _id: portfolioId });
-      if (!portfolio) {
-        return { ok: false, message: "Portfolio not found" };
+      const product = await productCollection.findOne({ _id: productId });
+      if (!product) {
+        return { ok: false, message: "product not found" };
       }
 
       // Delete the portfolio from Zentao
-      const zentaoResponse = await zentaoServices.deletePortfolio(
-        portfolio.zentaoId
+      const zentaoResponse = await zentaoServices.deleteProduct(
+        product.zentaoId
       );
       if (!zentaoResponse.ok) {
         return {
@@ -122,17 +143,16 @@ const productServices = {
         };
       }
 
-      // Delete the portfolio from the database
       const deleteResult = await portfolioCollection.updateOne(
-        { _id: portfolioId },
+        { _id: profileId },
         { $set: { active: false } }
       );
       if (deleteResult.modifiedCount === 1) {
-        return { ok: true, message: "Portfolio deleted successfully" };
+        return { ok: true, message: "product deleted successfully" };
       } else {
         return {
           ok: false,
-          message: "MongoDB error: Failed to delete portfolio",
+          message: "MongoDB error: Failed to delete product",
         };
       }
     } catch (error) {
@@ -185,6 +205,59 @@ const productServices = {
       return {
         ok: false,
         message: "Internal server error",
+        details: error.message,
+      };
+    }
+  },
+
+  async getProductById(productId) {
+    try {
+      const productModel = await ProductModel();
+      const result = await productModel
+        .aggregate([
+          {
+            $match: { active: true, _id: productId },
+          },
+          {
+            $lookup: {
+              from: "projects",
+              localField: "_id",
+              foreignField: "product",
+              as: "projects",
+              pipeline: [{ $match: { active: true } }],
+            },
+          },
+          {
+            $addFields: {
+              projectCount: { $size: "$projects" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              desc: 1,
+              startDate: 1,
+              endDate: 1,
+              projectCount: 1,
+              teamleader: 1,
+              portfolio: 1,
+              budget: 1,
+              description: 1,
+              creator: 1,
+              zentaoId: 1,
+            },
+          },
+        ])
+        .toArray();
+      console.log(result);
+      const product = result[0];
+      return { ok: true, product };
+    } catch (error) {
+      console.error("Error getting product by ID:", error);
+      return {
+        ok: false,
+        message: "Error getting product",
         details: error.message,
       };
     }

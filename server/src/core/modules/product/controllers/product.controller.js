@@ -28,20 +28,10 @@ const productController = {
         portfolio.zentaoId
       );
       if (createResponse.ok) {
-        const addToPorfolioResponse = await portfolioServices.addProduct(
-          body.portfolio,
-          createResponse.id
-        );
-        if (addToPorfolioResponse.ok) {
-          return res.status(httpStatus.CREATED).send({
-            message: "Product created successfully",
-            product: createResponse.product,
-          });
-        } else {
-          return res
-            .status(httpStatus.NOT_FOUND)
-            .send({ message: "Failed to add product to porfolio" });
-        }
+        return res.status(httpStatus.CREATED).send({
+          message: "Product created successfully",
+          product: createResponse.product,
+        });
       } else {
         return res
           .status(httpStatus.NOT_FOUND)
@@ -51,7 +41,7 @@ const productController = {
       console.log(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal server error",
-        details: error,
+        details: error.message,
       });
     }
   },
@@ -84,18 +74,15 @@ const productController = {
     }
   },
 
-  async deletePortfolio(req, res) {
+  async deleteProduct(req, res) {
     try {
-      const { portfolioId } = req.params;
-      if (!portfolioId) {
+      const { productId } = req.params;
+      if (!productId) {
         return res
           .status(httpStatus.BAD_REQUEST)
           .send({ message: "Missing portfolio ID" });
       }
-
-      const deleteResponse = await portfolioServices.deletePortfolio(
-        portfolioId
-      );
+      const deleteResponse = await portfolioServices.deletePortfolio(productId);
       if (deleteResponse.ok) {
         return res
           .status(httpStatus.OK)
@@ -121,15 +108,21 @@ const productController = {
       if (!productId) {
         return res
           .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing portfolio ID" });
+          .send({ message: "Missing product ID" });
       }
 
       if (!body) {
         return res
           .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing portfolio data" });
+          .send({ message: "Missing product data" });
       }
 
+      const { exists } = await productServices.productExists(body.name);
+      if (exists) {
+        return res
+          .status(httpStatus.CONFLICT)
+          .send({ message: "Product name already taken" });
+      }
       const editResponse = await productServices.editProduct(productId, body);
       if (editResponse.ok) {
         return res

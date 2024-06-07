@@ -1,6 +1,8 @@
 const PortfolioModel = require("../models/portfolio");
+const ProductModel = require("../../product/models/product");
 const zentaoServices = require("../../zentao/services/zentao.services");
 const userServices = require("../../users/services/user.services");
+const productServices = require("../../product/services/product.services");
 
 const { v4: uuidv4 } = require("uuid");
 const portfolioServices = {
@@ -8,7 +10,6 @@ const portfolioServices = {
     try {
       const portfolioModel = await PortfolioModel();
       const portfolio = await portfolioModel.findOne({ name });
-
       return { ok: true, exists: Boolean(portfolio), portfolio };
     } catch (error) {
       console.error("Error checking if portfolio exists:", error);
@@ -26,10 +27,11 @@ const portfolioServices = {
         portfolio.name
       );
       if (!zentaoResponse.ok) {
+        console.log(zentaoResponse);
         return {
           ok: false,
           message: "Zentao error",
-          details: zentaoResponse,
+          details: zentaoResponse.message,
         };
       }
 
@@ -46,7 +48,11 @@ const portfolioServices = {
 
       return portfolioResult.acknowledged
         ? { ok: true, message: "Portfolio created successfully" }
-        : { ok: false, message: "MongoDB error: Failed to create portfolio" };
+        : {
+            ok: false,
+            message: "MongoDB error: Failed to create portfolio",
+            details: portfolioResult,
+          };
     } catch (error) {
       console.error("Error creating portfolio:", error);
       return {
@@ -57,18 +63,25 @@ const portfolioServices = {
     }
   },
 
-  async getPortfolios(manager = 0) {
+  async getPortfolios() {
     try {
-      const portfolioModel = await PortfolioModel();
-      const query = manager
-        ? { managers: { $elemMatch: { $eq: manager } }, active: true }
-        : { active: true };
+      let portfolios = [];
+      const portfoloCollection = await PortfolioModel();
+      let result = await portfoloCollection.find({ active: true }).toArray();
+      portfolios = await Promise.all(
+        result.map(async (portfolio) => {
+          const { products } = await productServices.getProducts(portfolio._id);
+          portfolio.productCount = products.length;
+          portfolio.projectCount = 0;
+          for (const product of products) {
+            portfolio.projectCount += product.projectCount;
+          }
+          return portfolio;
+        })
+      );
 
-      const portfolios = await portfolioModel.find(query).toArray();
-
-      return portfolios.length
-        ? { ok: true, portfolios }
-        : { ok: false, message: "No portfolios found" };
+      console.log(portfolios);
+      return { ok: true, portfolios: portfolios };
     } catch (error) {
       console.error("Error getting portfolios:", error);
       return {
@@ -82,10 +95,27 @@ const portfolioServices = {
   async getPortfolioById(portfolioId) {
     try {
       const portfolioModel = await PortfolioModel();
-      const portfolio = await portfolioModel.findOne({ _id: portfolioId });
-      return portfolio
-        ? { ok: true, portfolio }
-        : { ok: false, message: "Portfolio not found" };
+      // Fetch the single portfolio by ID
+      const portfolio = await portfolioModel.findOne({
+        active: true,
+        _id: portfolioId,
+      });
+
+      if (!portfolio) {
+        return { ok: false, message: "Portfolio not found" };
+      }
+
+      // Fetch the products associated with the portfolio
+      const { products } = await productServices.getProducts(portfolio._id);
+
+      // Add productCount and calculate projectCount
+      portfolio.productCount = products.length;
+      portfolio.projectCount = products.reduce(
+        (count, product) => count + (product.projectCount || 0),
+        0
+      );
+
+      return { ok: true, portfolio };
     } catch (error) {
       console.error("Error getting portfolio by ID:", error);
       return {
@@ -173,7 +203,7 @@ const portfolioServices = {
     }
   },
 
-  async addProduct(portfolioId, productId) {
+  /*  async addProduct(portfolioId, productId) {
     try {
       console.log(portfolioId);
       const portfolioCollection = await PortfolioModel();
@@ -198,7 +228,7 @@ const portfolioServices = {
         details: error.message,
       };
     }
-  },
+  }, */
 };
 
 module.exports = portfolioServices;

@@ -28,14 +28,15 @@ const portfolioController = {
           .status(httpStatus.CREATED)
           .send({ message: "Portfolio created successfully" });
       } else {
-        return res
-          .status(httpStatus.INTERNAL_SERVER_ERROR)
-          .send({ message: "Failed to create portfolio" });
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+          message: "Failed to create portfolio",
+          details: createResponse.message,
+        });
       }
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal server error",
-        details: error.message,
+        details: `${error.message} : ${error.details}`,
       });
     }
   },
@@ -151,18 +152,22 @@ const portfolioController = {
       const { portfolioId } = req.params;
       const { body } = req;
 
-      if (!portfolioId) {
-        return res
-          .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing portfolio ID" });
-      }
-
       if (!body) {
         return res
           .status(httpStatus.BAD_REQUEST)
           .send({ message: "Missing portfolio data" });
       }
-
+      if (!portfolioId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing portfolio ID" });
+      }
+      const { exists } = await portfolioServices.portfolioExists(body?.name);
+      if (exists) {
+        return res
+          .status(httpStatus.CONFLICT)
+          .send({ message: "Portfolio name already taken" });
+      }
       const editResponse = await portfolioServices.editPortfolio(
         portfolioId,
         body
