@@ -1,4 +1,4 @@
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ArrowRightIcon from '@/../../public/icons/arrows/arrow-right-icon';
 import EditDotsIcon from '@/../../public/icons/edit-dots-icon';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
@@ -10,15 +10,38 @@ export const ProductCard = ({
   handleFunctions,
   supportBreadCumb = false,
   productKey,
+  productsRootLayer,
 }) => {
-
   const { setBreadCumbItem } = useBreadCumb();
+
+const { editModal } = handleFunctions;
+
+const renderTooltip = (props) => (
+  <Tooltip id="description-tooltip" {...props} className="larger-tooltip"  >
+    {dataProvider?.description}
+  </Tooltip>
+);
 
   const stopPropagation = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
-  //const handleShow = handleFunctions.find(func => func.hasOwnProperty('editModal'))?.editModal;
+
+  const formatDate = (value)=>{
+    const date = new Date(value);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+    return `${formattedDate} ${formattedTime}`
+      
+  }
   //const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
 
   return (
@@ -26,7 +49,7 @@ export const ProductCard = ({
       <Link
         href={`/portfolio/${dataProvider?.parent}/products/${dataProvider?._id}/projects`}
         key={productKey}
-        className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
+        className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-3 rounded-2"
         onClick={
           supportBreadCumb
             ? () =>
@@ -40,7 +63,7 @@ export const ProductCard = ({
             : null
         }
       >
-        <div className="d-flex justify-content-end ">
+        <div className="d-flex flex-md-row-reverse justify-content-between align-items-center ">
           <div>
             <Dropdown onClick={stopPropagation}>
               <Dropdown.Toggle
@@ -50,7 +73,7 @@ export const ProductCard = ({
                 <EditDotsIcon />
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => console.log('edited')}>
+                <Dropdown.Item onClick={editModal}>
                   Edit
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => console.log('deleted')}>
@@ -59,6 +82,13 @@ export const ProductCard = ({
               </Dropdown.Menu>
             </Dropdown>
           </div>
+          {
+           productsRootLayer && (
+            <span id='portfolio-name' className='portfolio-name px-4 py-2 text-white fw-bold rounded-5 shadow text-center' >
+                {dataProvider?.portfolioName || ''}
+            </span>
+           ) 
+          }
         </div>
         <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
           <Avatar
@@ -70,15 +100,33 @@ export const ProductCard = ({
           <p className="fw-bold fs-5 text-dark ">{dataProvider.name}</p>
         </div>
         <div className="d-flex flex-column px-4 py-3">
-          <p className="text-dark-gray">
-            {dataProvider.description.length > 130
-              ? `${dataProvider.description.slice(0, 130)}...`
-              : dataProvider.description}
-          </p>
+     
+       {
+        !dataProvider.description 
+          ? (
+            <p className="text-dark-gray text-center">
+              <span>No description available</span>
+            </p>
+          )
+          : (
+            <OverlayTrigger
+              placement="left-end"
+              delay={{ show: 250, hide: 400 }}
+              overlay={renderTooltip}
+            >
+              <p className="text-dark-gray">
+                {dataProvider.description.length > 90
+                  ? `${dataProvider.description.slice(0, 90)}...`
+                  : dataProvider.description
+                }
+              </p>
+            </OverlayTrigger>
+          )
+      }
         </div>
         <div>
-          <span className="fw-bold px-4 text-dark">
-            {dataProvider.startDate} - {dataProvider.endDate}
+          <span className="fw-bold date px-4 text-dark">
+            {formatDate(dataProvider?.startDate)} - {formatDate(dataProvider?.endDate)}
           </span>
         </div>
         <div className="d-flex flex-column px-4 pt-5">

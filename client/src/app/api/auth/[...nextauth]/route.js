@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
+import { headers } from 'next/headers';
 
 const endPoint = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 const authenticate = async (username, password) => {
@@ -33,9 +34,18 @@ const getMe = async (token) => {
 
 const refreshAccessToken = async (token) => {
   try {
-    const  { data } = await axios.post(`${endPoint}/refresh_token`, {
-      refreshToken: token.refreshToken,
-    });    
+    const { data } = await axios.post(
+      `${endPoint}/refresh_token`,
+      {
+        refreshToken: token?.refreshToken,
+      },
+      {
+        headers: {
+          Authorization: ` ${token?.accessToken}`,
+        },
+      }
+    );
+    console.log(data);
     return {
       ...token,
       accessToken: data.accessToken,
@@ -84,6 +94,7 @@ export const authOptions = {
       if (trigger === 'update') {
         if (Date.now() < new Date(token.accessToken?.expiresAt)?.getTime()) {
           token = await refreshAccessToken(token);
+          console.log(token)
         }
         try {
           const data = await getMe(token?.accessToken);

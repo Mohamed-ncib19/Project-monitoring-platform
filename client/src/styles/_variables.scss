@@ -18,6 +18,9 @@ $z-index-999: 999;
 .z-index-999 {
   z-index: $z-index-999 !important;
 }
+.z-index-1000 {
+  z-index: 1000 !important;
+}
 
 .border-none {
   border: none;
@@ -52,10 +55,12 @@ $light-text-custom-color: #5a5a5a;
   color: $light-text-custom-color;
 }
 
-/* $very-light-text-custom-color: #f0f0f0;
-.very-light-text-custom-color{
-    color: $very-light-text-custom-color;
-} */
+.nonSelectable {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+}
 
 .custom-rotate-180 {
   rotate: 180deg;

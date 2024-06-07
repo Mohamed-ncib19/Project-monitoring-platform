@@ -1,6 +1,6 @@
 import clx from 'clsx';
 
-const CoreInput = ({
+const InlinedLabelInput = ({
   name,
   placeholder,
   type = 'text',
@@ -9,28 +9,28 @@ const CoreInput = ({
   register,
   defaultValue,
   value,
-  onChange
+  onChange,
+  InlineLabel
 }) => {
   return (
     <>
-      <div className="form-group form-floating">
+      <div className="form-group form-floating position-relative">
         <input
           id={`floating-input-${name}`}
           type={type}
           name={name}
           readOnly={readOnly}
           placeholder={placeholder}
-          className={clx('form-control focus-blue-bottom-border rounded', {
+          className={clx('form-control focus-blue-bottom-border rounded position-relative', {
             'is-invalid': !readOnly && errors[name],
-            'text-muted' : readOnly,
-            'bg-light' : readOnly
+            'text-muted': readOnly,
+            'bg-light': readOnly
           })}
           {...(readOnly ? {} : register(name))}
           defaultValue={defaultValue}
-          value={value} 
+          value={value}
           onChange={onChange || (() => {})}
         />
-
         {!readOnly && (
           <label
             htmlFor={`floating-input-${name}`}
@@ -39,7 +39,9 @@ const CoreInput = ({
             {placeholder}
           </label>
         )}
-
+        <span className="position-absolute bottom-0 end-0 h-100 d-flex bg-soft-gray border rounded-end-2 align-items-center px-4">
+          {InlineLabel}
+        </span>
         {!readOnly && errors[name] && (
           <p className="invalid-feedback">
             {!readOnly && errors[name].message}
@@ -50,4 +52,4 @@ const CoreInput = ({
   );
 };
 
-export default CoreInput;
+export default InlinedLabelInput;

@@ -42,11 +42,14 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
   const checkChanges = (data) => {
     return Object.keys(data).every(key => data[key] === user[key]);
   };
-  
+
+
+
+
 
 
   useEffect(() => {
-    if (user) {
+    if (user) { 
       reset({
         firstname: user.firstname || '',
         lastname: user.lastname || '',
@@ -54,10 +57,11 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
         email: user.email || '',
         salary: user.salary || '',
         businessPosition: user.businessPosition || '',
-        role: user.role || '',
+        role: user?.role || '',
       });
     }
-  }, [user, reset]);
+  }, [user, reset, RolesOptions]);
+  
 
   const handleEdit = handleSubmit(async (formData) => {
    
@@ -189,13 +193,13 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
                 render={({ field }) => (
                   <Select
                     className={clsx(' ', {
-                      'is-invalid border-2 border-danger': !!errors.role,
+                      'is-invalid border-2 border-danger': errors.role,
                     })}
                     {...field}
                     options={RolesOptions}
                     onChange={(option) => field.onChange(option ? option.value : '')}
-                    value={RolesOptions.find((role) => role.value === field.value)}
-                  />
+                    value={RolesOptions.find((role) => role.value === field.value) || { value: 'manager', label: 'Manager' }}
+                    />
                 )}
               />
               {errors.role && (

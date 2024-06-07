@@ -1,0 +1,19 @@
+.cancel-user:hover{
+    background-color: rgba(239, 239, 239, 0.78);
+}
+
+.custom-select-container {
+    width: 100%;
+  }
+  
+  .custom-select__control {
+    height: 58px; 
+  }
+
+  .custom-option{
+    padding: calc(4% - 20px);
+  }
+  .custom-option:hover{
+    background-color: rgba(238, 238, 238, 0.736);
+    cursor: pointer;
+  }

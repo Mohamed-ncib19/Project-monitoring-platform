@@ -28,6 +28,7 @@ const Projects = () => {
                   src={ProjectNotFound}
                   alt="Project not found"
                   width={400}
+                  draggable={false}
                 />
                 <p className=" text-dark-gray fw-bolder text-center fs-1">No Product  Found</p>
               </div>

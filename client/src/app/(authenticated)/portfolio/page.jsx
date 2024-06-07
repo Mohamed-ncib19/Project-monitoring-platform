@@ -15,10 +15,13 @@ import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
 import { AlertModal } from '../_components/Modals/AlertModal';
 import { useBreadCumb } from '../_context/BreadcrumbsContext';
+import { useRouter } from 'next/navigation';
 
 const Portfolio = () => {
 
   const { notify } = useNotifications();
+
+  const { refresh } = useRouter();
 
   const { show,setShow } = useBreadCumb();
 
@@ -96,6 +99,7 @@ const Portfolio = () => {
       if(response.ok){
         notify({ message: response.message, status: 'success' });
         setShowEditModal(false);
+        refresh();
       }else{
         notify({ message: response.message, status: 'danger' });
       }
@@ -110,8 +114,8 @@ const Portfolio = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteModalShow = (portfolio) => {
-    setCurrentPortfolio(portfolio);
+  const handleDeleteModalShow = (id) => {
+    setCurrentPortfolio(id);
     setShowDeleteModal(true);
   };
 
@@ -119,7 +123,18 @@ const Portfolio = () => {
     setShowAlertModal(true);
   }
 
-  const handleDelete = (portfolio) => portfolio.description ? handleAlertModalShow() : handleDeleteModalShow(portfolio);
+  const handleDelete = (portfolio) => portfolio?.products?.length > 0 ? handleAlertModalShow() : handleDeleteModalShow(portfolio?._id);
+
+  const DeleteEmptyPortfolio = async ()=>{
+    try {
+      console.log(currentPortfolio);
+      const response = await axios.delete(`/portfolios/${currentPortfolio}`);
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+      notify({message : 'Something went Wrong !' , status : 'danger' });
+    }
+  }
 
   return (
     <>
@@ -141,7 +156,7 @@ const Portfolio = () => {
               ))
             ) : (
               <div className="d-flex flex-column justify-content-center align-items-center gap-3 mt-5">
-                <Image priority src={PortfolioNotFound} alt="Portfolio Not Found" />
+                <Image priority src={PortfolioNotFound} draggable={false} alt="Portfolio Not Found" />
                 <p className="text-dark-gray fw-bolder text-center fs-1">No portfolio Found</p>
               </div>
             )}
@@ -182,7 +197,7 @@ const Portfolio = () => {
         </FormProvider>
       </EditModal>
 
-      <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio" handleClick={() => console.log('deleted')}>
+      <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio" handleClick={DeleteEmptyPortfolio}>
         <p className='text-muted' >This portfolio is empty. Are you sure you want to delete it?</p>
       </ConfirmModal>
 

@@ -98,7 +98,7 @@ export const EditProfileForm = ({dataProvider}) =>{
               </div>
 
               <div className="col-lg-6 col-md-7 col-12 d-flex align-items-center gap-4">
-                <Image src={logo} className="bg-light rounded-circle" width={200} height={170} alt="user photo" />
+                <Image src={logo} className="bg-light rounded-circle" draggable={false} width={200} height={170} alt="user photo" />
                 <div className="d-flex flex-column align-items-start gap-3 col-12 ">
                   <span>Upload new Image</span>
                   <input type="file" />

@@ -23,7 +23,8 @@ const Layout = async ({ children }) => {
               src={LoginSquares}
               alt="square"
               width={100}
-              className="position-absolute top-0 end-0"
+              draggable={false}
+              className="position-absolute top-0 end-0 "
             />
             <div className="row m-auto position-relative my-4 col-11 shadow rounded-1 bg-white z-1">
               <div className="login-registration-container d-flex flex-column align-items-center justify-content-around col-11 m-auto p-2">
@@ -38,6 +39,7 @@ const Layout = async ({ children }) => {
               src={LoginSquares}
               alt="square"
               width={100}
+              draggable={false}
               className="position-absolute bottom-0 start-0 custom-rotate-180"
             />
           </div>
