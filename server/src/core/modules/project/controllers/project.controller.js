@@ -49,7 +49,6 @@ const projectController = {
   async getProjects(request, reply) {
     try {
       const { product = "all" } = request.query;
-      //check if product exists
       const response = await projectServices.getProjects(product);
       if (!response.ok) {
         return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -59,16 +58,15 @@ const projectController = {
       } else if (response.projects.length == 0) {
         return reply
           .status(httpStatus.NOT_FOUND)
-          .send({ error: { message: "can't find projects" }, data: null });
+          .send({ error: { message: "can't find projects" } });
       } else {
         return reply
           .status(httpStatus.OK)
-          .send({ error: null, data: response.projects });
+          .send({ projects: response.projects });
       }
     } catch (error) {
       return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        error: { message: "Internal server error", details: error.message },
-        data: null,
+        error: { message: "Internal server error", details: error },
       });
     }
   },
