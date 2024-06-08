@@ -147,7 +147,6 @@ const zentaoServices = {
   },
   async createProject(project, productZentaoId) {
     try {
-      console.log("zentao request started.....");
       let data = {
         name: project.name,
         desc: project.description,
@@ -157,6 +156,7 @@ const zentaoServices = {
         end: project.endDate,
         model: project.model,
         products: [null],
+        whitelist: ["admin", "ahmed"],
       };
       let config = {
         method: "post",

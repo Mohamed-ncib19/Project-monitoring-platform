@@ -13,7 +13,7 @@ async function routes(fastify, options) {
   fastify.get("/users/roles/:role", {
     preHandler: [verifyJWT, checkUserActive],
     handler: userController.getUsersByRole,
-  });  
+  });
 
   // Get a specific user by username
   fastify.get("/users/:id", {
