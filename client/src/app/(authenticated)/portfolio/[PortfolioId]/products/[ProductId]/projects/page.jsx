@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ProjectCard } from '@/app/(authenticated)/_components/Project/ProjectCard';
 import { useBreadCumb } from '@/app/(authenticated)/_context/BreadcrumbsContext';
 import { useEffect } from 'react';
+import { ProjectHeader } from '@/app/(authenticated)/_components/Project/ProjectHeader';
 
 const ProjectsByProducts = ({ params }) => {
   const { ProductId } = params;
@@ -42,7 +43,7 @@ const ProjectsByProducts = ({ params }) => {
   
   return (
     <>
-      <ProductHeader color={'warning'} name={'projects'} />
+      <ProjectHeader color={'warning'} name={'projects'} />
       <div className="mx-5 ">
         <div className="project-container row justify-content-start m-auto">
           {ProjectsData.length > 0 ? (

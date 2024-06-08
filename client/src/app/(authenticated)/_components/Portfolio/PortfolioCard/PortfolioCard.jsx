@@ -88,7 +88,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
             Number of Products:
           </span>{' '}
           <span className="fw-bolder text-dark">
-            {dataProvider.products ? dataProvider.products.length : 0 }
+            {dataProvider && dataProvider?.productCount || 0 }
           </span>
         </p>
         <div className="line rounded w-25 mb-3"></div>
@@ -97,7 +97,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
             Number of Projects:
           </span>{' '}
           <span className="fw-bolder text-dark">
-            {dataProvider.projects || 0}
+            {dataProvider && dataProvider?.projectCount || 0}
           </span>
         </p>
       </div>

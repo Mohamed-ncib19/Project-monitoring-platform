@@ -14,6 +14,8 @@ export const ProductCard = ({
 }) => {
   const { setBreadCumbItem } = useBreadCumb();
 
+  console.log(dataProvider);
+
 const { editModal } = handleFunctions;
 
 const renderTooltip = (props) => (
@@ -27,20 +29,15 @@ const renderTooltip = (props) => (
     e.preventDefault();
   };
 
-  const formatDate = (value)=>{
+  const formatDate = (value) => {
     const date = new Date(value);
-    const formattedDate = date.toLocaleDateString('en-US', {
-      month: 'long',
+    const formattedDate = date.toLocaleDateString(undefined, {
+      month: 'short',
       day: 'numeric',
       year: 'numeric',
     });
-    const formattedTime = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-    return `${formattedDate} ${formattedTime}`
-      
+    console.log(formattedDate)
+    return formattedDate;
   }
   //const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
 

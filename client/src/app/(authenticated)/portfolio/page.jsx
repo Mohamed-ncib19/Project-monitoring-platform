@@ -15,13 +15,10 @@ import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
 import { AlertModal } from '../_components/Modals/AlertModal';
 import { useBreadCumb } from '../_context/BreadcrumbsContext';
-import { useRouter } from 'next/navigation';
 
 const Portfolio = () => {
 
   const { notify } = useNotifications();
-
-  const { refresh } = useRouter();
 
   const { show,setShow } = useBreadCumb();
 
@@ -36,6 +33,8 @@ const Portfolio = () => {
 
   const [currentPortfolio, setCurrentPortfolio] = useState(null);
   const [portfolios, setPortfolios] = useState([]);
+
+  const [handleRefresh,setHandleRefresh] = useState(false);
 
   const methods = useForm({
     resolver: yupResolver(PortfolioShcema),
@@ -65,49 +64,73 @@ const Portfolio = () => {
       }
     };
     fetchPortfolios();
-  }, []);
+  }, [handleRefresh]);
 
 
-  const EditPortfolio = async (id,data) =>{
+  const checkChanges = async (Edited, Saved) => {
     try {
-        const response = await axios.put(`/portfolios/${id}`,data);
-        if(response.status === 200){
-          return Promise.resolve({
-            ok:true,
-            message:response.data.message
-          });
-        }else{
-          return Promise.resolve({
-            ok:false,
-            message:response.data.message
-          });
+      const changedFields = {};
+      const editedKeys = Object.keys(Edited);
+  
+      for (const key of editedKeys) {
+        if (Edited[key] !== Saved[key]) {
+          changedFields[key] = Edited[key];
         }
+      }
+  
+      return { ok: Object.keys(changedFields).length > 0, changedFields }; 
     } catch (error) {
-      return Promise.reject({
-        ok:false,
-        message:JSON.parse(error?.request.response).message
-      });
+      console.error(error);
+      return { ok: false, changedFields: {} };
     }
-  }
+  };
+  
+  const EditPortfolio = async (currentPortfolio, data) => {
+    try {
+      const { ok, changedFields } = await checkChanges(data, currentPortfolio);
+      if (!ok) {
+        return {
+          ok: false,
+          message: 'No changes'
+        }; 
+      } else {
 
-
+        const response = await axios.put(`/portfolios/${currentPortfolio?._id}`, changedFields);
+        return {
+          ok: response.status === 200,
+          message: response.data.message
+        };
+      }
+    } catch (error){
+      console.error(error);
+      return {
+        ok: false,
+        message: JSON.parse(error?.request.response).message
+      };
+    }
+  };
+  
   
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const response = await EditPortfolio(currentPortfolio?._id,data);
-      if(response.ok){
-        notify({ message: response.message, status: 'success' });
+      const response = await EditPortfolio(currentPortfolio, data);
+      
+      if (response?.ok) {
+        notify({ message: response?.message, status: 'success' });
         setShowEditModal(false);
-        refresh();
-      }else{
-        notify({ message: response.message, status: 'danger' });
+        setHandleRefresh(!handleRefresh);
+      } else if (!response?.ok && response?.message === 'No changes') {
+        notify({ message: 'There are no Modifications', status: 'warning' });
+        setShowEditModal(false);
+      } else {  
+        notify({ message: response?.message, status: 'danger' });
       }
     } catch (error) {
-      notify({ message: error.message, status: 'danger' });
-      
+      notify({ message: error?.message, status: 'danger' });
     }
   });
+
 
   const handleEditModalShow = (portfolio) => {
     setCurrentPortfolio(portfolio);
@@ -123,17 +146,22 @@ const Portfolio = () => {
     setShowAlertModal(true);
   }
 
-  const handleDelete = (portfolio) => portfolio?.products?.length > 0 ? handleAlertModalShow() : handleDeleteModalShow(portfolio?._id);
+  const handleDelete = (portfolio) => portfolio?.productCount > 0 ? handleAlertModalShow() : handleDeleteModalShow(portfolio?._id);
 
   const DeleteEmptyPortfolio = async ()=>{
     try {
-      console.log(currentPortfolio);
       const response = await axios.delete(`/portfolios/${currentPortfolio}`);
-      console.log(response);
+        if(response.status === 200 ){
+          notify({ message: response?.data?.message , status: 'success' });
+          setShowDeleteModal(false);
+          window.location.reload();
+        }
     } catch (error) {
-      console.log(error)
-      notify({message : 'Something went Wrong !' , status : 'danger' });
+      notify({message : JSON.parse(error?.request?.response)?.message , status : 'danger' });
+      setShowDeleteModal(false);
+      
     }
+
   }
 
   return (

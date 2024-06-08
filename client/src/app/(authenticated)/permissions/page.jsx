@@ -316,12 +316,12 @@ const [restoreType,setRestoreType] = useState(null);
       accessor: 'joinedAt',
       Cell: ({ value }) => {
         const date = new Date(value);
-        const formattedDate = date.toLocaleDateString('en-US', {
+        const formattedDate = date.toLocaleDateString(undefined, {
           month: 'long',
           day: 'numeric',
           year: 'numeric',
         });
-        const formattedTime = date.toLocaleTimeString('en-US', {
+        const formattedTime = date.toLocaleTimeString(undefined, {
           hour: 'numeric',
           minute: '2-digit',
           hour12: true,
