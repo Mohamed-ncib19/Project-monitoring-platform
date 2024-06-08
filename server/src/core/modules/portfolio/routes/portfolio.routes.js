@@ -24,14 +24,15 @@ async function routes(fastify, options) {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.getPortfolioById,
   });
-  fastify.delete("/portfolios/:portfolioId", {
-    preHandler: [verifyJWT, checkUserActive],
-    handler: portfolioController.deletePortfolio,
-  });
 
   fastify.put("/portfolios/:portfolioId", {
     preHandler: [verifyJWT, checkUserActive],
     handler: portfolioController.editPortfolio,
+  });
+
+  fastify.delete("/portfolios/:portfolioId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: portfolioController.deletePortfolio,
   });
 }
 

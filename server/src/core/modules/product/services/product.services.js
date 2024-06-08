@@ -143,8 +143,8 @@ const productServices = {
         };
       }
 
-      const deleteResult = await portfolioCollection.updateOne(
-        { _id: profileId },
+      const deleteResult = await productCollection.updateOne(
+        { _id: productId },
         { $set: { active: false } }
       );
       if (deleteResult.modifiedCount === 1) {

@@ -46,27 +46,98 @@ const projectController = {
     }
   },
 
-  async getProjects(request, reply) {
+  async getProjects(req, res) {
     try {
-      const { product = "all" } = request.query;
-      const response = await projectServices.getProjects(product);
-      if (!response.ok) {
-        return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-          error: { message: "Internal server error", details: error.message },
-          data: null,
-        });
-      } else if (response.projects.length == 0) {
-        return reply
-          .status(httpStatus.NOT_FOUND)
-          .send({ error: { message: "can't find projects" } });
+      let projectsRes;
+      const { productId = null } = req.params;
+      if (!productId) {
+        projectsRes = await projectServices.getProjects();
       } else {
-        return reply
+        projectsRes = await projectServices.getProjects(productId);
+      }
+
+      if (projectsRes.ok) {
+        return res
           .status(httpStatus.OK)
-          .send({ projects: response.projects });
+          .send({ projects: projectsRes.projects });
+      } else {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "No projects found" });
       }
     } catch (error) {
-      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        error: { message: "Internal server error", details: error },
+      console.error(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+
+  async editProject(req, res) {
+    try {
+      const { projectId } = req.params;
+      const { body } = req;
+
+      if (!projectId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project ID" });
+      }
+
+      if (!body) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project data" });
+      }
+
+      const { exists } = await projectServices.projectExists(body.name);
+      if (exists) {
+        return res
+          .status(httpStatus.CONFLICT)
+          .send({ message: "project name already taken" });
+      }
+      const editResponse = await projectServices.editProject(projectId, body);
+      if (editResponse.ok) {
+        return res
+          .status(httpStatus.OK)
+          .send({ message: "project edited successfully" });
+      } else {
+        console.log(editResponse);
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "project not found" });
+      }
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+
+  async deleteProject(req, res) {
+    try {
+      const { projectId } = req.params;
+      if (!projectId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project ID" });
+      }
+      const deleteResponse = await projectServices.deleteProject(projectId);
+      if (deleteResponse.ok) {
+        return res
+          .status(httpStatus.OK)
+          .send({ message: "project deleted successfully" });
+      } else {
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "Failed to delete project" });
+      }
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
       });
     }
   },

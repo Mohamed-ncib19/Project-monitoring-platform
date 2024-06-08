@@ -74,32 +74,6 @@ const productController = {
     }
   },
 
-  async deleteProduct(req, res) {
-    try {
-      const { productId } = req.params;
-      if (!productId) {
-        return res
-          .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing portfolio ID" });
-      }
-      const deleteResponse = await portfolioServices.deletePortfolio(productId);
-      if (deleteResponse.ok) {
-        return res
-          .status(httpStatus.OK)
-          .send({ message: "Portfolio deleted successfully" });
-      } else {
-        return res
-          .status(httpStatus.INTERNAL_SERVER_ERROR)
-          .send({ message: "Failed to delete portfolio" });
-      }
-    } catch (error) {
-      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        message: "Internal server error",
-        details: error.message,
-      });
-    }
-  },
-
   async editProduct(req, res) {
     try {
       const { productId } = req.params;
@@ -133,6 +107,31 @@ const productController = {
         return res
           .status(httpStatus.INTERNAL_SERVER_ERROR)
           .send({ message: "product not found" });
+      }
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async deleteProduct(req, res) {
+    try {
+      const { productId } = req.params;
+      if (!productId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing product ID" });
+      }
+      const deleteResponse = await productServices.deleteProduct(productId);
+      if (deleteResponse.ok) {
+        return res
+          .status(httpStatus.OK)
+          .send({ message: "product deleted successfully" });
+      } else {
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "Failed to delete product" });
       }
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
