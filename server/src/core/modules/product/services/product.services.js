@@ -45,6 +45,7 @@ const productServices = {
         active: true,
         ...product,
         creator: manager,
+        createdAt: new Date(),
       });
       console.log("product result :", productResult);
       if (productResult.acknowledged) {

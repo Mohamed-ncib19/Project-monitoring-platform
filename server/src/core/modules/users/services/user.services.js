@@ -72,7 +72,7 @@ const userServices = {
       } else {
         users = await userModel.find({ active: true }).toArray();
       }
-      return { ok: true, users: users };
+      return { ok: true, users };
     } catch (error) {
       console.error("Error getting users:", error);
       return { ok: false, status: httpStatus.NOT_FOUND };

@@ -60,13 +60,12 @@ const userController = {
     try {
       let response;
       const { role } = request.params;
-      console.log(first)
       if (role !== "all") {
-        response = role !== (await userServices.getUsersByRole(role));
+        response = await userServices.getUsersByRole(role);
       } else {
-        response = role !== (await userServices.getUsersByRole());
+        response = await userServices.getUsersByRole();
       }
-
+      console.log(response);
       if (response.ok) {
         return reply.status(httpStatus.OK).send({ users: response.users });
       } else {
