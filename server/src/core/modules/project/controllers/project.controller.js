@@ -11,7 +11,7 @@ const projectController = {
       if (!body || !body.name) {
         return res
           .status(httpStatus.BAD_REQUEST)
-          .send({ message: "Missing product data or name" });
+          .send({ message: "Missing project data or name" });
       }
 
       const { exists } = await projectServices.projectExists(body.name);
@@ -21,7 +21,6 @@ const projectController = {
           .send({ message: "Project name already taken" });
       }
       const product = await productServices.getProductById(body.product);
-      console.log(product);
       const createResponse = await projectServices.createProject(
         body,
         user.id,
@@ -29,8 +28,7 @@ const projectController = {
       );
       if (createResponse.ok) {
         return res.status(httpStatus.CREATED).send({
-          message: "Product created successfully",
-          product: createResponse.product,
+          message: "Project created successfully",
         });
       } else {
         return res
@@ -38,7 +36,6 @@ const projectController = {
           .send({ message: "Failed to create product" });
       }
     } catch (error) {
-      console.log(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal server error",
         details: error,

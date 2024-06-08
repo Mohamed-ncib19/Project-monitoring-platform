@@ -23,7 +23,6 @@ const projectServices = {
         productZentaoId
       );
       if (!zentaoResponse.ok) {
-        console.log(zentaoResponse);
         return {
           ok: false,
           message: "Zentao error",
@@ -49,7 +48,6 @@ const projectServices = {
         return { ok: false, message: "MongoDB error" };
       }
     } catch (error) {
-      console.error("Internal server error:", error);
       return {
         ok: false,
         message: "Internal server error",
