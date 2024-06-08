@@ -17,7 +17,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 
 import Select from 'react-select';
-import { teamLeadsOptions } from '@/app/(authenticated)/_selectOptions/teamleads.options';
+import { ConfirmModal } from '@/app/(authenticated)/_components/Modals/ConfirmModal';
+import { AlertModal } from '@/app/(authenticated)/_components/Modals/AlertModal';
 
 const ProductsByPorftolio = ({ params }) => {
   
@@ -27,14 +28,16 @@ const ProductsByPorftolio = ({ params }) => {
   const { PortfolioId } = params;
 
   const [portfolioOptions, setPortfolioOptions] = useState([]);
+  const [teamleadsOptions , setTeamleadsOptions] = useState([]);
+
   const [products,setProducts] = useState([]);
 
   const [currentProduct,setCurrentProduct] = useState(null);
 
 const [showEditModal, setShowEditModal] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [showAlertModal , setShowAlertModal] = useState(false);
 
-const [productName, setProductName] = useState('');
-const [productCode, setProductCode] = useState('');
 
 const [handleRefresh,setHandleRefresh] = useState(false);
 
@@ -64,6 +67,26 @@ useEffect(() => {
   };
   fetchPortfoliosOptions();
 }, []);
+
+
+useEffect(()=>{
+
+  const getTeamLeadsOptions = async () =>{
+    try {
+      const response = await axios.get('/users/roles/teamlead');
+
+      const formatedTeamLeads = response.data.users.map(user => ({
+        value: user?._id,
+        label: `${user?.firstname}  ${user?.lastname}`
+        }));
+        setTeamleadsOptions(formatedTeamLeads)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  getTeamLeadsOptions();
+},[]);
 
   const methods = useForm({
     resolver : yupResolver(ProductSchema),
@@ -103,35 +126,22 @@ useEffect(() => {
   },[handleRefresh]);
 
   useEffect(() => {
-    const generateProductCode = (name) => {
-      const baseCode = name.toLowerCase().replace(/\s+/g, '-').substring(0, 5);
-      const uniqueCode = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-      return `${baseCode || 'prd'}${uniqueCode}`;
-    };
-
-    setProductCode(generateProductCode(productName));
-  }, [productName]);
-
-  useEffect(() => {
     if (currentProduct) {
-      console.log(currentProduct)
-      const startDate = new Date(currentProduct?.startDate).toISOString().split('T')[0];
-      const endDate = new Date(currentProduct?.endDate).toISOString().split('T')[0];
       
+      const startDate = currentProduct?.startDate.split('T')[0];
+      const endDate = currentProduct?.endDate.split('T')[0];
 
       reset({
         portfolio:currentProduct?.portfolio,
         name: currentProduct?.name,
-        code:currentProduct?.code,
         budget: currentProduct?.budget,
         currency : currentProduct?.currency,
         startDate : startDate,
         endDate : endDate,
-        teamlead : currentProduct?.teamlead,
+        teamleader : currentProduct?.teamleader,
         description: currentProduct?.description,
       });
 
-      setProductCode(currentProduct?.code);
     }
   }, [currentProduct, reset]);
   
@@ -150,10 +160,6 @@ useEffect(() => {
   const checkChanges = async (Edited, Saved) => {
     try {     
       const formatedData = await changeToDate(Saved);
-
-
-      console.log(formatedData);
-
       const changedFields = {};
       const editedKeys = Object.keys(Edited);
   
@@ -176,9 +182,6 @@ useEffect(() => {
     try {
       
       const {ok ,changedFields} = await checkChanges(data, currentProduct);
-      
-      console.log(changedFields);
-
       if (!ok) {
         return {
           ok: false,
@@ -223,7 +226,32 @@ useEffect(() => {
   });
     
   
+  const handleDeleteModalShow = (product) => {
+    setCurrentProduct(product);
+    setShowDeleteModal(true);
+  };
+
+  const handleAlertModalShow = ()=>{
+    setShowAlertModal(true);
+  }
+
+  const handleDelete = (product) => product?.projectCount > 0 ? handleAlertModalShow() : handleDeleteModalShow(product);
   
+  const DeleteEmptyProduct = async ()=>{
+    try {
+      const response = await axios.delete(`/products/${currentProduct?._id}`);
+        if(response.status === 200 ){
+          notify({ message: response?.data?.message , status: 'success' });
+          setShowDeleteModal(false);
+          setHandleRefresh(!handleRefresh);
+        }
+    } catch (error) {
+      notify({message : JSON.parse(error?.request?.response)?.message , status : 'danger' });
+      setShowDeleteModal(false);
+      
+    }
+
+  };
 
   return (
     <>
@@ -232,7 +260,16 @@ useEffect(() => {
           <div className=" product-container row justify-content-start m-auto">
             {products.length > 0 ? (
               products.map((product) => (
-              <ProductCard dataProvider={product} supportBreadCumb={true} handleFunctions={{editModal : ()=>handleShowEditModal(product)}} productKey={product._id} />
+              <ProductCard 
+                dataProvider={product}
+                supportBreadCumb={true}
+                handleFunctions={
+                  {editModal : ()=>handleShowEditModal(product),
+                  deleteModal : ()=>handleDelete(product)
+                  }
+                
+                } 
+                productKey={product._id} />
               ))
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">
@@ -255,15 +292,17 @@ useEffect(() => {
         <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' >
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+          <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="portfolio" className='text-muted'>Portfolio<span className='text-danger'>*</span></label>
-              <div className='col-lg-7 col-12 z-index-999'>
+              <div className='col-lg-8 col-12 z-index-999'>
                 <Controller
                   name='portfolio'
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
+                      className='custom-select-container'
+                      classNamePrefix='custom-select'
                       options={portfolioOptions}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
@@ -275,33 +314,21 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="name" className='text-muted'>Product name<span className='text-danger'>*</span></label>
-              <div className="col-lg-7 col-12">
+              <div className="col-lg-8 col-12 me-lg-3 m-0">
                 <CoreInput
                   name="name"
                   placeholder="Required"
                   register={register}
                   errors={errors}
-                  onChange={(e) => setProductName(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center">
-              <label htmlFor="prodcode" className="text-danger">Product Code</label>
-              <div className="col-lg-7 col-12">
-                <CoreInput
-                  name="code"
-                  placeholder="prd001"
-                  readOnly={true}
-                  value={productCode}
                 />
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="budget" className='text-muted'>Budget</label>
-              <div className='col-lg-7 col-12'>
+              <div className='col-lg-8 col-12'>
                 <ComboBoxInput
                   name='budget'
                   placeholder='Budget'
@@ -343,29 +370,31 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="teamlead" className='text-muted'>Team lead</label>
-              <div className='col-lg-7 col-12 z-index-999'>
+              <div className='col-lg-8 col-12 z-index-999'>
                 <Controller
-                  name='teamlead'
+                  name='teamleader'
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={teamLeadsOptions}
+                      className='custom-select-container'
+                      classNamePrefix='custom-select'
+                      options={teamleadsOptions}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
-                      value={teamLeadsOptions.find((option) => option.value === field.value) || ''}
+                      value={teamleadsOptions.find((option) => option.value === field.value) || ''}
                     />
                   )}
                 />
-                {errors.teamlead && <span className="text-danger">{errors.teamlead.message}</span>}
+                {errors.teamleader && <span className="text-danger">{errors.teamleader.message}</span>}
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
               <label htmlFor="description" className='text-muted'>Description</label>
-              <div className='col-lg-7 col-12'>
+              <div className='col-lg-8 col-12'>
                 <TextareaInput
                   name='description'
                   register={register}
@@ -377,6 +406,14 @@ useEffect(() => {
           </form>
         </FormProvider>
         </EditModal>
+
+        <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio"  handleClick={DeleteEmptyProduct} >
+        <p className='text-muted' >This Project is empty. Are you sure you want to delete it?</p>
+      </ConfirmModal>
+
+      <AlertModal show={showAlertModal} handleClose={()=>setShowAlertModal(false)} headerTitle='Portfolio Not Empty' >
+        <p className='text-muted' >The portfolio cannot be deleted because it currently contains <b>Projects</b>. To delete the Portfolio, you'll need to remove all associated Projects first.</p>
+      </AlertModal>
     </>
   );
 };
