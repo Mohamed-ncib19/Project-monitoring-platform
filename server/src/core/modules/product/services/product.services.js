@@ -1,6 +1,10 @@
 const ProductModel = require("../models/product");
-const zentaoServices = require("../../zentao/services/zentao.services");
+const ProjectModel = require("../../project/models/project");
+const UserModel = require("../../users/models/user");
 
+const zentaoServices = require("../../zentao/services/zentao.services");
+const projectServices = require("../../users/services/user.services");
+const userServices = require("../../users/services/user.services");
 const { v4: uuidv4 } = require("uuid");
 const productServices = {
   async productExists(name) {
@@ -122,7 +126,38 @@ const productServices = {
       };
     }
   },
+  async getProductUsers(productId) {
+    try {
+      let userIds = new Set();
+      const projectCollection = await ProjectModel();
+      const userCollection = await UserModel();
+      const projects = await projectCollection
+        .find({ $and: [{ active: true }, { product: productId }] })
+        .toArray();
 
+      projects.forEach((project) => {
+        project.members.forEach((member) => {
+          userIds.add(member);
+        });
+      });
+
+      const memberPromises = Array.from(userIds).map(async (userId) => {
+        return await userCollection.findOne({
+          $and: [{ active: true }, { _id: userId }],
+        });
+      });
+
+      const members = await Promise.all(memberPromises);
+      return { ok: true, members: members.filter((member) => member !== null) };
+    } catch (error) {
+      console.error("Error getting members:", error);
+      return {
+        ok: false,
+        message: "Error getting members",
+        details: error.message,
+      };
+    }
+  },
   async deleteProduct(productId) {
     try {
       const productCollection = await ProductModel();

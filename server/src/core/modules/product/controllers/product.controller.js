@@ -2,6 +2,7 @@ require("dotenv").config();
 const httpStatus = require("http-status");
 const productServices = require("../services/product.services");
 const portfolioServices = require("../../portfolio/services/portfolio.services");
+const projectServices = require("../../project/services/project.services");
 
 const productController = {
   async createProduct(req, res) {
@@ -45,7 +46,6 @@ const productController = {
       });
     }
   },
-
   async getProducts(req, res) {
     try {
       let productsRes;
@@ -73,7 +73,6 @@ const productController = {
       });
     }
   },
-
   async editProduct(req, res) {
     try {
       const { productId } = req.params;
@@ -134,6 +133,25 @@ const productController = {
           .send({ message: "Failed to delete product" });
       }
     } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+  async getProductUsers(req, res) {
+    try {
+      const { productId } = req.params;
+      const usersRes = await productServices.getProductUsers(productId);
+      if (usersRes.ok) {
+        return res.status(httpStatus.OK).send({ members: usersRes.members });
+      } else {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "No members found" });
+      }
+    } catch (error) {
+      console.error(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal server error",
         details: error.message,
