@@ -29,27 +29,6 @@ const zentaoServices = {
       return { ok: false, message: error.response.data.error };
     }
   },
-  async deletePortfolio(portfolioId) {
-    try {
-      let config = {
-        method: "delete",
-        maxBodyLength: Infinity,
-        url: `${process.env.ZENTAO_API_URL}/programs/${portfolioId}`,
-        headers: {
-          Authorization: process.env.ZENTAO_TOKEN,
-          "Content-Type": "application/json",
-          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
-        },
-      };
-      const response = await axios.request(config);
-      if (response.status === 200 || response.status === 204) {
-        return { ok: true, data: response.data };
-      }
-    } catch (error) {
-      console.log(error.response.data.error);
-      return { ok: false, message: error.response.data.error };
-    }
-  },
   async editPortfolio(portfolioId, portfolioData) {
     try {
       let config = {
@@ -62,6 +41,27 @@ const zentaoServices = {
           Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
         },
         data: portfolioData,
+      };
+      const response = await axios.request(config);
+      if (response.status === 200 || response.status === 204) {
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
+    }
+  },
+  async deletePortfolio(portfolioId) {
+    try {
+      let config = {
+        method: "delete",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/programs/${portfolioId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
       };
       const response = await axios.request(config);
       if (response.status === 200 || response.status === 204) {
@@ -124,7 +124,7 @@ const zentaoServices = {
       return { ok: false, message: error.response.data.error };
     }
   },
-  async deletePortfolio(productId) {
+  async deleteProduct(productId) {
     try {
       let config = {
         method: "delete",
@@ -177,6 +177,50 @@ const zentaoServices = {
     } catch (error) {
       console.log(error);
       return { ok: false, message: error.response };
+    }
+  },
+  async editProject(projectId, projectData) {
+    try {
+      let config = {
+        method: "put",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/projects/${projectId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+        data: projectData,
+      };
+      const response = await axios.request(config);
+      if (response.status === 200 || response.status === 204) {
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
+    }
+  },
+  async deleteProject(projectId) {
+    try {
+      let config = {
+        method: "delete",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/projects/${projectId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+      };
+      const response = await axios.request(config);
+      if (response.status === 200 || response.status === 204) {
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error.response.data.error);
+      return { ok: false, message: error.response.data.error };
     }
   },
 };

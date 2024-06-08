@@ -21,6 +21,11 @@ async function routes(fastify, options) {
     preHandler: [verifyJWT, checkUserActive],
     handler: productController.editProduct,
   });
+
+  fastify.delete("/products/:productId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: productController.deleteProduct,
+  });
 }
 
 module.exports = routes;
