@@ -25,7 +25,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      console.log(error.response.data);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -47,8 +47,8 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error.response.data.error);
-      return { ok: false, message: error.response.data.error };
+      console.log(error.response.data);
+      return { ok: false, message: error.response.data };
     }
   },
   async deletePortfolio(portfolioId) {
@@ -68,7 +68,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      console.log(error.response.data);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -97,7 +97,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      console.log(error.response.data);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -120,7 +120,7 @@ const zentaoServices = {
       }
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.error);
+      console.log(error.response.data);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -156,7 +156,7 @@ const zentaoServices = {
         end: project.endDate,
         model: project.model,
         products: [null],
-        whitelist: ["admin", "ahmed"],
+        whitelist: project.members,
       };
       let config = {
         method: "post",
@@ -175,7 +175,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
       return { ok: false, message: error.response };
     }
   },
@@ -197,8 +197,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error);
-      console.log(error.response.data.error);
+      console.log(error.response.data);
       return { ok: false, message: error.response.data.error };
     }
   },
@@ -219,8 +218,8 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
-      console.log(error.response.data.error);
-      return { ok: false, message: error.response.data.error };
+      console.log(error.response.data);
+      return { ok: false, message: error.response.data };
     }
   },
 };
