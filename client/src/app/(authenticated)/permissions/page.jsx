@@ -238,6 +238,8 @@ const [restoreType,setRestoreType] = useState(null);
             month: 'long',
             day: 'numeric',
             year: 'numeric',
+            timeZone : 'UTC'
+
           });
           const formattedTime = date.toLocaleTimeString('en-US', {
             hour: 'numeric',
@@ -320,6 +322,7 @@ const [restoreType,setRestoreType] = useState(null);
           month: 'long',
           day: 'numeric',
           year: 'numeric',
+          timeZone : 'UTC'
         });
         const formattedTime = date.toLocaleTimeString(undefined, {
           hour: 'numeric',
@@ -338,13 +341,17 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {   
         return (
           <div
-            className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
+            className={clsx('text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
               'manager' : row.original.role === 'Manager',
               'tl' : row.original.role === 'teamlead',
               'dev' : row.original.role === 'teammember'
             })}
           >
-            {`${row.original.role}`}
+            {`${clsx({
+              'Manager' : row.original.role === 'Manager',
+              'Team Lead' : row.original.role === 'teamlead',
+              'Team Member' : row.original.role === 'teammember'
+            })}`}
           </div>
         );
       },
@@ -430,6 +437,7 @@ const [restoreType,setRestoreType] = useState(null);
           month: 'long',
           day: 'numeric',
           year: 'numeric',
+          timeZone : 'UTC'
         });
         const formattedTime = date.toLocaleTimeString('en-US', {
           hour: 'numeric',

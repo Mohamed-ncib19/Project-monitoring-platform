@@ -10,6 +10,6 @@ export const ProductSchema = Yup.object().shape({
     .typeError('Product start date requires Date Type only'),
     endDate: Yup.date().required('Product End date is required')
     .typeError('Product End date requires Date Type only'),
-    teamlead: Yup.string()/* .required('Ensure you’ve selected a Product Team Lead.') */,
+    teamleader: Yup.string()/* .required('Ensure you’ve selected a Product Team Lead.') */,
     description: Yup.string()
   });

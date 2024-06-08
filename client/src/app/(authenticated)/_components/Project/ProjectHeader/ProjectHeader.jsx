@@ -437,6 +437,7 @@ const AddProject = async (data) =>{
       setCurrentStep((prevStep) => prevStep + 1);
     }else{
       const reformedData = await reformData(data);
+      console.log(reformedData)
       const response = await AddProject(reformedData);
       console.log(response)
       if(response.ok){

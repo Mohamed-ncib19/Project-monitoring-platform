@@ -10,7 +10,6 @@ import ComboBoxInput from '@/components/Inputs/ComboBoxInput';
 import Select from 'react-select';
 import axios from 'axios';
 import { useNotifications } from 'reapop';
-import { teamLeadsOptions } from '@/app/(authenticated)/_selectOptions/teamleads.options';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 import { useRouter } from 'next/navigation';
 
@@ -21,9 +20,12 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
   
   const {refresh} = useRouter();
 
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfoliosOptions, setPortfolios] = useState([]);
+  const [teamleadsOptions , setTeamleadsOptions] = useState([]);
   const [productName, setProductName] = useState('');
   const [productCode, setProductCode] = useState('');
+
+
 
 
 
@@ -68,13 +70,18 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
       try {
         const response = await axios.get('/users/roles/teamlead');
         console.log(response);
+        const formatedTeamLeads = response.data.users.map(user => ({
+          value: user?._id,
+          label: `${user?.firstname}  ${user?.lastname}`
+          }));
+          setTeamleadsOptions(formatedTeamLeads)
       } catch (error) {
-        console.log(error);
+        notify({message : JSON.parse(error?.request?.response).message,status : 'warning'})
       }
     }
 
     getTeamLeadsOptions();
-  },[])
+  },[]);
 
   useEffect(() => {
     const generateProductCode = (name) => {
@@ -108,18 +115,32 @@ const CreateProduct = async (data) =>{
   }
 }
 
-  const onSubmit = handleSubmit( async (data) => {
-    try {
-      const productData = {...data , code : productCode};
+const onSubmit = handleSubmit(async (formData) => {
+  try {
+    let startDate = new Date(formData.startDate);
+    startDate.setDate(startDate.getDate() + 1);
+
+    let endDate = new Date(formData.endDate);
+    endDate.setDate(endDate.getDate() + 1);
+
+    if (formData.startDate) {
+      formData.startDate = startDate;
+    }
+
+    if (formData.endDate) {
+      formData.endDate = endDate;
+    }
+      const productData = {...formData , code : productCode};
       const response = await CreateProduct(productData);
       if(response.ok){
         notify({message : response.message,status:'success'});
         handleClose();
-        refresh();
+        window.location.reload();
       }else{
         notify({message : response.message,status:'danger'});
       }
     } catch (error) {
+      console.log(error)
       notify({message : error?.message , status:'danger'});
     }
   }
@@ -152,11 +173,11 @@ const CreateProduct = async (data) =>{
                       {...field}
                       className='custom-select-container'
                       classNamePrefix='custom-select'
-                      options={portfolios}
+                      options={portfoliosOptions}
                       isDisabled={!productRootLayer && true}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
-                      value={portfolios.find((option) => option.value === field.value) || ''}
+                      value={portfoliosOptions.find((option) => option.value === field.value) || ''}
                     
                     />
                   )}
@@ -245,10 +266,10 @@ const CreateProduct = async (data) =>{
                       {...field}
                       className='custom-select-container'
                       classNamePrefix='custom-select'
-                      options={teamLeadsOptions}
+                      options={teamleadsOptions}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
-                      value={teamLeadsOptions.find((option) => option.value === field.value) || ''}
+                      value={teamleadsOptions.find((option) => option.value === field.value) || ''}
                     />
                   )}
                 />

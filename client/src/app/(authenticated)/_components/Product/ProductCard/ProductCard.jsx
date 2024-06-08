@@ -14,9 +14,8 @@ export const ProductCard = ({
 }) => {
   const { setBreadCumbItem } = useBreadCumb();
 
-  console.log(dataProvider);
-
-const { editModal } = handleFunctions;
+  const handleShow = handleFunctions.editModal;
+  const handleShowDelete = handleFunctions.deleteModal;
 
 const renderTooltip = (props) => (
   <Tooltip id="description-tooltip" {...props} className="larger-tooltip"  >
@@ -31,15 +30,14 @@ const renderTooltip = (props) => (
 
   const formatDate = (value) => {
     const date = new Date(value);
-    const formattedDate = date.toLocaleDateString(undefined, {
-      month: 'short',
+    const formattedDate = date.toLocaleDateString('en-us', {
       day: 'numeric',
+      month: 'short',
       year: 'numeric',
-    });
-    console.log(formattedDate)
+      timeZone : 'UTC'
+    });   
     return formattedDate;
   }
-  //const handleShowDelete = handleFunctions.find(func => func.hasOwnProperty('deleteModal'))?.deleteModal;
 
   return (
     <>
@@ -70,10 +68,10 @@ const renderTooltip = (props) => (
                 <EditDotsIcon />
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={editModal}>
+                <Dropdown.Item onClick={handleShow}>
                   Edit
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => console.log('deleted')}>
+                <Dropdown.Item onClick={handleShowDelete}>
                   Delete
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -132,7 +130,7 @@ const renderTooltip = (props) => (
               Number of Projects :
             </span>{' '}
             <span className="fw-bolder text-dark">
-              {dataProvider.projects || 0}
+              {dataProvider.projectCount || 0}
             </span>
           </p>
           <div className="line rounded w-25   mb-3"></div>

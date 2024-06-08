@@ -137,8 +137,8 @@ const Portfolio = () => {
     setShowEditModal(true);
   };
 
-  const handleDeleteModalShow = (id) => {
-    setCurrentPortfolio(id);
+  const handleDeleteModalShow = (portfolio) => {
+    setCurrentPortfolio(portfolio);
     setShowDeleteModal(true);
   };
 
@@ -146,15 +146,16 @@ const Portfolio = () => {
     setShowAlertModal(true);
   }
 
-  const handleDelete = (portfolio) => portfolio?.productCount > 0 ? handleAlertModalShow() : handleDeleteModalShow(portfolio?._id);
+  const handleDelete = (portfolio) => portfolio?.productCount > 0 ? handleAlertModalShow() : handleDeleteModalShow(portfolio);
 
   const DeleteEmptyPortfolio = async ()=>{
     try {
-      const response = await axios.delete(`/portfolios/${currentPortfolio}`);
+      console.log(currentPortfolio)
+      const response = await axios.delete(`/portfolios/${currentPortfolio?._id}`);
         if(response.status === 200 ){
           notify({ message: response?.data?.message , status: 'success' });
           setShowDeleteModal(false);
-          window.location.reload();
+          setHandleRefresh(!handleRefresh);
         }
     } catch (error) {
       notify({message : JSON.parse(error?.request?.response)?.message , status : 'danger' });
@@ -162,7 +163,7 @@ const Portfolio = () => {
       
     }
 
-  }
+  };
 
   return (
     <>
@@ -226,11 +227,11 @@ const Portfolio = () => {
       </EditModal>
 
       <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio" handleClick={DeleteEmptyPortfolio}>
-        <p className='text-muted' >This portfolio is empty. Are you sure you want to delete it?</p>
+        <p className='text-muted' >This Portfolio is empty. Are you sure you want to delete it?</p>
       </ConfirmModal>
 
       <AlertModal show={showAlertModal} handleClose={()=>setShowAlertModal(false)} headerTitle='Portfolio Not Empty' >
-        <p className='text-muted' >The portfolio cannot be deleted because it currently contains <b>products</b>. To delete the portfolio, you'll need to remove all associated products first.</p>
+        <p className='text-muted' >The Portfolio cannot be deleted because it currently contains <b>Products</b>. To delete the Portfolio, you'll need to remove all associated Products first.</p>
       </AlertModal>
 
     </>
