@@ -13,7 +13,6 @@ import CoreButton from '@/components/buttons/CoreButton';
 import CoreInput from '@/components/Inputs/CoreInput';
 import TextareaInput from '@/components/Inputs/Textarea';
 import ComboBoxInput from '@/components/Inputs/ComboBoxInput';
-import RadioInput from '@/components/Inputs/RadioInput';
 import InlinedLabelInput from '@/components/Inputs/InlinedLabedInput';
 
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
@@ -450,6 +449,7 @@ const AddProject = async (data) =>{
     }
 
    } catch (error) {
+    console.log(error)
     console.log(error);
    }
   });

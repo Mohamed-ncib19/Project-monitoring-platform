@@ -24,6 +24,9 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
   const [portfolios, setPortfolios] = useState([]);
   const [productName, setProductName] = useState('');
   const [productCode, setProductCode] = useState('');
+
+
+
   const [show, setShow] = useState(false);
   
   const methods = useForm({
@@ -44,7 +47,7 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    const fetchPortfolios = async () => {
+    const fetchPortfoliosOptions = async () => {
       try {
         const response = await axios.get('/portfolios');
         const portfoliosOptions = response.data.portfolios.map(portfolio => ({
@@ -56,8 +59,22 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
         notify({ message: JSON.parse(error.request.response).message, status: 'warning' });
       }
     };
-    fetchPortfolios();
+    fetchPortfoliosOptions();
   }, []);
+
+  useEffect(()=>{
+
+    const getTeamLeadsOptions = async () =>{
+      try {
+        const response = await axios.get('/users/roles/teamlead');
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getTeamLeadsOptions();
+  },[])
 
   useEffect(() => {
     const generateProductCode = (name) => {
@@ -133,7 +150,10 @@ const CreateProduct = async (data) =>{
                   render={({ field }) => (
                     <Select
                       {...field}
+                      className='custom-select-container'
+                      classNamePrefix='custom-select'
                       options={portfolios}
+                      isDisabled={!productRootLayer && true}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
                       value={portfolios.find((option) => option.value === field.value) || ''}
@@ -189,28 +209,26 @@ const CreateProduct = async (data) =>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="date" className='text-muted text-end '>Duration<span className='text-danger'>*</span></label>
-              <div className='d-flex flex-lg-row flex-column col-lg-8 col-12'>
-                <div className='col-lg-7 col-12 px-1'>
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-7 col-12 align-items-center'>
+              <label htmlFor="date" className='text-muted'>Duration<span className='text-danger'>*</span></label>
+              <div className='d-flex flex-lg-row flex-column col-lg-6 col-12'>
+                <div className='col-lg-10 col-12'>
                   <CoreInput
                     name='startDate'
                     placeholder='Start date'
                     type='date'
                     register={register}
                     errors={errors}
-                    onChange={(e)=> setStartDateValue(e.target.value) }
                   />
                 </div>
-                <span className='bg-soft-gray px-2 py-3 text-center'>To</span>
-                  <div className='col-lg-7 col-12'>
+                <span className='bg-soft-gray d-flex align-self-start px-2 py-3 text-center'>to</span>
+                <div className='col-lg-10 col-12'>
                   <CoreInput
                     name='endDate'
                     placeholder='End date'
                     type='date'
                     register={register}
                     errors={errors}
-                    onChange={(e)=> setEndDateValue(e.target.value) }
                   />
                 </div>
               </div>
@@ -225,6 +243,8 @@ const CreateProduct = async (data) =>{
                   render={({ field }) => (
                     <Select
                       {...field}
+                      className='custom-select-container'
+                      classNamePrefix='custom-select'
                       options={teamLeadsOptions}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}

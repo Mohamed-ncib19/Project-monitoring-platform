@@ -10,6 +10,7 @@ const Profile = () => {
 
 const { notify } = useNotifications();
 
+
 const [userData,setUserData] = useState(null);
 
   const getUser = async () =>{

@@ -157,17 +157,40 @@ useEffect(() => {
     }
   }, [currentProduct, reset]);
   
-  const EditProduct = async (id, data) => {
+
+  const checkChanges = async (Edited, Saved) => {
     try {
-      const response = await axios.put(`/products/${id}`, data);
-      if (response.status === 200) {
-        return {
-          ok: true,
-          message: response.data.message
-        };
-      } else {
+      const editedKeys = Object.keys(Edited);
+  
+      for (const key of editedKeys) {
+        if (Edited[key] !== Saved[key]) {
+          return true;
+        }
+      }
+  
+      return false; 
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+
+
+
+  const EditProduct = async (currentProduct, data) => {
+    try {
+      
+      const changesResponse = await checkChanges(data, currentProduct);
+      if (!changesResponse) {
         return {
           ok: false,
+          message: 'No changes'
+        }; 
+      } else {
+        const response = await axios.put(`/products/${currentProduct?._id}`, data);
+        return {
+          ok: response.status === 200,
           message: response.data.message
         };
       }
@@ -177,23 +200,32 @@ useEffect(() => {
         message: JSON.parse(error?.request.response).message
       };
     }
-  }
+  };
   
-
-  const onSubmit = handleSubmit(async (data)=>{
+    
+  
+    
+  
+  const onSubmit = handleSubmit(async (data) => {
     try {
-      const response = await EditProduct(currentProduct?._id,data);
-      if(response.ok){
-        notify({message : response.message , status : 'success'});
-        handleCloseEditModal();
-        refresh();
-      }else{
-        notify({message : response.message , status : 'danger'});
-      }
+      const response = await EditProduct(currentProduct, data);
+      
+        if (response?.ok) {
+          notify({message: response?.message , status: 'success'});
+          setShowEditModal(false);
+          refresh();
+        } else if(!response?.ok  && response?.message === 'No changes') {
+          notify({message: 'There are no notifications' , status: 'warning'});
+        }else{  
+          notify({message: response?.message , status: 'danger'});
+        }
+      
     } catch (error) {
-      notify({message : 'Something went wrong!' , status : 'danger'});
+      notify({message : error?.message , status : 'danger'})
     }
-  })
+  });
+    
+  
   
 
   return (

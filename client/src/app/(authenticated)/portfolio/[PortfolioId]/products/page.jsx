@@ -18,13 +18,11 @@ import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 
 import Select from 'react-select';
 import { teamLeadsOptions } from '@/app/(authenticated)/_selectOptions/teamleads.options';
-import { useRouter } from 'next/navigation';
 
 const ProductsByPorftolio = ({ params }) => {
   
   const { notify } = useNotifications();
 
-  const { refresh } = useRouter();
 
   const { PortfolioId } = params;
 
@@ -37,6 +35,8 @@ const [showEditModal, setShowEditModal] = useState(false);
 
 const [productName, setProductName] = useState('');
 const [productCode, setProductCode] = useState('');
+
+const [handleRefresh,setHandleRefresh] = useState(false);
 
 
 const defaultPortfolio = portfolioOptions.find((portfolio) => portfolio.value === PortfolioId)?.value;
@@ -100,7 +100,7 @@ useEffect(() => {
       }
     }
       fetchData();
-  },[]);
+  },[handleRefresh]);
 
   useEffect(() => {
     const generateProductCode = (name) => {
@@ -114,11 +114,10 @@ useEffect(() => {
 
   useEffect(() => {
     if (currentProduct) {
-
-      console.log(currentProduct);
-
-      const startDate = currentProduct?.startDate.split('T')[0];
-      const endDate = currentProduct?.endDate.split('T')[0];
+      console.log(currentProduct)
+      const startDate = new Date(currentProduct?.startDate).toISOString().split('T')[0];
+      const endDate = new Date(currentProduct?.endDate).toISOString().split('T')[0];
+      
 
       reset({
         portfolio:currentProduct?.portfolio,
@@ -136,17 +135,59 @@ useEffect(() => {
     }
   }, [currentProduct, reset]);
   
-  const EditProduct = async (id, data) => {
+  
+  const changeToDate = async (data) => {
+    if (data?.startDate) {
+      data.startDate = new Date(data.startDate);
+    }
+    if (data?.endDate) {
+      data.endDate = new Date(data.endDate);
+    }
+    return data;
+  };
+
+
+  const checkChanges = async (Edited, Saved) => {
+    try {     
+      const formatedData = await changeToDate(Saved);
+
+
+      console.log(formatedData);
+
+      const changedFields = {};
+      const editedKeys = Object.keys(Edited);
+  
+      for (const key of editedKeys) {
+        if (Edited[key] !== formatedData[key]) {
+          changedFields[key] = Edited[key];
+        }
+      }
+  
+      return { ok: Object.keys(changedFields).length > 0, changedFields }; 
+    } catch (error) {
+      console.error(error);
+      return { ok: false, changedFields: {} };
+    }
+  };
+
+
+
+  const EditProduct = async (currentProduct, data) => {
     try {
-      const response = await axios.put(`/products/${id}`, data);
-      if (response.status === 200) {
-        return {
-          ok: true,
-          message: response.data.message
-        };
-      } else {
+      
+      const {ok ,changedFields} = await checkChanges(data, currentProduct);
+      
+      console.log(changedFields);
+
+      if (!ok) {
         return {
           ok: false,
+          message: 'No changes'
+        }; 
+      } else {
+        const response = await axios.put(`/products/${currentProduct?._id}`, changedFields);
+        return {
+          ok: response.status === 200,
           message: response.data.message
         };
       }
@@ -156,27 +197,34 @@ useEffect(() => {
         message: JSON.parse(error?.request.response).message
       };
     }
-  }
+  };
   
-
-  const onSubmit = handleSubmit(async (data)=>{
+    
+  
+    
+  
+  const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
-      const response = await EditProduct(currentProduct?._id,data);
-      console.log(response)
-      if(response.ok){
-        notify({message : response.message , status : 'success'});
-        handleCloseEditModal();
-        refresh();
-      }else{
-        notify({message : response.message , status : 'danger'});
-      }
+      const response = await EditProduct(currentProduct, data);
+      
+        if (response?.ok) {
+          notify({message: response?.message , status: 'success'});
+          setShowEditModal(false);
+          setHandleRefresh(!handleRefresh);
+        } else if(!response?.ok && response?.message === 'No changes') {
+          notify({message: 'There are no notifications' , status: 'warning'});
+        }else{  
+          notify({message: response?.message , status: 'danger'});
+        }
+      
     } catch (error) {
-      console.log(error);
-      notify({message : 'Something went wrong!' , status : 'danger'});
+      notify({message : error?.message , status : 'danger'})
     }
   });
+    
   
+  
+
   return (
     <>
       <ProductHeader color={'danger'} name={'Products'} productRootLayer={false} defaultPortfolio={defaultPortfolio}  />
@@ -282,7 +330,7 @@ useEffect(() => {
                     errors={errors}
                   />
                 </div>
-                <span className='bg-soft-gray d-flex align-self-center px-2 py-3 text-center'>to</span>
+                <span className='bg-soft-gray d-flex align-self-start px-2 py-3 text-center'>to</span>
                 <div className='col-lg-10 col-12'>
                   <CoreInput
                     name='endDate'
