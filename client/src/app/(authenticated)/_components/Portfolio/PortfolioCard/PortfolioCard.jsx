@@ -31,7 +31,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
     <Link
       href={`/portfolio/${dataProvider._id}/products`}
       key={portfolioKey}
-      className="text-decoration-none portfolio-card col-12 col-xl-3 col-lg-12 col-md-12 py-1 d-flex flex-column justify-content-between gap-1 rounded-2"
+      className="text-decoration-none portfolio-card col-12 col-xl-3 col-lg-12 col-md-12 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-1 rounded-2"
       onClick={() => setBreadCumbItem(prev => [...prev, {portfolio:dataProvider.name , portfolioLink : `/portfolio` }])}
       >
       <div className="d-flex justify-content-end">

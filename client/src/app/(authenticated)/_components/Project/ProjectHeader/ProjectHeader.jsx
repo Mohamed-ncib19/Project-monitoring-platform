@@ -18,7 +18,7 @@ import InlinedLabelInput from '@/components/Inputs/InlinedLabedInput';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 
 import DetailsIcon from '@/../../public/icons/details-icon';
-import MmembersIcon from '@/../../public/icons/members-icon';
+import MembersIcon from '@/../../public/icons/members-icon';
 import FrameworkIcon from '@/../../public/icons/framework-icon';
 import { Avatar } from '../../Avatar';
 import CancelIcon from '../../../../../../public/icons/cencel-icon';
@@ -26,7 +26,9 @@ import CancelIcon from '../../../../../../public/icons/cencel-icon';
 import ScrumImage from '@/../../public/images/Scrum.png';
 import KanbanImage from '@/../../public/images/Kanban.png';
 import CustomRadio from '@/components/Inputs/CustomRadio';
-const Step1Form = ({ control, register, errors, portfolios,handleClose,notify }) => {
+import { ProjectSchema } from '@/app/(authenticated)/_shcemas/project.schema';
+
+const Step1Form = ({ control, register, errors, portfolios,notify,projectCode,setProjectCode }) => {
   
   const [selectedPortfolio,setSelectedPortfolio] = useState([]);
   const [productOptions,setProductOption] = useState([]);
@@ -36,16 +38,18 @@ const Step1Form = ({ control, register, errors, portfolios,handleClose,notify })
 
   const [daysValue,setDaysValue] = useState(null);
 
+  const [projectName , setProjectName] = useState('');
+
   
   useEffect(()=>{
-    const fetchData = async (PortfolioId) =>{
+    const fetchData = async (portfolio) =>{
       try {
-        const productsData = await axios.get(`/${PortfolioId}/products`);
-        if(productsData?.status === 200){
+        const productsData = await axios.get(`/${portfolio?.value}/products`);
+        if(productsData?.status === 200 && productsData?.data?.products.length > 0 ){
           const transformedProducts = await productsData.data.products.map(product => ({value:product?._id, label: product?.name}));
           setProductOption(transformedProducts);
         }else{
-          notify({ message : 'Something went wrong !', status:'danger'});
+          notify({ message : `There are no Products for ${portfolio?.label} ` , status:'warning'});
           setProductOption([]);
         }
       } catch (error) {
@@ -54,8 +58,8 @@ const Step1Form = ({ control, register, errors, portfolios,handleClose,notify })
       }
       
     }
-    if(selectedPortfolio.length === undefined){
-      fetchData(selectedPortfolio?.value);
+    if(selectedPortfolio?.length !== 0){
+      fetchData(selectedPortfolio);
     }
   },[selectedPortfolio]);
   
@@ -80,6 +84,15 @@ const Step1Form = ({ control, register, errors, portfolios,handleClose,notify })
     }
 }, [startDateValue, endDateValue]);
 
+useEffect(() => {
+  const generateProjectCode = (name) => {
+    const baseCode = name.toLowerCase().replace(/\s+/g, '-').substring(0, 5);
+    const uniqueCode = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `${baseCode || 'prd'}${uniqueCode}`;
+  };
+
+  setProjectCode(generateProjectCode(projectName));
+}, [projectName]);
   return(
     <>
   <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
@@ -138,9 +151,25 @@ const Step1Form = ({ control, register, errors, portfolios,handleClose,notify })
        placeholder="Required"
        register={register}
        errors={errors}
+       onChange={(e) => setProjectName(e.target.value)}
+
      />
    </div>
  </div>
+
+
+            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
+              <label htmlFor="prodcode" className="text-danger">Product Code</label>
+              <div className="col-lg-8 col-12 mx-3">
+                <CoreInput
+                  name="code"
+                  placeholder="prd001"
+                  readOnly={true}
+                  value={projectCode}
+                />
+              </div>
+            </div>
+
 
  <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
    <label htmlFor="budget" className='text-muted'>Budget</label>
@@ -228,7 +257,7 @@ const Step1Form = ({ control, register, errors, portfolios,handleClose,notify })
 
 </>
   );
-}
+};
 
 const Step2Form = ({ register, errors, handleClose,control, notify,setValue }) => {
   const [userOptions, setUserOptions] = useState([]);
@@ -304,20 +333,22 @@ const Step2Form = ({ register, errors, handleClose,control, notify,setValue }) =
         </div>
       </div>
 
-      <div className='bg-soft-gray col-lg-7 col-10'>
-        {selectedUsers.map(user => (
-          <div key={user.value} className="d-flex justify-content-between align-items-center p-2 bg-white border rounded">
-            <div className='d-flex align-items-center gap-3 ' >
-            <Avatar name={user?.label} variant='soft-gray' rounded='circle'  />
-            <div className='d-flex flex-column' >
-              <span className=' fw-bold' >{user?.label}</span>
-              <span className='text-muted' >{user?.email}</span>
+      <div className="project-team-list  col-lg-7 col-10">
+      {selectedUsers.map(user => (
+        <div key={user.value} className="user-entry d-flex justify-content-between align-items-center p-2 bg-white border rounded mb-2">
+          <div className='d-flex align-items-center gap-3'>
+            <Avatar name={user?.label} variant='soft-gray' rounded='circle' />
+            <div className='d-flex flex-column'>
+              <span className='fw-bold'>{user?.label}</span>
+              <span className='text-muted'>{user?.email}</span>
             </div>
-            </div>
-            <button type="button" className="btn rounded-circle  cancel-user" onClick={() => removeUser(user)}><CancelIcon /></button>
           </div>
-        ))}
-      </div>
+          <button type="button" className="btn rounded-circle cancel-user" onClick={() => removeUser(user)}>
+            <CancelIcon />
+          </button>
+        </div>
+      ))}
+    </div>
     </div>
   );
 };
@@ -362,16 +393,30 @@ export const ProjectHeader = ({ color, name, productRootLayer = true, defaultPor
   const [show, setShow] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
+  const [projectCode , setProjectCode] = useState('');
+
+
+
 
 
   const StepsVerifier = [{ step1: false, step2: false, step3: false }];
   const SetpsLabel = ["Details", "Members", "Framework"];
   const LabelIconsArray = [
-    <DetailsIcon /> , <MmembersIcon /> , <FrameworkIcon />
+    <DetailsIcon /> , <MembersIcon /> , <FrameworkIcon />
   ]
 
+
+  const getCurrentSchema = (step) => {
+    switch(step) {
+      case 1: return ProjectSchema.Step1Schema;
+      case 2: return ProjectSchema.Step2Schema;
+      case 3: return ProjectSchema.Step3Schema;
+      default: return ProjectSchema.Step1Schema;
+    }
+  };
+
   const methods = useForm({
-    resolver: yupResolver(ProductSchema),
+    resolver: yupResolver(getCurrentSchema(currentStep , ProjectSchema)),
   });
 
   const { handleSubmit, formState: { errors }, register, control, reset,setValue } = methods;
@@ -403,24 +448,11 @@ export const ProjectHeader = ({ color, name, productRootLayer = true, defaultPor
 
 
 
-  const reformData = (data) =>{
-    const newStartDate = `${data.startDate.getFullYear()}-${String(data.startDate.getMonth()+1).padStart(2,'0')}-${String(data.startDate.getDay()).padStart(2,'0')}`;
-    const newEndDate = `${data.endDate.getFullYear()}-${String(data.endDate.getMonth()+1).padStart(2,'0')}-${String(data.endDate.getDay()).padStart(2,'0')}`;
-    const newMembersArray = data.members.map((member,index) => (
-      {[index] : member.value}
-    ))
-
-    data.startDate = newStartDate;
-    data.endDate = newEndDate;
-    data.members = newMembersArray;
-    return data;
-  }
-
 const AddProject = async (data) =>{
   try {
     const response = await axios.post('/projects',data);
     console.log(response);
-    if(response.status === 200){
+    if(response.status === 201){
       return {ok:true, message : response.data.message};
     }
   } catch (error) {
@@ -432,26 +464,31 @@ const AddProject = async (data) =>{
 
   const onSubmit = handleSubmit(async (data) => {
    try {
-    console.log(data);
     if(currentStep < 3){
       setCurrentStep((prevStep) => prevStep + 1);
     }else{
-      const reformedData = await reformData(data);
-      console.log(reformedData)
+
+      const newMembersArray = data.members.map((member) => member.value );
+
+      const reformedData = {
+        ...data,
+        code : projectCode,
+        members: newMembersArray,
+      };
+
       const response = await AddProject(reformedData);
-      console.log(response)
       if(response.ok){
         notify({message : response.message , status : 'success'});
         handleClose();
         refresh();
       }else{
-        notify({message : response.message , status : 'danger'});
+        notify({message : response?.message , status : 'danger'});
       }
     }
 
    } catch (error) {
-    console.log(error)
-    console.log(error);
+    notify({message : error?.message , status : 'danger'});
+
    }
   });
 
@@ -479,7 +516,7 @@ const AddProject = async (data) =>{
         />
         <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5'>
-            {currentStep === 1 && <Step1Form control={control} register={register} errors={errors} portfolios={portfolioOptions} handleClose={handleClose} notify={notify} />}
+            {currentStep === 1 && <Step1Form control={control} register={register} errors={errors} portfolios={portfolioOptions} handleClose={handleClose} notify={notify} projectCode={projectCode} setProjectCode={setProjectCode} />}
             {currentStep === 2 && <Step2Form register={register} errors={errors} handleClose={handleClose} control={control} notify={notify} setValue={setValue} />}
             {currentStep === 3 && <Step3Form control={control} register={register} errors={errors} handleClose={handleClose} notify={notify} setValue={setValue} />}
           </form>

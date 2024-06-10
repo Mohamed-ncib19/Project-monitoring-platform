@@ -281,10 +281,11 @@ useEffect(()=>{
     <>
       <ProductHeader color={'danger'} name={'Products'} />
       <div className="mx-5 ">
-          <div className=" product-container row justify-content-start m-auto">
+          <div className=" row justify-content-start m-auto gap-5">
             {products.length > 0 ? (
               products.map((product) => (
                 <ProductCard 
+                  productKey={product._id} 
                   dataProvider={product}
                   supportBreadCumb={false}
                   productsRootLayer={true}
@@ -294,7 +295,7 @@ useEffect(()=>{
                     }
                   
                   }  
-                  productKey={product._id} />
+                />
               ))
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">

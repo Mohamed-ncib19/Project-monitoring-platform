@@ -1,46 +1,68 @@
 'use client';
 
-import { ProductHeader } from '@/app/(authenticated)/_components/Product/ProductHeader';
 import ProductNotFound from '@/../../public/SVG/Product-not-found.svg';  
 import Image from 'next/image';
 import { ProjectCard } from '@/app/(authenticated)/_components/Project/ProjectCard';
 import { useBreadCumb } from '@/app/(authenticated)/_context/BreadcrumbsContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ProjectHeader } from '@/app/(authenticated)/_components/Project/ProjectHeader';
 
 const ProjectsByProducts = ({ params }) => {
   const { ProductId } = params;
+  console.log(ProductId)
 
   const { breadCumbItem,setShow } = useBreadCumb();
   
+  const [ProjectsData, setProjectsData] = useState([]);
 
-  useEffect(()=>{
-      breadCumbItem.length === 3 ? setShow(false) : setShow(true);
-  },[breadCumbItem]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const ProjectsData = [
-    {
-      _id: 1,
-      name: "project name 1",
-      description: "This indicates the product intro for lorem lorem lorem lorme lorem lorme lorem",
-      startDate: "12/04/2024",
-      endDate: "12/04/2025",
-      numberOfProjects: 4,
-      parent: '84a257d5-8199-427a-9ca0-29ab0f5bb031',
-      projectMembers: ["E", "J", "A", "R", "+8"]
-    },
-    {
-      _id: 2,
-      name: "project name 2",
-      description: "This indicates the product intro for lorem lorem lorem lorme lorem lorme lorem",
-      startDate: "01/01/2023",
-      endDate: "01/01/2024",
-      numberOfProjects: 3,
-      parent: 2,
-      projectMembers: ["M", "N", "O", "P", "+5"]
-    },
-  ];
+  const [handleRefresh , setHandleRefresh] = useState(false);
+
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const DeleteProject = async (project)=>{
+    try {
+      const response = await axios.delete(`/projects/${project?._id}`);
+        if(response.status === 200 ){
+          notify({ message: response?.data?.message , status: 'success' });
+          setShowDeleteModal(false);
+          setHandleRefresh(!handleRefresh);
+        }
+    } catch (error) {
+      notify({message : JSON.parse(error?.request?.response)?.message , status : 'danger' });
+      setShowDeleteModal(false);
+      
+    }
+
+  };
+
+  const handleShowDeleteModal = (project) =>{
+    setSelectedProject(project);
+    setShowDeleteModal(true);
+  }
+
+  useEffect(() => {
+    const getProjects = async (id) => {
+      try {
+        console.log(id)
+        const response = await axios.get(`/${id}/projects`);
+        console.log(response);
+        setProjectsData(response?.data?.projects || []);   
+      } catch (error) {
+        console.error(error);
+        setProjectsData([]);
+      }
+    };
+    
+    if(ProductId){
+      getProjects(ProductId);
+    }else{
+      console.log('test')
+    }
+  }, [ProductId]);
   
+
   return (
     <>
       <ProjectHeader color={'warning'} name={'projects'} />

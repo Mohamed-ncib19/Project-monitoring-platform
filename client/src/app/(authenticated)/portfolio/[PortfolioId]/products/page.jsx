@@ -257,7 +257,7 @@ useEffect(()=>{
     <>
       <ProductHeader color={'danger'} name={'Products'} productRootLayer={false} defaultPortfolio={defaultPortfolio}  />
       <div className="mx-5 ">
-          <div className=" product-container row justify-content-start m-auto">
+          <div className=" row justify-content-start gap-5 m-auto">
             {products.length > 0 ? (
               products.map((product) => (
               <ProductCard 
