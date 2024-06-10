@@ -20,5 +20,3 @@ const verifyJWT = async (request, reply) => {
 };
 
 module.exports = verifyJWT;
-
-module.exports = verifyJWT;

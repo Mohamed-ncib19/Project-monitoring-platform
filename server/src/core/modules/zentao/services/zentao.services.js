@@ -156,7 +156,6 @@ const zentaoServices = {
         end: project.endDate,
         model: project.model,
         products: [null],
-        whitelist: project.members,
       };
       let config = {
         method: "post",

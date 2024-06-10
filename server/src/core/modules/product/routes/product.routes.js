@@ -13,6 +13,11 @@ async function routes(fastify, options) {
     preHandler: [verifyJWT, checkUserActive],
     handler: productController.getProducts,
   });
+  fastify.get("/products/:productId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: productController.getProduct,
+  });
+
   fastify.get("/:portfolioId/products", {
     preHandler: [verifyJWT, checkUserActive],
     handler: productController.getProducts,

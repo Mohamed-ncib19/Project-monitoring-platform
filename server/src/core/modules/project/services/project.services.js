@@ -16,7 +16,7 @@ const projectServices = {
       return { ok: false, message: "Error checking if project exists" };
     }
   },
-  async createProject(project, teamleader, productZentaoId) {
+  async createProject(project, creator, productZentaoId) {
     try {
       const zentaoResponse = await zentaoServices.createProject(
         project,
@@ -35,8 +35,8 @@ const projectServices = {
         _id: projectId,
         zentaoId: zentaoResponse.data.id,
         active: true,
+        creator,
         ...project,
-        creator: teamleader,
       });
       if (projectResult.acknowledged) {
         return {
@@ -63,7 +63,7 @@ const projectServices = {
           productId ? { active: true, product: productId } : { active: true }
         )
         .toArray();
-      return { ok: true, projects: projects };
+      return { ok: true, projects };
     } catch (error) {
       console.error("Error getting projects:", error);
       return {
