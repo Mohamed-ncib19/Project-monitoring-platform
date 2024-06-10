@@ -73,6 +73,25 @@ const productController = {
       });
     }
   },
+  async getProduct(req, res) {
+    try {
+      const { productId } = req.params;
+      console.log(productId)
+      const productRes = await productServices.getProductById(productId);
+      if (!productRes.ok) {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: productRes.message });
+      }
+      return res.status(httpStatus.OK).send({ product: productRes.product });
+    } catch (error) {
+      console.error(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
   async editProduct(req, res) {
     try {
       const { productId } = req.params;

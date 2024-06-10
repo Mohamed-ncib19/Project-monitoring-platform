@@ -13,7 +13,6 @@ const projectController = {
           .status(httpStatus.BAD_REQUEST)
           .send({ message: "Missing project data or name" });
       }
-
       const { exists } = await projectServices.projectExists(body.name);
       if (exists) {
         return res
@@ -33,7 +32,7 @@ const projectController = {
       } else {
         return res
           .status(httpStatus.NOT_FOUND)
-          .send({ message: "Failed to create product" });
+          .send({ message: "Failed to create project" });
       }
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

@@ -80,7 +80,6 @@ const portfolioServices = {
         })
       );
 
-      console.log(portfolios);
       return { ok: true, portfolios: portfolios };
     } catch (error) {
       console.error("Error getting portfolios:", error);
@@ -203,7 +202,7 @@ const portfolioServices = {
     }
   },
 
-  /*  async addProduct(portfolioId, productId) {
+/*     async addProduct(portfolioId, productId) {
     try {
       console.log(portfolioId);
       const portfolioCollection = await PortfolioModel();

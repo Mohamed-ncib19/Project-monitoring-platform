@@ -3,6 +3,7 @@ const userRoutes = require("./core/modules/users/routes/user.routes");
 const projectRoutes = require("./core/modules/project/routes/project.routes");
 const portfolioRoutes = require("./core/modules/portfolio/routes/portfolio.routes");
 const productRoutes = require("./core/modules/product/routes/product.routes");
+const webhooksRoute = require("./core/modules/webhooks/routes/webhooks.routes");
 
 const {
   swaggerDescription,
@@ -35,6 +36,8 @@ fastify.register(projectRoutes);
 fastify.register(portfolioRoutes);
 
 fastify.register(productRoutes);
+
+fastify.register(webhooksRoute);
 
 const PORT = process.env.PORT;
 

@@ -105,7 +105,7 @@ const productServices = {
               startDate: 1,
               endDate: 1,
               projectCount: 1,
-              teamleader: 1,
+              teamlead: 1,
               portfolio: 1,
               budget: 1,
               description: 1,
@@ -126,6 +126,61 @@ const productServices = {
       };
     }
   },
+  async getProductById(productId) {
+    try {
+      const productModel = await ProductModel();
+      console.log(productId);
+      const result = await productModel
+        .aggregate([
+          {
+            $match: { active: true, _id: productId },
+          },
+          {
+            $lookup: {
+              from: "projects",
+              localField: "_id",
+              foreignField: "product",
+              as: "projects",
+              pipeline: [{ $match: { active: true } }],
+            },
+          },
+          {
+            $addFields: {
+              projectCount: { $size: "$projects" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              desc: 1,
+              startDate: 1,
+              endDate: 1,
+              projectCount: 1,
+              teamlead: 1,
+              portfolio: 1,
+              budget: 1,
+              description: 1,
+              creator: 1,
+              zentaoId: 1,
+            },
+          },
+        ])
+        .toArray();
+      if (result.length === 0) {
+        return { ok: false, message: "product not found" };
+      }
+      const product = result;
+      return { ok: true, product: product };
+    } catch (error) {
+      console.error("Error getting product:", error);
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
+  },
+
   async getProductUsers(productId) {
     try {
       let userIds = new Set();
@@ -241,59 +296,6 @@ const productServices = {
       return {
         ok: false,
         message: "Internal server error",
-        details: error.message,
-      };
-    }
-  },
-
-  async getProductById(productId) {
-    try {
-      const productModel = await ProductModel();
-      const result = await productModel
-        .aggregate([
-          {
-            $match: { active: true, _id: productId },
-          },
-          {
-            $lookup: {
-              from: "projects",
-              localField: "_id",
-              foreignField: "product",
-              as: "projects",
-              pipeline: [{ $match: { active: true } }],
-            },
-          },
-          {
-            $addFields: {
-              projectCount: { $size: "$projects" },
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-              desc: 1,
-              startDate: 1,
-              endDate: 1,
-              projectCount: 1,
-              teamleader: 1,
-              portfolio: 1,
-              budget: 1,
-              description: 1,
-              creator: 1,
-              zentaoId: 1,
-            },
-          },
-        ])
-        .toArray();
-      console.log(result);
-      const product = result[0];
-      return { ok: true, product };
-    } catch (error) {
-      console.error("Error getting product by ID:", error);
-      return {
-        ok: false,
-        message: "Error getting product",
         details: error.message,
       };
     }

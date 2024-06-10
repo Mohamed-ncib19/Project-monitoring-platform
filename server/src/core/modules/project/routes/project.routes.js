@@ -9,6 +9,7 @@ async function routes(fastify, options) {
     preHandler: [verifyJWT, checkUserActive],
     handler: projectController.createProject,
   }); //Get projects
+
   fastify.get("/projects", {
     preHandler: [verifyJWT, checkUserActive],
     handler: projectController.getProjects,
@@ -19,15 +20,14 @@ async function routes(fastify, options) {
     handler: projectController.getProjects,
   });
 
-  fastify.put("/:projects/:projectId", {
+  fastify.put("/projects/:projectId", {
     preHandler: [verifyJWT, checkUserActive],
     handler: projectController.editProject,
   });
 
-  fastify.delete("/:projects/:projectId", {
+  fastify.delete("/projects/:projectId", {
     preHandler: [verifyJWT, checkUserActive],
     handler: projectController.deleteProject,
   });
 }
-
 module.exports = routes;
