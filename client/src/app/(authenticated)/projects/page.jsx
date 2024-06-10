@@ -31,6 +31,7 @@ const Projects = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditMembersModal,setShowEditMembersModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [handleRefresh, setHandleRefresh] = useState(false);
@@ -67,6 +68,26 @@ const Projects = () => {
   }, [selectedProject, reset]);
 
 
+
+
+  const handleShowEditModal = (project) => {
+    setShowEditModal(true);
+    setSelectedProject(project);
+  };
+  const handleCloseEditModal = () => setShowEditModal(false);
+
+
+  const handleShowEditMembersModal = (project) =>{
+    setShowEditMembersModal(true);
+    setSelectedProject(project)
+  };
+  const handleCloseEditMembersModal = () => setShowEditMembersModal(false);
+
+
+  const handleShowDeleteModal = (project) => {
+    setSelectedProject(project);
+    setShowDeleteModal(true);
+  };
   const DeleteProject = async () => {
     try {
       const response = await axios.delete(`/projects/${selectedProject?._id}`);
@@ -83,19 +104,6 @@ const Projects = () => {
       setShowDeleteModal(false);
     }
   };
-
-  const handleShowEditModal = (project) => {
-    setShowEditModal(true);
-    setSelectedProject(project);
-  };
-
-  const handleCloseEditModal = () => setShowEditModal(false);
-
-  const handleShowDeleteModal = (project) => {
-    setSelectedProject(project);
-    setShowDeleteModal(true);
-  };
-
 
 
   const getAllProjects = async () => {
@@ -238,6 +246,7 @@ const Projects = () => {
   }
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data)
     try {
       const newMembersArray = data.members.map((member) => member.value );
       const reformedData = {
@@ -246,6 +255,7 @@ const Projects = () => {
       };
       const EditProjectResponse = await EditProject(reformedData);
       handleCloseEditModal();
+      handleCloseEditMembersModal();
       setHandleRefresh(!handleRefresh);
       if(EditProjectResponse.ok){
         notify({message : EditProjectResponse?.message , status : 'success'});
@@ -273,6 +283,7 @@ const Projects = () => {
                   setProduct={setProduct}
                   handleFunctions={{
                     editModal: () => handleShowEditModal(project),
+                    editMembersModal : () => handleShowEditMembersModal(project),
                     deleteModal: () => handleShowDeleteModal(project),
                   }}
                 />
@@ -294,6 +305,70 @@ const Projects = () => {
           </div>
         </div>
       </div>
+
+      <EditModal
+        show={showEditMembersModal}
+        handleClose={handleCloseEditMembersModal}
+        headerTitle="Edit Project"
+        onSubmit={onSubmit}
+      >
+        <FormProvider {...methods}>
+          <form className="d-flex flex-column gap-5 py-5">
+
+            <div className="d-flex flex-column justify-content-center align-items-center gap-5">
+              <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center">
+                <div className="col-lg-10 col-12">
+                  <Controller
+                    name="members"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        className="custom-select-container"
+                        classNamePrefix="custom-select"
+                        onChange={handleUserChange}
+                        options={userOptions}
+                        components={{ Option: MyOption }}
+                        placeholder="Select Team member"
+                        onBlur={field.onBlur}
+                        isMulti
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="project-team-list  col-lg-7 col-10">
+                {selectedUsers.map((user) => (
+                  <div
+                    key={user.value}
+                    className="user-entry d-flex justify-content-between align-items-center p-2 bg-white border rounded mb-2"
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      <Avatar
+                        name={user?.label}
+                        variant="soft-gray"
+                        rounded="circle"
+                      />
+                      <div className="d-flex flex-column">
+                        <span className="fw-bold">{user?.label}</span>
+                        <span className="text-muted">{user?.email}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn rounded-circle cancel-user"
+                      onClick={() => removeUser(user)}
+                    >
+                      <CancelIcon />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </form>
+        </FormProvider>
+      </EditModal>
 
       <EditModal
         show={showEditModal}
@@ -388,57 +463,7 @@ const Projects = () => {
               </div>
             </div>
 
-            <div className="d-flex flex-column justify-content-center align-items-center gap-5">
-              <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-8 col-12 gap-4 align-items-center">
-                <div className="col-lg-10 col-12">
-                  <Controller
-                    name="members"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        className="custom-select-container"
-                        classNamePrefix="custom-select"
-                        onChange={handleUserChange}
-                        options={userOptions}
-                        components={{ Option: MyOption }}
-                        placeholder="Select Team member"
-                        onBlur={field.onBlur}
-                        isMulti
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-
-              <div className="project-team-list  col-lg-7 col-10">
-                {selectedUsers.map((user) => (
-                  <div
-                    key={user.value}
-                    className="user-entry d-flex justify-content-between align-items-center p-2 bg-white border rounded mb-2"
-                  >
-                    <div className="d-flex align-items-center gap-3">
-                      <Avatar
-                        name={user?.label}
-                        variant="soft-gray"
-                        rounded="circle"
-                      />
-                      <div className="d-flex flex-column">
-                        <span className="fw-bold">{user?.label}</span>
-                        <span className="text-muted">{user?.email}</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="btn rounded-circle cancel-user"
-                      onClick={() => removeUser(user)}
-                    >
-                      <CancelIcon />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+    
           </form>
         </FormProvider>
       </EditModal>

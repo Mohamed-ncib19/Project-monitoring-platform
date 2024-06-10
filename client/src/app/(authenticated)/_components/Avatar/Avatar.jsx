@@ -8,7 +8,7 @@ export const Avatar = ({ name, variant, rounded, textColor }) => {
   return (
     <>
     <span
-      className={` ${'bg-' + variant} avatar ${'rounded-' + rounded} p-3 text-${textColor} text-decoration-none fw-bold  `}
+      className={` ${'bg-' + variant} avatar ${'rounded-' + rounded} p-3 text-${textColor} text-decoration-none fw-bold border border-white `}
     >
       {initials}
     </span>
