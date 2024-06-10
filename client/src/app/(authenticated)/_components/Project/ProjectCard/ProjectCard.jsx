@@ -12,14 +12,56 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { notify } from 'reapop';
 
+
+const getRandomBgColor = () => {
+  const bgColors = [
+    { variant: 'primary', textColor: 'white' },
+    { variant: 'secondary', textColor: 'white' },
+    { variant: 'success', textColor: 'white' },
+    { variant: 'danger', textColor: 'white' },
+    { variant: 'warning', textColor: 'dark' },
+    { variant: 'dark', textColor: 'white' },
+  ];
+  const randomIndex = Math.floor(Math.random() * bgColors.length);
+  return bgColors[randomIndex];
+};
+export const renderMembers = (membersData, maxVisible = 4) => {
+  return (
+    <div className="avatar-container">
+      {membersData.slice(0, maxVisible).map((member, index) => {
+        const randomPalette = getRandomBgColor();
+        const tooltipId = `tooltip-${member._id}`;
+
+        return (
+          <OverlayTrigger
+            key={member._id}
+            placement="top"
+            overlay={<Tooltip id={tooltipId}>{`${member.firstname} ${member.lastname}`}</Tooltip>}
+          >
+            <div className="avatar-overlap">
+              <Avatar
+                name={`${member.firstname} ${member.lastname}`}
+                rounded="circle"
+                variant={randomPalette?.variant}
+                textColor={randomPalette?.textColor}
+              />
+            </div>
+          </OverlayTrigger>
+        );
+      })}
+    </div>
+  );
+};
+
 export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, supportBreadCumb = false, projectsRootLayer, setProduct}) => {
   const handleShowEditModal = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
+  const handleShowEditMembers = handleFunctions?.editMembersModal;
 
   const [portfolioData , setPortfolioData] = useState([]);
   const [productData , setProductData] = useState([]);
 
-  const renderTooltip = (props) => (
+  const renderDescriptionTooltip = (props) => (
     <Tooltip id="description-tooltip" {...props} className="larger-tooltip">
       {dataProvider?.description}
     </Tooltip>
@@ -76,9 +118,6 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
       getProduct();
     }
   },[dataProvider]);
-  console.log(portfolioData);
-
-  console.log(productData)
 
   const getUserData = async (userId) => {
     try {
@@ -90,13 +129,40 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
     }
   };
 
+  const [membersData, setMembersData] = useState([]);
+
+  useEffect(() => {
+    const fetchMembers = async (formatData) => {
+      const data = await Promise.all(formatData?.members.map((memberId) => getUserData(memberId)));
+      setMembersData(data);
+    };
+
+    if(dataProvider?.members.length > 0){
+      fetchMembers(dataProvider);
+    }
+  }, [dataProvider?.members]);
+
+
+  const daysLeft = (date) => {
+    const currentDate = new Date();
+    const inputDate = new Date(date);
+    const differenceInTime = inputDate.getTime() - currentDate.getTime();
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+    if (differenceInDays <= 7) {
+      return differenceInDays;
+    } else {
+      return 0 ;
+    }
+  };
+
   return (
     <>
       <div
         key={projectKey}
-        className="project-card text-decoration-none col-12 col-xl-5 col-lg-8 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-4 rounded-2"
+        className="project-card text-decoration-none col-12 col-xl-5 col-lg-8 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-2 rounded-2"
       >
-        <div className="d-flex flex-row-reverse justify-content-between ">
+        <div className="d-flex flex-row-reverse justify-content-start ">
           <div>
             <Dropdown>
               <Dropdown.Toggle
@@ -109,7 +175,7 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
                 <Dropdown.Item onClick={handleShowEditModal}>
                   Edit
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => console.log('manage')}>
+                <Dropdown.Item onClick={handleShowEditMembers}>
                   Manage memebers
                 </Dropdown.Item>
                 <Dropdown.Divider />
@@ -126,14 +192,25 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
            ) 
           }
 
-          <span className="project-delay-notification d-flex justify-content-center align-items-center px-3 m-2 text-white text-center rounded-5 ">
-            6 days left
-          </span>
+          {
+            daysLeft(dataProvider?.endDate) !== 0
+            ? (
+              <span className="project-delay-notification d-flex justify-content-center align-items-center px-3 m-2 text-white text-center rounded-5 ">
+              {` ${daysLeft(dataProvider?.endDate)} days left`}
+              </span>
+              )
+            : ''
+          }
 
           </div>
         </div>
 
-        <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
+        <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-3">
+          <OverlayTrigger
+            placement='top-start'
+            delay={{show:250 , hide:400}}
+            overlay={<Tooltip>{dataProvider?.model}</Tooltip>}
+          >
           <Image
             src={
               dataProvider?.model === 'scrum'
@@ -144,7 +221,7 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
             }
             alt="Framework"
           />
-
+        </OverlayTrigger>
           <p className="fw-bold fs-5 text-dark ">{dataProvider?.name}</p>
         </div>
 
@@ -158,7 +235,7 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
               <OverlayTrigger
                 placement="top-start"
                 delay={{ show: 250, hide: 400 }}
-                overlay={renderTooltip}
+                overlay={renderDescriptionTooltip}
               >
                 <span className="text-dark-gray">
                   {dataProvider.description.length > 90
@@ -217,15 +294,10 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
             <span className="fw-bold">{formatDate(dataProvider?.endDate)}</span>
           </p>
 
-          <div className="d-flex flex-column align-items-center mt-3 mt-lg-0">
-            <span>Members assigned</span>
-            {/*   <div className="d-flex gap-2">
-                         {dataProvider?.members?.map( async (member, index) =>{
-                          const response = await getUserData(member);
-                          console.log(response);
-                         } )}
-                      </div> */}
-          </div>
+          <div className="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+            <span className='text-muted' >Members assigned</span>
+            {renderMembers(membersData)}
+            </div>
         </div>
       </div>
     </>
