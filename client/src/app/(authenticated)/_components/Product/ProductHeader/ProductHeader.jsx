@@ -69,7 +69,6 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
     const getTeamLeadsOptions = async () =>{
       try {
         const response = await axios.get('/users/roles/teamlead');
-        console.log(response);
         const formatedTeamLeads = response.data.users.map(user => ({
           value: user?._id,
           label: `${user?.firstname}  ${user?.lastname}`

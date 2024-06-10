@@ -170,7 +170,7 @@ const Portfolio = () => {
       <div>
         <PortfolioHeader color={'success'} name={'Portfolio'} />
         <div className="mx-5">
-          <div className="portfolio-container row justify-content-start align-items-center">
+          <div className=" row justify-content-start align-items-center gap-5">
           
             {portfolios.length > 0 ? (
               portfolios.map((portfolio) => (

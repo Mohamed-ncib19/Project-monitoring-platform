@@ -12,6 +12,7 @@ export const ProductCard = ({
   productKey,
   productsRootLayer,
 }) => {
+  console.log(dataProvider)
   const { setBreadCumbItem } = useBreadCumb();
 
   const handleShow = handleFunctions.editModal;
@@ -42,9 +43,9 @@ const renderTooltip = (props) => (
   return (
     <>
       <Link
-        href={`/portfolio/${dataProvider?.parent}/products/${dataProvider?._id}/projects`}
+        href={`/portfolio/${dataProvider?.portfolio}/products/${dataProvider?._id}/projects`}
         key={productKey}
-        className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between gap-3 rounded-2"
+        className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-3 rounded-2"
         onClick={
           supportBreadCumb
             ? () =>
@@ -58,7 +59,7 @@ const renderTooltip = (props) => (
             : null
         }
       >
-        <div className="d-flex flex-md-row-reverse justify-content-between align-items-center ">
+        <div className="d-flex flex-row-reverse justify-content-between align-items-center ">
           <div>
             <Dropdown onClick={stopPropagation}>
               <Dropdown.Toggle
@@ -119,11 +120,16 @@ const renderTooltip = (props) => (
           )
       }
         </div>
-        <div>
-          <span className="fw-bold date px-4 text-dark">
-            {formatDate(dataProvider?.startDate)} - {formatDate(dataProvider?.endDate)}
+        <span className="fw-bold px-4 text-dark text-lg-start text-center w-100 col-12">
+            <span>
+            {formatDate(dataProvider?.startDate)} 
+            </span>
+            
+            -
+            <span>
+              {formatDate(dataProvider?.endDate)}
+            </span>
           </span>
-        </div>
         <div className="d-flex flex-column px-4 pt-5">
           <p>
             <span className=" text-secondary fw-semibold">
