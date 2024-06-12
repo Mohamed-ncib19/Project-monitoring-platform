@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const webhooksServices = require("../services/webhooks.services");
-const projectController = {
+const webhooksController = {
   async handlePayload(req, res) {
     console.log("received webhook");
     const payload = req.body;
@@ -21,12 +21,11 @@ const projectController = {
         return res
           .status(httpStatus.NOT_FOUND)
           .message({ message: "unkown webhook type" });
-
-        if (response.ok) {
-          console.log("webhook handled successfuly");
-          return res.status(httpStatus.OK);
-        }
+    }
+    if (response.ok) {
+      console.log("webhook handled successfuly");
+      return res.status(httpStatus.OK);
     }
   },
 };
-module.exports = projectController;
+module.exports = webhooksController;

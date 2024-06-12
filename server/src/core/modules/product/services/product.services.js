@@ -74,48 +74,18 @@ const productServices = {
   async getProducts(portfolioId = null) {
     try {
       const productModel = await ProductModel();
-
-      const result = await productModel
-        .aggregate([
-          {
-            $match: portfolioId
-              ? { active: true, portfolio: portfolioId }
-              : { active: true },
-          },
-
-          {
-            $lookup: {
-              from: "projects",
-              localField: "_id",
-              foreignField: "product",
-              as: "projects",
-              pipeline: [{ $match: { active: true } }],
-            },
-          },
-          {
-            $addFields: {
-              projectCount: { $size: "$projects" },
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-              desc: 1,
-              startDate: 1,
-              endDate: 1,
-              projectCount: 1,
-              teamlead: 1,
-              portfolio: 1,
-              budget: 1,
-              description: 1,
-              creator: 1,
-              zentaoId: 1,
-            },
-          },
-        ])
-        .toArray();
-      const products = result;
+      const projectModel = await ProjectModel();
+      const query = portfolioId
+        ? { active: true, portfolio: portfolioId }
+        : { active: true };
+      const products = await productModel.find(query).toArray();
+      for (const product of products) {
+        const projectCount = await projectModel.countDocuments({
+          active: true,
+          product: product._id,
+        });
+        product["projectCount"] = projectCount;
+      }
       return { ok: true, products: products };
     } catch (error) {
       console.error("Error getting products:", error);
@@ -128,49 +98,20 @@ const productServices = {
   },
   async getProductById(productId) {
     try {
-      const productModel = await ProductModel();
-      console.log(productId);
-      const result = await productModel
-        .aggregate([
-          {
-            $match: { active: true, _id: productId },
-          },
-          {
-            $lookup: {
-              from: "projects",
-              localField: "_id",
-              foreignField: "product",
-              as: "projects",
-              pipeline: [{ $match: { active: true } }],
-            },
-          },
-          {
-            $addFields: {
-              projectCount: { $size: "$projects" },
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-              desc: 1,
-              startDate: 1,
-              endDate: 1,
-              projectCount: 1,
-              teamlead: 1,
-              portfolio: 1,
-              budget: 1,
-              description: 1,
-              creator: 1,
-              zentaoId: 1,
-            },
-          },
-        ])
-        .toArray();
-      if (result.length === 0) {
+      const productCollection = await ProductModel();
+      const projectCollection = await ProjectModel();
+      const product = await productCollection.findOne({
+        active: true,
+        _id: productId,
+      });
+      if (!product) {
         return { ok: false, message: "product not found" };
       }
-      const product = result;
+      const projectCount = await projectCollection.countDocuments({
+        active: true,
+        product: productId,
+      });
+      product["projectCount"] = projectCount;
       return { ok: true, product: product };
     } catch (error) {
       console.error("Error getting product:", error);

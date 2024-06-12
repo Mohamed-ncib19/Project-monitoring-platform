@@ -1,7 +1,7 @@
 const ProjectModel = require("../models/project");
 const zentaoServices = require("../../zentao/services/zentao.services");
 const { v4: uuidv4 } = require("uuid");
-
+const SprintModel = require("../../sprint/models/sprint");
 const projectServices = {
   async projectExists(name) {
     try {
@@ -9,6 +9,22 @@ const projectServices = {
       const project = await projectModel.findOne({ name: name });
       if (project) {
         return { ok: true, exists: true, project: project };
+      }
+      return { ok: true, exists: false, message: "project does not exist" };
+    } catch (error) {
+      console.error("Error checking if project exists:", error);
+      return { ok: false, message: "Error checking if project exists" };
+    }
+  },
+  async getProject(field, value) {
+    try {
+      const projectCollection = await ProjectModel();
+      const query = { active: true };
+      query[field] = value;
+      const project = await projectCollection.findOne(query);
+
+      if (project) {
+        return { ok: true, project: project };
       }
       return { ok: true, exists: false, message: "project does not exist" };
     } catch (error) {
@@ -58,12 +74,25 @@ const projectServices = {
   async getProjects(productId = null) {
     try {
       const projectCollection = await ProjectModel();
+      const sprintCollection = await SprintModel();
+
       const projects = await projectCollection
         .find(
           productId ? { active: true, product: productId } : { active: true }
         )
         .toArray();
-      return { ok: true, projects };
+
+      const modifiedProjects = await Promise.all(
+        projects.map(async (project) => {
+          const count = await sprintCollection.countDocuments({
+            project: project._id,
+          });
+          project.sprintCount = count; // Add sprint count to the project object
+          return project; // Return the modified project
+        })
+      );
+
+      return { ok: true, projects: modifiedProjects };
     } catch (error) {
       console.error("Error getting projects:", error);
       return {

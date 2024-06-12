@@ -221,6 +221,48 @@ const zentaoServices = {
       return { ok: false, message: error.response.data };
     }
   },
+  async getExecution(executionId) {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/executions/${executionId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+      };
+      const response = await axios.request(config);
+      if (response.status === 201 || response.status === 200) {
+        console.log("zentao request ended...");
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      console.log(error.response.data);
+      return { ok: false, message: error.response };
+    }
+  },
+  async getTask(taskId) {
+    try {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.ZENTAO_API_URL}/tasks/${taskId}`,
+        headers: {
+          Authorization: process.env.ZENTAO_TOKEN,
+          "Content-Type": "application/json",
+          Cookie: `device=desktop; lang=en; theme=default; zentaosid=${process.env.ZENTAO_TOKEN}`,
+        },
+      };
+      const response = await axios.request(config);
+      if (response.status === 201 || response.status === 200) {
+        return { ok: true, data: response.data };
+      }
+    } catch (error) {
+      return { ok: false, message: error.response };
+    }
+  },
 };
 
 module.exports = zentaoServices;
