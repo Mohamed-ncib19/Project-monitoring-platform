@@ -23,6 +23,21 @@ const userServices = {
     }
   },
 
+  async getUser(field, value) {
+    try {
+      const userModel = await UserModel();
+      const query = { active: true };
+      query[field] = value;
+      user = await userModel.findOne(query);
+      if (user) {
+        return { ok: true, user: user };
+      }
+      return { ok: true, exists: false, message: "user does not exist" };
+    } catch (error) {
+      console.error("Error checking if user exists:", error);
+      return { ok: false, message: "Error checking if user exists" };
+    }
+  },
   async createUser(user) {
     try {
       const userModel = await UserModel();

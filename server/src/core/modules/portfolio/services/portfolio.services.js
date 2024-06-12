@@ -201,33 +201,6 @@ const portfolioServices = {
       };
     }
   },
-
-/*     async addProduct(portfolioId, productId) {
-    try {
-      console.log(portfolioId);
-      const portfolioCollection = await PortfolioModel();
-      const portfolio = await portfolioCollection.findOne({ _id: portfolioId });
-      console.log(portfolio);
-      if (!portfolio) {
-        return { ok: false, message: "Portfolio not found" };
-      }
-      const updateResult = await portfolioCollection.updateOne(
-        { _id: portfolioId },
-        { $addToSet: { products: productId } }
-      );
-      console.log(updateResult);
-      return updateResult.modifiedCount === 1
-        ? { ok: true, message: "product added" }
-        : { ok: false, message: "MongoDB error: Failed to add product" };
-    } catch (error) {
-      console.error("Error adding produt to porfolio:", error);
-      return {
-        ok: false,
-        message: "Internal server error",
-        details: error.message,
-      };
-    }
-  }, */
 };
 
 module.exports = portfolioServices;

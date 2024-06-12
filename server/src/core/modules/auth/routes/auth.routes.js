@@ -13,7 +13,6 @@ async function routes(fastify, options) {
   fastify.post("/register", authController.register);
 
   fastify.post("/refresh_token", {
-    preHandler: [checkUserActive],
     handler: authController.refreshToken,
   });
 }
