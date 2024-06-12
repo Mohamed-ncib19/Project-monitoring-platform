@@ -44,9 +44,13 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (currentPortfolio) {
+
+      console.log(currentPortfolio);
+
+
       reset({
-        name: currentPortfolio.name,
-        description: currentPortfolio.description,
+        name: currentPortfolio?.name,
+        description: currentPortfolio?.description || '',
       });
     }
   }, [currentPortfolio, reset]);

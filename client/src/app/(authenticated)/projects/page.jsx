@@ -88,6 +88,7 @@ const Projects = () => {
     setSelectedProject(project);
     setShowDeleteModal(true);
   };
+
   const DeleteProject = async () => {
     try {
       const response = await axios.delete(`/projects/${selectedProject?._id}`);
@@ -119,6 +120,7 @@ const Projects = () => {
       };
     }
   };
+  
   const handleUserChange = (selectedOptions) => {
     setSelectedUsers(selectedOptions || []);
     setValue('members', selectedOptions);
@@ -154,7 +156,6 @@ const Projects = () => {
       }));
       setProductOption(transformedProducts);
     } catch (error) {
-      console.log(error);
       notify({ message: 'Failed to load products', status: 'danger' });
     }
   };
@@ -281,6 +282,7 @@ const Projects = () => {
                   supportBreadCumb={false}
                   projectsRootLayer={true}
                   setProduct={setProduct}
+                  team={userOptions}
                   handleFunctions={{
                     editModal: () => handleShowEditModal(project),
                     editMembersModal : () => handleShowEditMembersModal(project),
@@ -309,7 +311,7 @@ const Projects = () => {
       <EditModal
         show={showEditMembersModal}
         handleClose={handleCloseEditMembersModal}
-        headerTitle="Edit Project"
+        headerTitle="Edit Team"
         onSubmit={onSubmit}
       >
         <FormProvider {...methods}>
