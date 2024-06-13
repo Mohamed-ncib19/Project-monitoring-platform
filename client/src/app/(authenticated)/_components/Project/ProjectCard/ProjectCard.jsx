@@ -70,6 +70,7 @@ export const ProjectCard = ({
   projectKey,
   supportBreadCumb = false,
   projectsRootLayer,
+  permission
 }) => {
   const handleShowEditModal = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
@@ -182,7 +183,8 @@ export const ProjectCard = ({
       >
         <div className="d-flex flex-lg-row-reverse flex-column justify-content-between align-items-center  py-1 gap-xl-0 gap-4">
           <div className="d-flex flex-row-reverse justify-content-lg-start justify-content-between align-items-center col-lg-6 col-12">
-            <Dropdown>
+            { permission &&( 
+             <Dropdown>
               <Dropdown.Toggle
                 as="button"
                 className="border-0 edit-project m-2 fs-5 text-muted rounded-circle px-2 py-1"
@@ -200,6 +202,7 @@ export const ProjectCard = ({
                 <Dropdown.Item onClick={handleShowDelete}>Delete</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+          )}
 
             <div className="d-flex gap-2">
               {projectsRootLayer && (

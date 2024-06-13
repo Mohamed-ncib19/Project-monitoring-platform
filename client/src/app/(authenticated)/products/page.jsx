@@ -18,7 +18,8 @@ import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 import Select from 'react-select';
 import { ConfirmModal } from '../_components/Modals/ConfirmModal';
 import { AlertModal } from '../_components/Modals/AlertModal';
-
+import withAuth from '@/providers/BasedRole/withAuth';
+import { useAuth } from '../_context/AuthContext';
 const Products = () => {
   const [products, setProducts] = useState([]);
 
@@ -37,9 +38,9 @@ const Products = () => {
 
   const [handleRefresh, setHandleRefresh] = useState(false);
 
-  console.log(teamleadsOptions);
-  
+  const { hasPermission } = useAuth();
 
+  
 
   const handleShowEditModal = (product) => {
     setShowEditModal(true);
@@ -284,18 +285,22 @@ const Products = () => {
       <div className="mx-5 ">
         <div className=" row justify-content-start m-auto gap-5">
           {products.length > 0 ? (
-            products.map((product) => (
+            products.map((product) => {
+              const canManage = hasPermission('products', 'manage');
+              return(
               <ProductCard
                 productKey={product._id}
                 dataProvider={product}
                 supportBreadCumb={false}
                 productsRootLayer={true}
-                handleFunctions={{
+                permission={canManage}
+                handleFunctions={canManage && {
                   editModal: () => handleShowEditModal(product),
                   deleteModal: () => handleDelete(product),
-                }}
+                } }
               />
-            ))
+            );
+            })
           ) : (
             <div className=" d-flex flex-column justify-content-center align-items-center">
               <Image

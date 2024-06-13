@@ -4,7 +4,6 @@ import { BreadCumbProvider } from '@/app/(authenticated)/_context/BreadcrumbsCon
 import { BreadcrumbLink } from "@/app/(authenticated)/_components/Breadcrumb";
 import { Suspense } from 'react';
 import Loading from '@/app/loading';
-
 const Layout = ({ children }) => {
     return (
             <Suspense fallback={<Loading />}>

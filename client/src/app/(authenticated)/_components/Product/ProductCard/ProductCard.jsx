@@ -11,12 +11,14 @@ export const ProductCard = ({
   supportBreadCumb = false,
   productKey,
   productsRootLayer,
+  permission
 }) => {
+
 
   const { setBreadCumbItem } = useBreadCumb();
 
-  const handleShow = handleFunctions.editModal;
-  const handleShowDelete = handleFunctions.deleteModal;
+  const handleShow = handleFunctions.editModal || '';
+  const handleShowDelete = handleFunctions.deleteModal || '';
 
 const renderTooltip = (props) => (
   <Tooltip id="description-tooltip" {...props} className="larger-tooltip"  >
@@ -43,7 +45,6 @@ const renderTooltip = (props) => (
 
 
   const daysLeft = (date) => {
-    console.log(date)
     const currentDate = new Date();
     const inputDate = new Date(date);
     const differenceInTime = inputDate.getTime() - currentDate.getTime();
@@ -76,7 +77,9 @@ const renderTooltip = (props) => (
         }
       >
         <div className="d-flex flex-row-reverse  justify-content-between align-items-center ">
-          <div className='d-flex flex-row-reverse justify-content-lg-start justify-content-between align-items-center '>
+
+          {permission && (
+            <div className='d-flex flex-row-reverse justify-content-lg-start justify-content-between align-items-center '>
         <Dropdown onClick={stopPropagation}>
               <Dropdown.Toggle
                 as="button"
@@ -93,7 +96,7 @@ const renderTooltip = (props) => (
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-          </div>
+          </div>)}
           <div className='d-flex gap-2' >
           {
            productsRootLayer && (

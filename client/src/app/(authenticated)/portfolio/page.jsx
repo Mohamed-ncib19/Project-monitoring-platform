@@ -15,18 +15,16 @@ import { PortfolioCard } from '../_components/Portfolio/PortfolioCard';
 import Image from 'next/image';
 import { AlertModal } from '../_components/Modals/AlertModal';
 import { useBreadCumb } from '../_context/BreadcrumbsContext';
-
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
+import { useRouter } from 'next/navigation';
 const Portfolio = () => {
 
   const { notify } = useNotifications();
 
   const { show,setShow } = useBreadCumb();
 
+  const { push } = useRouter();
 
-  useEffect(()=>{
-     !show && setShow(true);
-  },[]);
-  
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAlertModal , setShowAlertModal] = useState(false);
@@ -35,6 +33,14 @@ const Portfolio = () => {
   const [portfolios, setPortfolios] = useState([]);
 
   const [handleRefresh,setHandleRefresh] = useState(false);
+
+  const { hasPermission } = useAuth();
+
+  useEffect(()=>{
+     !show && setShow(true);
+  },[]);
+  
+ 
 
   const methods = useForm({
     resolver: yupResolver(PortfolioShcema),
@@ -171,6 +177,7 @@ const Portfolio = () => {
 
   return (
     <>
+    { hasPermission('portfolio', 'consult') ? (
       <div>
         <PortfolioHeader color={'success'} name={'Portfolio'} />
         <div className="mx-5">
@@ -197,7 +204,9 @@ const Portfolio = () => {
           </div>
         </div>
       </div>
-
+    )
+    :push('/')
+  }
       <EditModal show={showEditModal} handleClose={() => setShowEditModal(false)} headerTitle="Edit Portfolio" onSubmit={onSubmit}>
         <FormProvider {...methods}>
           <form className="d-flex flex-column gap-5 py-5">

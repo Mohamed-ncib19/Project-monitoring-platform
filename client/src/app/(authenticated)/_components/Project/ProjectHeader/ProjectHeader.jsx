@@ -27,6 +27,7 @@ import ScrumImage from '@/../../public/images/Scrum.png';
 import KanbanImage from '@/../../public/images/Kanban.png';
 import CustomRadio from '@/components/Inputs/CustomRadio';
 import { ProjectSchema } from '@/app/(authenticated)/_shcemas/project.schema';
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 const Step1Form = ({ control, register, errors, portfolios,notify,projectCode,setProjectCode }) => {
   
@@ -243,18 +244,6 @@ useEffect(() => {
      />
    </div>
  </div>
-
-{/*  <div className="d-flex flex-column justify-content-center m-auto col-lg-7 col-12 gap-4 ">
- <RadioInput
-   name="access"
-   label="Public - anyone in the company can access this project"
-   value="public"
-   register={register}
-   errors={errors}
-   isSelected={true}
- />
-</div> */}
-
 </>
   );
 };
@@ -386,6 +375,8 @@ const Step3Form = ({ control, register, errors , handleClose ,notify,setValue}) 
 export const ProjectHeader = ({ color, name, productRootLayer = true, defaultPortfolio }) => {
   const { notify } = useNotifications();
 
+  const {hasPermission} = useAuth();
+
   const { refresh } = useRouter();
 
   const [portfolioOptions, setPortfolioOptions] = useState([]);
@@ -500,9 +491,10 @@ const AddProject = async (data) =>{
           <p className="fw-bolder fs-4">{name}</p>
           <p className="text-secondary fs-6">Hi, welcome to client {name} management</p>
         </div>
+        { hasPermission('projects', 'manage') &&
         <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
           <CoreButton type="button" label={`Add ${name}`} onClick={handleShow} />
-        </div>
+        </div>}
       </div>
 
       <AddModal show={show} handleClose={handleClose} headerTitle='Create Project' onSubmit={onSubmit}>
