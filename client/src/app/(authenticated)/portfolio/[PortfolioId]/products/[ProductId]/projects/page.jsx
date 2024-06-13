@@ -23,14 +23,15 @@ import { useNotifications } from 'reapop';
 import axios from 'axios';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import CancelIcon from '../../../../../../../../public/icons/cencel-icon';
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 const ProjectsByProducts = ({ params }) => {
 
   const {notify} = useNotifications();
   
   const { ProductId } = params;
-  
-  console.log(ProductId)
+
+  const { hasPermission } = useAuth();
 
   const { breadCumbItem,setShow } = useBreadCumb();
   
@@ -147,20 +148,17 @@ const ProjectsByProducts = ({ params }) => {
     }
   };
   const getProductsOptions = async () => {
-    try {
+    
       const response = await axios.get(`/products/${ProductId}`);
         if(response?.status === 200){
-
-      const transformedProduct = response.data.product.map((product) => ({
+      const product = response?.data.product;
+          const transformedProduct ={
         value: product?._id,
         label: product?.name,
-      }));
+      };
       setProductOption(transformedProduct);
-      console.log(transformedProduct)
       }
-    } catch (error) {
-      notify({ message: 'Failed to load products', status: 'danger' });
-    }
+    
   };
 
   useEffect(() => {
@@ -286,19 +284,23 @@ const ProjectsByProducts = ({ params }) => {
       <div className="mx-5 ">
         <div className=" row justify-content-start gap-5">
           {ProjectsData.length > 0 ? (
-            ProjectsData.map((project) => (
-              <ProjectCard
+            ProjectsData.map((project) => {
+              const canManage = hasPermission('projects' , 'manage')
+              return(
+                <ProjectCard
                 projectKey={project?._id}
                 dataProvider={project}
                 supportBreadCumb={false}
                 projectsRootLayer={true}
+                permission={canManage}
                 handleFunctions={{
                   editModal: () => handleShowEditModal(project),
                   editMembersModal : () => handleShowEditMembersModal(project),
                   deleteModal: () => handleShowDeleteModal(project),
                 }}
               />
-            ))
+              );
+              })
           ) : (
             <div className=" d-flex flex-column justify-content-center align-items-center">
               <Image

@@ -36,10 +36,7 @@ const Portfolio = () => {
 
   const { hasPermission } = useAuth();
 
-  useEffect(()=>{
-     !show && setShow(true);
-  },[]);
-  
+
  
 
   const methods = useForm({

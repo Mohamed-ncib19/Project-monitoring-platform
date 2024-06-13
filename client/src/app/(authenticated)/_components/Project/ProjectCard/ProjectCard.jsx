@@ -72,6 +72,9 @@ export const ProjectCard = ({
   projectsRootLayer,
   permission
 }) => {
+
+  console.log(dataProvider)
+
   const handleShowEditModal = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
   const handleShowEditMembers = handleFunctions?.editMembersModal;
@@ -122,17 +125,12 @@ export const ProjectCard = ({
 
   useEffect(() => {
     const getProduct = async () => {
-      try {
+      
         const response = await axios.get(`/products/${dataProvider?.product}`);
         if (response?.status === 200) {
-          setProductData(response?.data?.product[0]);
+          setProductData(response?.data?.product);
         }
-      } catch (error) {
-        notify({
-          message: 'failed to load Product informations',
-          status: 'warning',
-        });
-      }
+      
     };
     if (dataProvider?.product) {
       getProduct();
@@ -282,7 +280,7 @@ export const ProjectCard = ({
             <span className="sprint-count-label">
               Total number of sprints:{' '}
             </span>
-            <span>{dataProvider?.sprintCount || 0}</span>
+            <span>{dataProvider?.sprintCount}</span>
           </p>
 
           <p className="fw-bold col-xl-6 col-12 text-lg-start text-center">
