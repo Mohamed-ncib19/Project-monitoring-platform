@@ -245,6 +245,7 @@ const zentaoServices = {
   },
   async getTask(taskId) {
     try {
+      console.log(taskId)
       let config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -260,6 +261,7 @@ const zentaoServices = {
         return { ok: true, data: response.data };
       }
     } catch (error) {
+      console.log(error);
       return { ok: false, message: error.response };
     }
   },

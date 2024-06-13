@@ -45,39 +45,43 @@ const taskServices = {
       return { ok: false, message: error };
     }
   },
-  async editTask(task, sprintId, sprintZentaoId) {
+  async updateTask(task, sprintZentaoId) {
     try {
+      console.log("task :", task);
+      console.log("sprintZentaoId :", sprintZentaoId);
+
       const taskCollection = await TaskModel();
-      const id = uuidv4();
       const { user, ok } = await userServices.getUser(
         "zentaoId",
         task.assignedTo.id
       );
-      console.log(user);
+      console.log("user: ", user);
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
       }
-      const taskResult = await taskCollection.update({
-        _id: id,
-        sprint: sprintId,
-        sprintZentaoId,
-        status: task.status,
-        assignedTo: user._id,
-        assignedDate: task.assignedDate,
-        deadline: task.dealine,
-        estimated: task.estimated,
-        consumed: task.consumed,
-        left: task.left,
-        type: task.type,
-        status: task.status,
-        realStarted: task.realStarted,
-        progress: task.progress,
-      });
+      const taskResult = await taskCollection.updateOne(
+        { sprintZentaoId: sprintZentaoId },
+        {
+          $set: {
+            status: task.status,
+            assignedTo: user._id,
+            assignedDate: task.assignedDate,
+            deadline: task.deadline,
+            estimated: task.estimated,
+            consumed: task.consumed,
+            left: task.left,
+            type: task.type,
+            status: task.status,
+            realStarted: task.realStarted,
+            progress: task.progress,
+          },
+        }
+      );
       if (taskResult.acknowledged) {
+        console.log("task updated successfully");
         return {
           ok: true,
-          message: "task created successfully",
-          id: taskResult.insertedId,
+          message: "task updated successfully",
         };
       } else {
         return { ok: false, message: "failed to created task" };

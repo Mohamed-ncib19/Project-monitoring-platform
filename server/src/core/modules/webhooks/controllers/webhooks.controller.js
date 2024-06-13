@@ -8,7 +8,6 @@ const webhooksController = {
     const payload = req.body;
     console.log(payload);
     const type = payload.objectType;
-
     let response;
     switch (type) {
       case "task":
