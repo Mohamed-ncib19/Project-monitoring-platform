@@ -44,7 +44,6 @@ const refreshAccessToken = async (token) => {
         },
       }
     );
-    console.log(data);
     return {
       ...token,
       accessToken: data.accessToken,

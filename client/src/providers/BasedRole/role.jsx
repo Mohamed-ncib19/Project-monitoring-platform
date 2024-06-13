@@ -6,11 +6,6 @@ export const roles = {
     TEAM_MEMBER: process.env.NEXT_PUBLIC_TEAMMEMBER_ROLE,
   };
   
-/*   export const permissions = {
-    MANAGER: ['consult', 'manage'],
-    TEAM_LEAD: ['consult', 'manage'],
-    TEAM_MEMBER: ['consult'],
-  }; */
   
   export const pagePermissions = {
     sidebar:{

@@ -115,8 +115,6 @@ useEffect(()=>{
         const response = await getAllProducts();
         if(response.ok){
           setProducts(response.data);
-        }else{
-          notify({message :'failed to load products informations' , status:'danger' });
         }
       } catch (error) {
         notify({message : error?.message , status:'warning' });
