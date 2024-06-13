@@ -7,6 +7,7 @@ const sprintController = {
     try {
       const { sprintId } = req.params;
       const response = await sprintServices.getSprintById(sprintId, "_id");
+
       if (response.ok) {
         return res.status(httpStatus.OK).send({ sprint: response.sprint });
       }
@@ -19,6 +20,5 @@ const sprintController = {
         .send({ message: error.message });
     }
   },
-
 };
 module.exports = sprintController;

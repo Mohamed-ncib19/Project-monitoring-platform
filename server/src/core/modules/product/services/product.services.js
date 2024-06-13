@@ -84,8 +84,15 @@ const productServices = {
           active: true,
           product: product._id,
         });
-        product["projectCount"] = projectCount;
+        product.projectCount = projectCount;
+        product.projects = await projectModel
+          .find({
+            active: true,
+            product: product._id,
+          })
+          .toArray();
       }
+
       return { ok: true, products: products };
     } catch (error) {
       console.error("Error getting products:", error);
@@ -111,7 +118,13 @@ const productServices = {
         active: true,
         product: productId,
       });
-      product["projectCount"] = projectCount;
+      product.projectCount = projectCount;
+      product.projects = await projectCollection
+        .find({
+          active: true,
+          product: product._id,
+        })
+        .toArray();
       return { ok: true, product: product };
     } catch (error) {
       console.error("Error getting product:", error);

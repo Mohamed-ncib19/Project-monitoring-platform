@@ -8,19 +8,21 @@ const taskServices = require("../../tasks/services/task.services");
 const webhooksServices = {
   async tasks(payload) {
     try {
+      const zentaoSprintId = payload.execution;
+      const zentaoTaskId = payload.objectId;
       switch (payload.action) {
         case "opened":
           const sprintExists = await sprintServices.getSprintById(
-            Number(payload.execution),
+            Number(zentaoSprintId),
             "zentaoId"
           );
           let sprintId;
           if (!sprintExists.ok) {
             const zentaoSprint = await zentaoServices.getExecution(
-              payload.execution
+              zentaoSprintId
             );
             const createSprint = await sprintServices.createSprint(
-              payload.execution,
+              zentaoSprintId,
               zentaoSprint
             );
             if (!createSprint) {
@@ -30,7 +32,7 @@ const webhooksServices = {
           } else {
             sprintId = sprintExists.sprint._id;
           }
-          const task = await zentaoServices.getTask(payload.objectID);
+          let task = await zentaoServices.getTask(zentaoTaskId);
           if (!task.ok) {
             return {
               ok: false,
@@ -41,13 +43,26 @@ const webhooksServices = {
           const createTask = await taskServices.createTask(
             task.data,
             sprintId,
-            payload.execution
+            zentaoSprintId
           );
           if (createTask.ok) {
             return { ok: true };
           }
           return { ok: false };
-        default:
+        case "edited":
+          task = await zentaoServices.getTask(zentaoTaskId);
+          if (!task.ok) {
+            return {
+              ok: false,
+              message: "error getting task from zentao",
+              details: task.message,
+            };
+          }
+          const updateTask = await taskServices.updateTask(task.data);
+          if (updateTask.ok) {
+            return { ok: true };
+          }
+          return { ok: false, message: "failed to update task" };
       }
     } catch (error) {
       return {
