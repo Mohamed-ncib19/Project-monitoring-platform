@@ -75,7 +75,6 @@ const projectServices = {
     try {
       const projectCollection = await ProjectModel();
       const sprintCollection = await SprintModel();
-
       const projects = await projectCollection
         .find(
           productId ? { active: true, product: productId } : { active: true }
@@ -87,8 +86,12 @@ const projectServices = {
           const count = await sprintCollection.countDocuments({
             project: project._id,
           });
-          project.sprintCount = count; // Add sprint count to the project object
-          return project; // Return the modified project
+          const sprints = await sprintCollection
+            .find({ project: project._id })
+            .toArray();
+          project.sprintCount = count;
+          project.sprints = sprints;
+          return project;
         })
       );
 

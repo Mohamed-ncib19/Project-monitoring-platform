@@ -72,6 +72,7 @@ const portfolioServices = {
         result.map(async (portfolio) => {
           const { products } = await productServices.getProducts(portfolio._id);
           portfolio.productCount = products.length;
+          portfolio.products = products;
           portfolio.projectCount = 0;
           for (const product of products) {
             portfolio.projectCount += product.projectCount;
@@ -108,6 +109,7 @@ const portfolioServices = {
       const { products } = await productServices.getProducts(portfolio._id);
 
       // Add productCount and calculate projectCount
+      portfolio.products = products;
       portfolio.productCount = products.length;
       portfolio.projectCount = products.reduce(
         (count, product) => count + (product.projectCount || 0),

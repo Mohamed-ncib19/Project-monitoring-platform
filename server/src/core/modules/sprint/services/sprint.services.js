@@ -1,14 +1,24 @@
 const SprintModel = require("../models/sprint");
+const TaskModel = require("../../tasks/modules/task.js");
+
 const { v4: uuidv4 } = require("uuid");
 const projectServices = require("../../project/services/project.services");
 const sprintServices = {
   async getSprintById(sprintId, type) {
     try {
       const sprintCollection = await SprintModel();
+      const taskCollection = await TaskModel();
+
       const query = {};
       query[type] = sprintId;
       const sprint = await sprintCollection.findOne(query);
       if (sprint) {
+        const tasks = await taskCollection
+          .find({
+            sprint: sprintId,
+          })
+          .toArray();
+        sprint.tasks = tasks;
         return { ok: true, sprint };
       } else {
         return { ok: false, message: "sprint not found" };
@@ -58,6 +68,9 @@ const sprintServices = {
       return { ok: false, message: error };
     }
   },
+  async getSprints(project){
+
+  }
 };
 
 module.exports = sprintServices;
