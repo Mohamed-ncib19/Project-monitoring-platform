@@ -12,13 +12,14 @@ import axios from 'axios';
 import { useNotifications } from 'reapop';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 
 export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPortfolio }) => {
   
   const { notify } = useNotifications();
   
-  const {refresh} = useRouter();
+  const {hasPermission} = useAuth();
 
   const [portfoliosOptions, setPortfolios] = useState([]);
   const [teamleadsOptions , setTeamleadsOptions] = useState([]);
@@ -152,9 +153,12 @@ const onSubmit = handleSubmit(async (formData) => {
           <p className="fw-bolder fs-4">{name}</p>
           <p className="text-secondary fs-6">Hi, welcome to client {name} management</p>
         </div>
-        <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
+        
+        { hasPermission('portfolio' , 'manage') &&
+          <div className="d-flex flex-column flex-md-row justify-content-center align-items-center col-md-4">
           <CoreButton type="button" label={`Add ${name}`} onClick={handleShow} />
-        </div>
+        </div>}
+      
       </div>
 
       <AddModal show={show} handleClose={handleClose} headerTitle='Create Product' onSubmit={onSubmit}>

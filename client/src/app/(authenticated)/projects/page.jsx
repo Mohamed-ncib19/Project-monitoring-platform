@@ -17,8 +17,11 @@ import ComboBoxInput from '@/components/Inputs/ComboBoxInput';
 import TextareaInput from '@/components/Inputs/Textarea';
 import { Avatar } from '../_components/Avatar';
 import CancelIcon from '../../../../public/icons/cencel-icon';
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 const Projects = () => {
   const { notify } = useNotifications();
+
+  const { hasPermission } = useAuth();
 
   const [ProjectsData, setProjectsData] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -88,6 +91,7 @@ const Projects = () => {
     setSelectedProject(project);
     setShowDeleteModal(true);
   };
+
   const DeleteProject = async () => {
     try {
       const response = await axios.delete(`/projects/${selectedProject?._id}`);
@@ -119,6 +123,7 @@ const Projects = () => {
       };
     }
   };
+  
   const handleUserChange = (selectedOptions) => {
     setSelectedUsers(selectedOptions || []);
     setValue('members', selectedOptions);
@@ -140,7 +145,6 @@ const Projects = () => {
       }));
       setUserOptions(transformedUsers);
     } catch (error) {
-      console.log(error);
       notify({ message: 'Failed to fetch users', status: 'danger' });
     }
   };
@@ -154,7 +158,6 @@ const Projects = () => {
       }));
       setProductOption(transformedProducts);
     } catch (error) {
-      console.log(error);
       notify({ message: 'Failed to load products', status: 'danger' });
     }
   };
@@ -270,24 +273,29 @@ const Projects = () => {
   return (
     <>
       <div>
-        <ProjectHeader color={'warning'} name="Project" />
+        <ProjectHeader color='warning' name="Project" />
         <div className="mx-5 ">
           <div className=" row justify-content-start gap-5">
             {ProjectsData.length > 0 ? (
-              ProjectsData.map((project) => (
-                <ProjectCard
+              ProjectsData.map((project) => {
+                const canManage = hasPermission('projects' , 'manage');
+                return(
+                  <ProjectCard
                   projectKey={project?._id}
                   dataProvider={project}
                   supportBreadCumb={false}
                   projectsRootLayer={true}
                   setProduct={setProduct}
-                  handleFunctions={{
+                  team={userOptions}
+                  permission={canManage}
+                  handleFunctions={ canManage && {
                     editModal: () => handleShowEditModal(project),
                     editMembersModal : () => handleShowEditMembersModal(project),
                     deleteModal: () => handleShowDeleteModal(project),
                   }}
                 />
-              ))
+                );
+              })
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">
                 <Image
@@ -309,7 +317,7 @@ const Projects = () => {
       <EditModal
         show={showEditMembersModal}
         handleClose={handleCloseEditMembersModal}
-        headerTitle="Edit Project"
+        headerTitle="Edit Team"
         onSubmit={onSubmit}
       >
         <FormProvider {...methods}>

@@ -9,9 +9,6 @@ import { useBreadCumb } from "@/app/(authenticated)/_context/BreadcrumbsContext"
 export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) => {
   const { setBreadCumbItem } = useBreadCumb();
 
-  console.log(dataProvider);
-
-
   const handleShow = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
 
@@ -50,13 +47,13 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
       <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
         <Avatar
           name={dataProvider.name}
-          variant={'info'}
+          variant='portfolio-avatar'
           rounded={'1'}
-          textColor={'dark'}
+          textColor='dark'
         />
-        <p className="fw-bold fs-5 text-dark">{dataProvider.name}</p>
+        <span className="fw-bold fs-5 text-dark">{dataProvider.name}</span>
       </div>
-      <div className="d-flex flex-column px-4 py-3">
+      <div className="d-flex flex-column px-4">
         
       {
         !dataProvider.description 
@@ -67,7 +64,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
           )
           : (
             <OverlayTrigger
-              placement="left-end"
+              placement="top-start"
               delay={{ show: 250, hide: 400 }}
               overlay={renderTooltip}
             >
@@ -82,7 +79,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
       }
 
       </div>
-      <div className="d-flex flex-column px-4 pt-5">
+      <div className="d-flex flex-column px-4">
         <p>
           <span className="protfolio-children-length fw-semibold">
             Number of Products:

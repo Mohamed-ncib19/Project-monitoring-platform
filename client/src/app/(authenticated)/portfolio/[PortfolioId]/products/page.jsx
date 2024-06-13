@@ -138,7 +138,7 @@ useEffect(()=>{
         currency : currentProduct?.currency,
         startDate : startDate,
         endDate : endDate,
-        teamleader : currentProduct?.teamleader,
+        teamlead : currentProduct?.teamlead,
         description: currentProduct?.description,
       });
 
@@ -374,7 +374,7 @@ useEffect(()=>{
               <label htmlFor="teamlead" className='text-muted'>Team lead</label>
               <div className='col-lg-8 col-12 z-index-999'>
                 <Controller
-                  name='teamleader'
+                  name='teamlead'
                   control={control}
                   render={({ field }) => (
                     <Select
@@ -388,7 +388,7 @@ useEffect(()=>{
                     />
                   )}
                 />
-                {errors.teamleader && <span className="text-danger">{errors.teamleader.message}</span>}
+                {errors.teamlead && <span className="text-danger">{errors.teamlead.message}</span>}
               </div>
             </div>
 

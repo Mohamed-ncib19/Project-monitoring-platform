@@ -17,6 +17,7 @@
       background-color: rgb(255, 255, 255);
       cursor: pointer;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.182);
+    
     }
     
     .project-card:hover {
@@ -27,6 +28,7 @@
     
     .project-delay-notification{
       background-color: #E64303;
+      font-size: .9rem;
     }
     
 .sprint-count-label{
@@ -45,8 +47,11 @@
   display: flex;
   align-items: center;
   font-size: 8px;
+  background-color: transparent;
 }
-
+.avatar-container:hover{
+  background-color: rgba(192, 192, 192, 0.539);
+}
 .avatar-overlap {
   position: relative;
   margin-left: -16px;
@@ -56,4 +61,12 @@
 .avatar-overlap:first-child {
   margin-left: 0;
   z-index: 10;
+}
+
+.product-name{
+  background-color: #db2121a8;
+}
+.product-name:hover{
+background-color: #db2121db;
+transition: all 300ms ease-in-out;
 }

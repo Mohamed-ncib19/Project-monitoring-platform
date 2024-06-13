@@ -18,78 +18,90 @@ import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 import Select from 'react-select';
 import { ConfirmModal } from '../_components/Modals/ConfirmModal';
 import { AlertModal } from '../_components/Modals/AlertModal';
-
+import withAuth from '@/providers/BasedRole/withAuth';
+import { useAuth } from '../_context/AuthContext';
 const Products = () => {
-
-  const [products,setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const { notify } = useNotifications();
 
-
   const [portfolioOptions, setPortfolioOptions] = useState([]);
 
-  const [teamleadsOptions , setTeamleadsOptions] = useState([]);
+  const [teamleadsOptions, setTeamleadsOptions] = useState([]);
 
-  const [currentProduct,setCurrentProduct] = useState(null);
+  const [currentProduct, setCurrentProduct] = useState(null);
 
-const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
-const [showDeleteModal, setShowDeleteModal] = useState(false);
-const [showAlertModal , setShowAlertModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+
+  const [handleRefresh, setHandleRefresh] = useState(false);
+
+  const { hasPermission } = useAuth();
+
+  
+
+  const handleShowEditModal = (product) => {
+    setShowEditModal(true);
+    setCurrentProduct(product);
+  };
+
+  const handleCloseEditModal = () => setShowEditModal(false);
+
+  const methods = useForm({
+    resolver: yupResolver(ProductSchema),
+  });
+
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    control,
+    reset,
+  } = methods;
 
 
-const [handleRefresh,setHandleRefresh] = useState(false);
 
-
-
-const handleShowEditModal = (product) => {
-  setShowEditModal(true);
-  setCurrentProduct(product)
-};
-
-const handleCloseEditModal = () => setShowEditModal(false);
-
-const methods = useForm({
-  resolver : yupResolver(ProductSchema),
-});
-
-const {handleSubmit , formState : {errors} , register , control,reset} = methods;
-
-
-useEffect(() => {
   const fetchPortfoliosOptions = async () => {
     try {
       const response = await axios.get('/portfolios');
-      const portfoliosOptions = response.data.portfolios.map(portfolio => ({
+      const portfoliosOptions = response.data.portfolios.map((portfolio) => ({
         value: portfolio._id,
-        label: portfolio.name
+        label: portfolio.name,
       }));
       setPortfolioOptions(portfoliosOptions);
     } catch (error) {
-      notify({ message: JSON.parse(error.request.response).message, status: 'warning' });
+      notify({
+        message: JSON.parse(error.request.response).message,
+        status: 'warning',
+      });
     }
   };
-  fetchPortfoliosOptions();
-}, []);
 
-useEffect(()=>{
 
-  const getTeamLeadsOptions = async () =>{
+  const getTeamLeadsOptions = async () => {
     try {
       const response = await axios.get('/users/roles/teamlead');
 
-      const formatedTeamLeads = response.data.users.map(user => ({
+      const formatedTeamLeads = response.data.users.map((user) => ({
         value: user?._id,
-        label: `${user?.firstname}  ${user?.lastname}`
-        }));
-        setTeamleadsOptions(formatedTeamLeads)
-    } catch (error) {
-      console.log(error);
-    }
-  }
+        label: `${user?.firstname}  ${user?.lastname}`,
+      }));
+      setTeamleadsOptions(formatedTeamLeads);
 
-  getTeamLeadsOptions();
-},[]);
+    }catch(error){
+        notify({message : 'failed to load team lead infomrmations' , status : 'warning'});
+    }
+  };
+
+  useEffect(() => {
+  
+    fetchPortfoliosOptions();
+    getTeamLeadsOptions();
+  }, []);
+
+
 
 
   const getPortfolioName = async (id) => {
@@ -101,8 +113,6 @@ useEffect(()=>{
     }
   };
 
-  
-  
   const getAllProducts = async () => {
     try {
       const productsResponse = await axios.get('/products');
@@ -113,63 +123,57 @@ useEffect(()=>{
           const portfolioName = await getPortfolioName(product?.portfolio);
           return {
             ...product,
-            portfolioName
+            portfolioName,
           };
-        })
+        }),
       );
-  
+
       return {
         ok: true,
-        data: transformedProducts
+        data: transformedProducts,
       };
     } catch (error) {
       return {
         ok: false,
-        message: JSON.parse(error?.request.response).message
+        message: JSON.parse(error?.request.response).message,
       };
     }
   };
 
-
-  useEffect(()=>{
-    const fetchData = async () =>{
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const response = await getAllProducts();
-        if(response.ok){
+        if (response.ok) {
           setProducts(response.data);
-        }else{
-          notify({message : response.message , status:'danger' });
+        } else {
+          notify({ message: response.message, status: 'danger' });
         }
       } catch (error) {
-        notify({message : error.message , status:'warning' });
+        notify({ message: error.message, status: 'warning' });
       }
-    }
-      fetchData();
-  },[handleRefresh])
-
+    };
+    fetchData();
+  }, [handleRefresh]);
 
   useEffect(() => {
     if (currentProduct) {
-
-
+      console.log(currentProduct)
       const startDate = currentProduct?.startDate.split('T')[0];
       const endDate = currentProduct?.endDate.split('T')[0];
 
       reset({
-        portfolio:currentProduct?.portfolio,
+        portfolio: currentProduct?.portfolio,
         name: currentProduct?.name,
         budget: currentProduct?.budget,
-        currency : currentProduct?.currency,
-        startDate : startDate,
-        endDate : endDate,
-        teamleader : currentProduct?.teamleader,
+        currency: currentProduct?.currency,
+        startDate: startDate,
+        endDate: endDate,
+        teamlead: currentProduct?.teamlead,
         description: currentProduct?.description,
       });
-
     }
   }, [currentProduct, reset]);
-  
-
 
   const changeToDate = async (data) => {
     if (data?.startDate) {
@@ -181,165 +185,185 @@ useEffect(()=>{
     return data;
   };
 
-
-  
   const checkChanges = async (Edited, Saved) => {
-    try {     
+    try {
       const formatedData = await changeToDate(Saved);
       const changedFields = {};
       const editedKeys = Object.keys(Edited);
-  
+
       for (const key of editedKeys) {
         if (Edited[key] !== formatedData[key]) {
           changedFields[key] = Edited[key];
         }
       }
-  
-      return { ok: Object.keys(changedFields).length > 0, changedFields }; 
+
+      return { ok: Object.keys(changedFields).length > 0, changedFields };
     } catch (error) {
       console.error(error);
       return { ok: false, changedFields: {} };
     }
   };
 
-
-
   const EditProduct = async (currentProduct, data) => {
     try {
-      
-      const {ok ,changedFields} = await checkChanges(data, currentProduct);
+      const { ok, changedFields } = await checkChanges(data, currentProduct);
       if (!ok) {
         return {
           ok: false,
-          message: 'No changes'
-        }; 
+          message: 'No changes',
+        };
       } else {
-        const response = await axios.put(`/products/${currentProduct?._id}`, changedFields);
+        const response = await axios.put(
+          `/products/${currentProduct?._id}`,
+          changedFields,
+        );
         return {
           ok: response.status === 200,
-          message: response.data.message
+          message: response.data.message,
         };
       }
     } catch (error) {
       return {
         ok: false,
-        message: JSON.parse(error?.request.response).message
+        message: JSON.parse(error?.request.response).message,
       };
     }
   };
-    
-  
-    
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       const response = await EditProduct(currentProduct, data);
-      
-        if (response?.ok) {
-          notify({message: response?.message , status: 'success'});
-          setShowEditModal(false);
-          setHandleRefresh(!handleRefresh);
-        } else if(!response?.ok && response?.message === 'No changes') {
-          notify({message: 'There are no notifications' , status: 'warning'});
-        }else{  
-          notify({message: response?.message , status: 'danger'});
-        }
-      
+
+      if (response?.ok) {
+        notify({ message: response?.message, status: 'success' });
+        setShowEditModal(false);
+        setHandleRefresh(!handleRefresh);
+      } else if (!response?.ok && response?.message === 'No changes') {
+        notify({ message: 'There are no notifications', status: 'warning' });
+      } else {
+        notify({ message: response?.message, status: 'danger' });
+      }
     } catch (error) {
-      notify({message : error?.message , status : 'danger'})
+      notify({ message: error?.message, status: 'danger' });
     }
   });
-    
+
   const handleDeleteModalShow = (product) => {
     setCurrentProduct(product);
     setShowDeleteModal(true);
   };
 
-  const handleAlertModalShow = ()=>{
+  const handleAlertModalShow = () => {
     setShowAlertModal(true);
-  }
+  };
 
-  const handleDelete = (product) => product?.projectCount < 0 ? handleAlertModalShow() : handleDeleteModalShow(product);
-  
-  const DeleteEmptyProduct = async ()=>{
+  const handleDelete = (product) =>
+    product?.projectCount < 0
+      ? handleAlertModalShow()
+      : handleDeleteModalShow(product);
+
+  const DeleteEmptyProduct = async () => {
     try {
       const response = await axios.delete(`/products/${currentProduct?._id}`);
-        if(response.status === 200 ){
-          notify({ message: response?.data?.message , status: 'success' });
-          setShowDeleteModal(false);
-          setHandleRefresh(!handleRefresh);
-        }
+      if (response.status === 200) {
+        notify({ message: response?.data?.message, status: 'success' });
+        setShowDeleteModal(false);
+        setHandleRefresh(!handleRefresh);
+      }
     } catch (error) {
-      notify({message : JSON.parse(error?.request?.response)?.message , status : 'danger' });
+      notify({
+        message: JSON.parse(error?.request?.response)?.message,
+        status: 'danger',
+      });
       setShowDeleteModal(false);
-      
     }
-
   };
-  
 
   return (
     <>
       <ProductHeader color={'danger'} name={'Products'} />
       <div className="mx-5 ">
-          <div className=" row justify-content-start m-auto gap-5">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <ProductCard 
-                  productKey={product._id} 
-                  dataProvider={product}
-                  supportBreadCumb={false}
-                  productsRootLayer={true}
-                  handleFunctions={
-                    {editModal : ()=>handleShowEditModal(product),
-                    deleteModal : ()=>handleDelete(product)
-                    }
-                  
-                  }  
-                />
-              ))
-            ) : (
-              <div className=" d-flex flex-column justify-content-center align-items-center">
-                <Image
-                  priority
-                  src={ProductNotFound}
-                  alt="Product not found"
-                  width={400}
-                  draggable={false}
-                />
-                <p className=" text-dark-gray fw-bolder text-center fs-1">No Product  Found</p>
-              </div>
-            )}
-          </div>
+        <div className=" row justify-content-start m-auto gap-5">
+          {products.length > 0 ? (
+            products.map((product) => {
+              const canManage = hasPermission('products', 'manage');
+              return(
+              <ProductCard
+                productKey={product._id}
+                dataProvider={product}
+                supportBreadCumb={false}
+                productsRootLayer={true}
+                permission={canManage}
+                handleFunctions={canManage && {
+                  editModal: () => handleShowEditModal(product),
+                  deleteModal: () => handleDelete(product),
+                } }
+              />
+            );
+            })
+          ) : (
+            <div className=" d-flex flex-column justify-content-center align-items-center">
+              <Image
+                priority
+                src={ProductNotFound}
+                alt="Product not found"
+                width={400}
+                draggable={false}
+              />
+              <p className=" text-dark-gray fw-bolder text-center fs-1">
+                No Product Found
+              </p>
+            </div>
+          )}
         </div>
+      </div>
 
-        <EditModal show={showEditModal} handleClose={handleCloseEditModal} headerTitle='Edit Product' onSubmit={onSubmit} >
+      <EditModal
+        show={showEditModal}
+        handleClose={handleCloseEditModal}
+        headerTitle="Edit Product"
+        onSubmit={onSubmit}
+      >
         <FormProvider {...methods}>
-          <form className='d-flex flex-column gap-5 py-5' >
-
-          <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="portfolio" className='text-muted'>Portfolio<span className='text-danger'>*</span></label>
-              <div className='col-lg-8 col-12 z-index-999'>
+          <form className="d-flex flex-column gap-5 py-5">
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
+              <label htmlFor="portfolio" className="text-muted">
+                Portfolio<span className="text-danger">*</span>
+              </label>
+              <div className="col-lg-8 col-12 z-index-999">
                 <Controller
-                  name='portfolio'
+                  name="portfolio"
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      className='custom-select-container'
-                      classNamePrefix='custom-select'
+                      className="custom-select-container"
+                      classNamePrefix="custom-select"
                       options={portfolioOptions}
-                      onChange={(option) => field.onChange(option ? option.value : '')}
+                      onChange={(option) =>
+                        field.onChange(option ? option.value : '')
+                      }
                       onBlur={field.onBlur}
-                      value={portfolioOptions.find((option) => option.value === field.value) || ''}
+                      value={
+                        portfolioOptions.find(
+                          (option) => option.value === field.value,
+                        ) || ''
+                      }
                     />
                   )}
                 />
-                {errors.portfolio && <span className="text-danger">{errors.portfolio.message}</span>}
+                {errors.portfolio && (
+                  <span className="text-danger">
+                    {errors.portfolio.message}
+                  </span>
+                )}
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="name" className='text-muted'>Product name<span className='text-danger'>*</span></label>
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
+              <label htmlFor="name" className="text-muted">
+                Product name<span className="text-danger">*</span>
+              </label>
               <div className="col-lg-8 col-12 me-lg-3 m-0">
                 <CoreInput
                   name="name"
@@ -350,43 +374,51 @@ useEffect(()=>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="budget" className='text-muted'>Budget</label>
-              <div className='col-lg-8 col-12'>
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
+              <label htmlFor="budget" className="text-muted">
+                Budget
+              </label>
+              <div className="col-lg-8 col-12">
                 <ComboBoxInput
-                  name='budget'
-                  placeholder='Budget'
-                  type='number'
+                  name="budget"
+                  placeholder="Budget"
+                  type="number"
                   register={register}
                   errors={errors}
                   options={[
                     { label: 'TND', value: 'TND' },
                     { label: 'EUR', value: 'EUR' },
-                    { label: 'USD', value: 'USD' }
+                    { label: 'USD', value: 'USD' },
                   ]}
                 />
-                {errors.budget && <span className="text-danger">{errors.budget.message}</span>}
+                {errors.budget && (
+                  <span className="text-danger">{errors.budget.message}</span>
+                )}
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-7 col-12 align-items-center'>
-              <label htmlFor="date" className='text-muted'>Duration<span className='text-danger'>*</span></label>
-              <div className='d-flex flex-lg-row flex-column col-lg-6 col-12'>
-                <div className='col-lg-10 col-12'>
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-7 col-12 align-items-center">
+              <label htmlFor="date" className="text-muted">
+                Duration<span className="text-danger">*</span>
+              </label>
+              <div className="d-flex flex-lg-row flex-column col-lg-6 col-12">
+                <div className="col-lg-10 col-12">
                   <CoreInput
-                    name='startDate'
-                    placeholder='Start date'
-                    type='date'
+                    name="startDate"
+                    placeholder="Start date"
+                    type="date"
                     register={register}
                     errors={errors}
                   />
                 </div>
-                <span className='bg-soft-gray d-flex align-self-start px-2 py-3 text-center'>to</span>
-                <div className='col-lg-10 col-12'>
+                <span className="bg-soft-gray d-flex align-self-start px-2 py-3 text-center">
+                  to
+                </span>
+                <div className="col-lg-10 col-12">
                   <CoreInput
-                    name='endDate'
-                    placeholder='End date'
-                    type='date'
+                    name="endDate"
+                    placeholder="End date"
+                    type="date"
                     register={register}
                     errors={errors}
                   />
@@ -394,49 +426,77 @@ useEffect(()=>{
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="teamlead" className='text-muted'>Team lead</label>
-              <div className='col-lg-8 col-12 z-index-999'>
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
+              <label htmlFor="teamlead" className="text-muted">
+                Team lead
+              </label>
+              <div className="col-lg-8 col-12 z-index-999">
                 <Controller
-                  name='teamleader'
+                  name="teamlead"
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      className='custom-select-container'
-                      classNamePrefix='custom-select'
+                      className="custom-select-container"
+                      classNamePrefix="custom-select"
                       options={teamleadsOptions}
-                      onChange={(option) => field.onChange(option ? option.value : '')}
+                      onChange={(option) =>
+                        field.onChange(option ? option.value : '')
+                      }
                       onBlur={field.onBlur}
-                      value={teamleadsOptions.find((option) => option.value === field.value) || ''}
+                      value={
+                        teamleadsOptions.find(
+                          (option) => option.value === field.value,
+                        ) || ''
+                      }
                     />
                   )}
                 />
-                {errors.teamleader && <span className="text-danger">{errors.teamleader.message}</span>}
+                {errors.teamleader && (
+                  <span className="text-danger">
+                    {errors.teamleader.message}
+                  </span>
+                )}
               </div>
             </div>
 
-            <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
-              <label htmlFor="description" className='text-muted'>Description</label>
-              <div className='col-lg-8 col-12'>
+            <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
+              <label htmlFor="description" className="text-muted">
+                Description
+              </label>
+              <div className="col-lg-8 col-12">
                 <TextareaInput
-                  name='description'
+                  name="description"
                   register={register}
                   errors={errors}
                 />
               </div>
             </div>
-
           </form>
         </FormProvider>
-        </EditModal>
+      </EditModal>
 
-        <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio"  handleClick={DeleteEmptyProduct} >
-        <p className='text-muted' >This Project is empty. Are you sure you want to delete it?</p>
+      <ConfirmModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        headerTitle="Delete Portfolio"
+        handleClick={DeleteEmptyProduct}
+      >
+        <p className="text-muted">
+          This Project is empty. Are you sure you want to delete it?
+        </p>
       </ConfirmModal>
 
-      <AlertModal show={showAlertModal} handleClose={()=>setShowAlertModal(false)} headerTitle='Portfolio Not Empty' >
-        <p className='text-muted' >The portfolio cannot be deleted because it currently contains <b>Projects</b>. To delete the Portfolio, you'll need to remove all associated Projects first.</p>
+      <AlertModal
+        show={showAlertModal}
+        handleClose={() => setShowAlertModal(false)}
+        headerTitle="Portfolio Not Empty"
+      >
+        <p className="text-muted">
+          The portfolio cannot be deleted because it currently contains{' '}
+          <b>Projects</b>. To delete the Portfolio, you'll need to remove all
+          associated Projects first.
+        </p>
       </AlertModal>
     </>
   );

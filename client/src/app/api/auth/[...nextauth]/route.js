@@ -1,7 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
-import { headers } from 'next/headers';
 
 const endPoint = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 const authenticate = async (username, password) => {

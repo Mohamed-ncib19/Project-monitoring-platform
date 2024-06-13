@@ -16,11 +16,11 @@ import ProgramIcon from '../../../../../public/icons/sidebar-icons/program-icon'
 import ProjectIcon from '../../../../../public/icons/sidebar-icons/project-icon';
 import ScoreBoardIcon from '../../../../../public/icons/sidebar-icons/score-board-icon';
 import ZentaoIcon from '../../../../../public/icons/sidebar-icons/zentao-icon';
-
+import { useAuth } from "@/app/(authenticated)/_context/AuthContext";
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [userRole, setUserRole] = useState('');
+  const { hasPermission } = useAuth();
 
   const handleOpenSideBar = () => {
     setIsOpen((isOpen) => !isOpen);
@@ -94,7 +94,8 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
-                  <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+                  { hasPermission('sidebar' , 'Portfolio') &&
+                    <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
                       href="/portfolio"
                       className={`d-flex text-center justify-content-between ${
@@ -113,7 +114,7 @@ export const Sidebar = () => {
                       )}
                       {isOpen && <ArrowRightIcon />}
                     </Link>
-                  </div>
+                  </div>}
                 
 
                   <div className="sidebar-items px-1 py-1 w-100 rounded-3">
@@ -182,7 +183,7 @@ export const Sidebar = () => {
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
-                    href="/dashboard"
+                    href="/scoreboard"
                     className={`d-flex text-center justify-content-between ${
                       !isOpen ? 'justify-content-center' : ''
                     } align-items-center gap-2 p-2`}
@@ -222,6 +223,7 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
+              { hasPermission('sidebar','CompanyBalance') && 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
                     href="/dashboard"
@@ -241,10 +243,12 @@ export const Sidebar = () => {
                     )}
                     {isOpen && <ArrowRightIcon />}
                   </Link>
-                </div>
+                </div>}
+
               </div>
 
-              <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+             { hasPermission('sidebar' , 'Permissions') &&
+               <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
                   href="/permissions"
                   className={`d-flex text-center justify-content-between ${
@@ -264,6 +268,8 @@ export const Sidebar = () => {
                   {isOpen && <ArrowRightIcon />}
                 </Link>
               </div>
+                    }
+
             </div>
 
             <div className=" close-sidebar px-2 py-2 fs-5 mb-4 d-flex justify-content-center align-items-center">

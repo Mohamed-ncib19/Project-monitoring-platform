@@ -1,17 +1,16 @@
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import ArrowRightIcon from '@/../../public/icons/arrows/arrow-right-icon';
 import EditDotsIcon from '@/../../public/icons/edit-dots-icon';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import Image from 'next/image';
 
 import KanbanSVG from '@/../../public/SVG/kanban.svg';
 import ScrumSVG from '@/../../public/SVG/scrum.svg';
-import TasksIcon from '../../../../../../public/icons/tasks-icon';
-import BugsIcon from '../../../../../../public/icons/bugs-icon';
+import TasksIcon from '@/../../public/icons/tasks-icon';
+import BugsIcon from '@/../../public/icons/bugs-icon';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { notify } from 'reapop';
-
+import { AlertModal } from '../../Modals/AlertModal';
 
 const getRandomBgColor = () => {
   const bgColors = [
@@ -25,9 +24,16 @@ const getRandomBgColor = () => {
   const randomIndex = Math.floor(Math.random() * bgColors.length);
   return bgColors[randomIndex];
 };
-export const renderMembers = (membersData, maxVisible = 4) => {
+export const renderMembers = (
+  membersData,
+  maxVisible = 4,
+  setShowProjectTeam,
+) => {
   return (
-    <div className="avatar-container">
+    <button
+      className="avatar-container px-3 py-4 z-index-1000 border-0 rounded-4"
+      onClick={() => setShowProjectTeam(true)}
+    >
       {membersData.slice(0, maxVisible).map((member, index) => {
         const randomPalette = getRandomBgColor();
         const tooltipId = `tooltip-${member._id}`;
@@ -36,9 +42,13 @@ export const renderMembers = (membersData, maxVisible = 4) => {
           <OverlayTrigger
             key={member._id}
             placement="top"
-            overlay={<Tooltip id={tooltipId}>{`${member.firstname} ${member.lastname}`}</Tooltip>}
+            overlay={
+              <Tooltip
+                id={tooltipId}
+              >{`${member.firstname} ${member.lastname}`}</Tooltip>
+            }
           >
-            <div className="avatar-overlap">
+            <div className="avatar-overlap z-index-999">
               <Avatar
                 name={`${member.firstname} ${member.lastname}`}
                 rounded="circle"
@@ -49,25 +59,34 @@ export const renderMembers = (membersData, maxVisible = 4) => {
           </OverlayTrigger>
         );
       })}
-    </div>
+    </button>
   );
 };
 
-export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, supportBreadCumb = false, projectsRootLayer, setProduct}) => {
+export const ProjectCard = ({
+  dataProvider,
+  team,
+  handleFunctions,
+  projectKey,
+  supportBreadCumb = false,
+  projectsRootLayer,
+  permission
+}) => {
   const handleShowEditModal = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
   const handleShowEditMembers = handleFunctions?.editMembersModal;
 
-  const [portfolioData , setPortfolioData] = useState([]);
-  const [productData , setProductData] = useState([]);
+  const [showProjectTeam, setShowProjectTeam] = useState(false);
+
+  const [portfolioData, setPortfolioData] = useState([]);
+  const [productData, setProductData] = useState(null);
+  const [membersData, setMembersData] = useState([]);
 
   const renderDescriptionTooltip = (props) => (
     <Tooltip id="description-tooltip" {...props} className="larger-tooltip">
       {dataProvider?.description}
     </Tooltip>
   );
-
-  console.log(dataProvider);
 
   const formatDate = (value) => {
     const date = new Date(value);
@@ -81,43 +100,44 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
   };
 
   useEffect(() => {
-    if (projectsRootLayer) {
-      setProduct(dataProvider?.product);
-    }
-  }, [projectsRootLayer, dataProvider]);
-  
-  useEffect(()=>{
-    const getPortfolio = async () =>{
+    const getPortfolio = async () => {
       try {
-        const response = await axios.get(`/portfolios/${dataProvider?.portfolio}`);
-        if(response?.status === 200){
+        const response = await axios.get(
+          `/portfolios/${dataProvider?.portfolio}`,
+        );
+        if (response?.status === 200) {
           setPortfolioData(response?.data?.portfolio);
         }
       } catch (error) {
-        notify({ message : 'failed to load Portfolio informations' , status : 'warning'});
+        notify({
+          message: 'failed to load Portfolio informations',
+          status: 'warning',
+        });
       }
-    }
-    if(dataProvider?.portfolio){
+    };
+    if (dataProvider?.portfolio) {
       getPortfolio();
     }
-  },[dataProvider]);
+  }, [dataProvider]);
 
-  useEffect(()=>{
-    const getProduct = async () =>{
+  useEffect(() => {
+    const getProduct = async () => {
       try {
         const response = await axios.get(`/products/${dataProvider?.product}`);
-        console.log(response)
-        if(response?.status === 200){
-          setProductData(response?.data?.product);
+        if (response?.status === 200) {
+          setProductData(response?.data?.product[0]);
         }
       } catch (error) {
-        notify({ message : 'failed to load Product informations' , status : 'warning'});
+        notify({
+          message: 'failed to load Product informations',
+          status: 'warning',
+        });
       }
-    }
-    if(dataProvider?.product){
+    };
+    if (dataProvider?.product) {
       getProduct();
     }
-  },[dataProvider]);
+  }, [dataProvider]);
 
   const getUserData = async (userId) => {
     try {
@@ -129,19 +149,18 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
     }
   };
 
-  const [membersData, setMembersData] = useState([]);
-
   useEffect(() => {
     const fetchMembers = async (formatData) => {
-      const data = await Promise.all(formatData?.members.map((memberId) => getUserData(memberId)));
+      const data = await Promise.all(
+        formatData?.members.map((memberId) => getUserData(memberId)),
+      );
       setMembersData(data);
     };
 
-    if(dataProvider?.members.length > 0){
+    if (dataProvider?.members.length > 0) {
       fetchMembers(dataProvider);
     }
   }, [dataProvider?.members]);
-
 
   const daysLeft = (date) => {
     const currentDate = new Date();
@@ -152,7 +171,7 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
     if (differenceInDays <= 7) {
       return differenceInDays;
     } else {
-      return 0 ;
+      return 0;
     }
   };
 
@@ -162,9 +181,10 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
         key={projectKey}
         className="project-card text-decoration-none col-12 col-xl-5 col-lg-8 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-2 rounded-2"
       >
-        <div className="d-flex flex-row-reverse justify-content-start ">
-          <div>
-            <Dropdown>
+        <div className="d-flex flex-lg-row-reverse flex-column justify-content-between align-items-center  py-1 gap-xl-0 gap-4">
+          <div className="d-flex flex-row-reverse justify-content-lg-start justify-content-between align-items-center col-lg-6 col-12">
+            { permission &&( 
+             <Dropdown>
               <Dropdown.Toggle
                 as="button"
                 className="border-0 edit-project m-2 fs-5 text-muted rounded-circle px-2 py-1"
@@ -182,47 +202,57 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
                 <Dropdown.Item onClick={handleShowDelete}>Delete</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+          )}
+
+            <div className="d-flex gap-2">
+              {projectsRootLayer && (
+                <span
+                  id="portfolio-name"
+                  className="portfolio-name d-flex justify-content-center align-items-center px-3 py-2 text-white text-center rounded-5 "
+                >
+                  {portfolioData?.name || ''}
+                </span>
+              )}
+
+              {projectsRootLayer && (
+                <span
+                  id="product-name"
+                  className="product-name d-flex justify-content-center align-items-center px-3 text-white text-center rounded-5 "
+                >
+                  {productData?.name || ''}
+                </span>
+              )}
+
+              {daysLeft(dataProvider?.endDate) !== 0 ? (
+                <span className="project-delay-notification d-flex justify-content-center align-items-center px-3 text-white text-center rounded-5 ">
+                  {` ${daysLeft(dataProvider?.endDate)} days left`}
+                </span>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
-          <div className='d-flex' >
-     {
-           projectsRootLayer && (
-            <span id='portfolio-name' className='portfolio-name d-flex justify-content-center align-items-center px-3 m-2 text-white text-center rounded-5 ' >
-                {portfolioData?.name || ''}
+          <div className="d-flex flex-lg-row flex-column align-items-center py-1 gap-3">
+            <OverlayTrigger
+              placement="top-start"
+              delay={{ show: 250, hide: 400 }}
+              overlay={<Tooltip>{dataProvider?.model}</Tooltip>}
+            >
+              <Image
+                src={
+                  dataProvider?.model === 'scrum'
+                    ? ScrumSVG
+                    : dataProvider?.model === 'kanban'
+                      ? KanbanSVG
+                      : null
+                }
+                alt="Framework"
+              />
+            </OverlayTrigger>
+            <span className="fw-bold fs-5 text-dark ">
+              {dataProvider?.name}
             </span>
-           ) 
-          }
-
-          {
-            daysLeft(dataProvider?.endDate) !== 0
-            ? (
-              <span className="project-delay-notification d-flex justify-content-center align-items-center px-3 m-2 text-white text-center rounded-5 ">
-              {` ${daysLeft(dataProvider?.endDate)} days left`}
-              </span>
-              )
-            : ''
-          }
-
           </div>
-        </div>
-
-        <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-3">
-          <OverlayTrigger
-            placement='top-start'
-            delay={{show:250 , hide:400}}
-            overlay={<Tooltip>{dataProvider?.model}</Tooltip>}
-          >
-          <Image
-            src={
-              dataProvider?.model === 'scrum'
-                ? ScrumSVG
-                : dataProvider?.model === 'kanban'
-                  ? KanbanSVG
-                  : null
-            }
-            alt="Framework"
-          />
-        </OverlayTrigger>
-          <p className="fw-bold fs-5 text-dark ">{dataProvider?.name}</p>
         </div>
 
         <div className="d-flex flex-column px-4 py-3">
@@ -271,7 +301,7 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
           </p>
         </div>
 
-        <div className="d-flex flex-column px-4 pt-5">
+        <div className="d-flex flex-column px-4 ">
           <span>current sprint progress</span>
           <span>progress bar</span>
         </div>
@@ -295,11 +325,39 @@ export const ProjectCard = ({ dataProvider, handleFunctions, projectKey, support
           </p>
 
           <div className="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-            <span className='text-muted' >Members assigned</span>
-            {renderMembers(membersData)}
-            </div>
+            <span className="text-muted">Members assigned</span>
+            {renderMembers(membersData, 4, setShowProjectTeam)}
+          </div>
         </div>
       </div>
+
+      <AlertModal
+        show={showProjectTeam}
+        handleClose={() => setShowProjectTeam(false)}
+        headerTitle={`${dataProvider?.name} Team`}
+        size="lg"
+      >
+        <div className="project-team-list h-100 py-4  ">
+          {membersData.map((user) => (
+            <div
+              key={user?._id}
+              className="user-entry d-flex justify-content-between align-items-center p-2 bg-white border rounded mb-2"
+            >
+              <div className="d-flex align-items-center gap-3">
+                <Avatar
+                  name={`${user?.firstname}  ${user?.lastname}`}
+                  variant="soft-gray"
+                  rounded="circle"
+                />
+                <div className="d-flex flex-column">
+                  <span className="fw-bold">{`${user?.firstname}  ${user?.lastname}`}</span>
+                  <span className="text-muted">{user?.email}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </AlertModal>
     </>
   );
 };

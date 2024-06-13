@@ -2,7 +2,6 @@ import CoreButton from "@/components/buttons/CoreButton";
 import { Modal } from "react-bootstrap";
 
 export const EditModal = ({headerTitle,show,handleClose, children,onSubmit}) =>{
-    console.log(show)
     return(
         <>
         <Modal show={show} onHide={handleClose} size="xl" >

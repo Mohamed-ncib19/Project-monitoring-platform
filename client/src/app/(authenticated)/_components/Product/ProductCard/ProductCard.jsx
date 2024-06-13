@@ -11,12 +11,14 @@ export const ProductCard = ({
   supportBreadCumb = false,
   productKey,
   productsRootLayer,
+  permission
 }) => {
-  console.log(dataProvider)
+
+
   const { setBreadCumbItem } = useBreadCumb();
 
-  const handleShow = handleFunctions.editModal;
-  const handleShowDelete = handleFunctions.deleteModal;
+  const handleShow = handleFunctions.editModal || '';
+  const handleShowDelete = handleFunctions.deleteModal || '';
 
 const renderTooltip = (props) => (
   <Tooltip id="description-tooltip" {...props} className="larger-tooltip"  >
@@ -38,14 +40,29 @@ const renderTooltip = (props) => (
       timeZone : 'UTC'
     });   
     return formattedDate;
-  }
+  };
+
+
+
+  const daysLeft = (date) => {
+    const currentDate = new Date();
+    const inputDate = new Date(date);
+    const differenceInTime = inputDate.getTime() - currentDate.getTime();
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+    if (differenceInDays <= 7) {
+      return differenceInDays;
+    } else {
+      return 0 ;
+    }
+  };
 
   return (
     <>
       <Link
         href={`/portfolio/${dataProvider?.portfolio}/products/${dataProvider?._id}/projects`}
         key={productKey}
-        className="product-card text-decoration-none col-12 col-xl-3 col-lg-4 col-md-5 py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-3 rounded-2"
+        className="product-card text-decoration-none col-xl-3 col-lg-8 col-12  py-1 d-flex flex-column justify-content-between m-xl-0 m-auto gap-3 rounded-2"
         onClick={
           supportBreadCumb
             ? () =>
@@ -59,9 +76,11 @@ const renderTooltip = (props) => (
             : null
         }
       >
-        <div className="d-flex flex-row-reverse justify-content-between align-items-center ">
-          <div>
-            <Dropdown onClick={stopPropagation}>
+        <div className="d-flex flex-row-reverse  justify-content-between align-items-center ">
+
+          {permission && (
+            <div className='d-flex flex-row-reverse justify-content-lg-start justify-content-between align-items-center '>
+        <Dropdown onClick={stopPropagation}>
               <Dropdown.Toggle
                 as="button"
                 className="border-0 edit-product m-2 fs-5 text-muted rounded-circle px-2 py-1"
@@ -77,21 +96,33 @@ const renderTooltip = (props) => (
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-          </div>
+          </div>)}
+          <div className='d-flex gap-2' >
           {
            productsRootLayer && (
-            <span id='portfolio-name' className='portfolio-name px-4 py-2 text-white fw-bold rounded-5 shadow text-center' >
+            <span id='portfolio-name' className='portfolio-name d-flex justify-content-center align-items-center px-3 py-2 text-white text-center rounded-5 ' >
                 {dataProvider?.portfolioName || ''}
             </span>
            ) 
           }
+
+{
+            daysLeft(dataProvider?.endDate) !== 0
+            ? (
+              <span className="project-delay-notification d-flex justify-content-center align-items-center px-3 text-white text-center rounded-5 ">
+              {` ${daysLeft(dataProvider?.endDate)} days left`}
+              </span>
+              )
+              : ''
+              }
+              </div>
         </div>
         <div className="d-flex flex-md-row flex-column align-items-center px-4 gap-4">
           <Avatar
             name={dataProvider.name}
-            variant={'info'}
+            variant='product-avatar'
             rounded={'1'}
-            textColor={'dark'}
+            textColor='dark'
           />
           <p className="fw-bold fs-5 text-dark ">{dataProvider.name}</p>
         </div>
@@ -106,7 +137,7 @@ const renderTooltip = (props) => (
           )
           : (
             <OverlayTrigger
-              placement="left-end"
+              placement="top-start"
               delay={{ show: 250, hide: 400 }}
               overlay={renderTooltip}
             >
