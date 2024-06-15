@@ -4,10 +4,12 @@ import { BreadCumbProvider } from '@/app/(authenticated)/_context/BreadcrumbsCon
 import { BreadcrumbLink } from "@/app/(authenticated)/_components/Breadcrumb";
 import { Suspense } from 'react';
 import Loading from '@/app/loading';
-const Layout = ({ children }) => {
+import withAuth from '@/providers/BasedRole/withAuth';
+const Layout = async ({ children }) => {
+    
     return (
             <Suspense fallback={<Loading />}>
-        <BreadCumbProvider>
+                <BreadCumbProvider>
                 <div className="px-5">
                     <BreadcrumbLink  />
                 </div>
@@ -17,4 +19,4 @@ const Layout = ({ children }) => {
     );
 }
 
-export default Layout;
+export default withAuth(Layout , 'portfolio', 'manage');

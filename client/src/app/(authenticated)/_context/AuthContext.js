@@ -1,5 +1,3 @@
-// AuthContext.js
-
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -10,13 +8,28 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(null);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const user = await getSession();
-      setRole(user?.profile?.role || null);
+    const initializeAuth = async () => {
+      const savedRole = sessionStorage.getItem('userRole');
+      
+      if (savedRole) {
+        setRole(savedRole);
+      } else {
+        const user = await getSession();
+        const userRole = user?.profile?.role;
+
+        if (userRole) {
+          setRole(userRole);
+          sessionStorage.setItem('userRole', userRole);
+        }
+        
+        }
+      setAuthorized(true);
     };
-    fetchSession();
+
+    initializeAuth();
   }, []);
 
   const hasPermission = (page, action) => {
@@ -27,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ role, hasPermission }}>
-      {children}
+      {authorized && children}
     </AuthContext.Provider>
   );
 };
