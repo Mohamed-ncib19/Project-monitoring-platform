@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import { useNotifications } from 'reapop';
+import clsx from 'clsx';
 
 const ProfileCard = ({ params }) => {
 
@@ -106,7 +107,11 @@ const ProfileCard = ({ params }) => {
             <i className="bi bi-person-gear fs-3 text-muted"></i>
               <p className="mb-0 text-secondary fw-bold">User Role</p>
             </div>
-            <p className="mb-0 custom-value-field">{user?.role || ''}</p>
+            <p className="mb-0 custom-value-field">{clsx({
+              'Manager' : user?.role === process.env.NEXT_PUBLIC_MANAGER_ROLE,
+              'Team lead' : user?.role === process.env.NEXT_PUBLIC_TEAMLEAD_ROLE,
+              'Team member' : user?.role === process.env.NEXT_PUBLIC_TEAMMEMBER_ROLE,
+            }) || ''}</p>
           </div>
         </div>
       </div>

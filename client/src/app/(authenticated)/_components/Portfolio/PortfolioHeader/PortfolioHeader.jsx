@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 import CoreButton from '@/components/buttons/CoreButton';
@@ -10,37 +10,24 @@ import TextareaInput from '@/components/Inputs/Textarea';
 import { PortfolioShcema } from '@/app/(authenticated)/_shcemas/portfolio.shcema';
 import axios from 'axios';
 import { useNotifications } from 'reapop';
-import { useRouter } from 'next/navigation';
 
-export const PortfolioHeader = ({ color, name }) => {
+export const PortfolioHeader = ({ color, name,handleRefresh, setHandleRefresh }) => {
 
   const { notify } = useNotifications();
-  const { refresh } = useRouter();
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const fakeManagers = [
-    {value: 'manager1', label: 'manager1'},
-    {value: 'manager2', label: 'manager2'},
-  ];
-
-
-
   const methods = useForm({
     resolver: yupResolver(PortfolioShcema),
   });
 
-
-
-
   const { handleSubmit,
           formState: { errors },
           register,
-          control
+          reset
         } = methods;
-
 
         const addPortfolio = async (data) =>{
           try {
@@ -62,7 +49,7 @@ export const PortfolioHeader = ({ color, name }) => {
             if (res.ok) {
               notify({ message: res.message, status: 'success' });
               handleClose();
-              refresh();
+              setHandleRefresh(!handleRefresh);
             } else {
               notify({ message: res.message, status: 'danger' });
             }

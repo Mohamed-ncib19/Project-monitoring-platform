@@ -20,10 +20,13 @@ import Select from 'react-select';
 import { ConfirmModal } from '@/app/(authenticated)/_components/Modals/ConfirmModal';
 import { AlertModal } from '@/app/(authenticated)/_components/Modals/AlertModal';
 
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
+
 const ProductsByPorftolio = ({ params }) => {
   
   const { notify } = useNotifications();
 
+  const { hasPermission } = useAuth();
 
   const { PortfolioId } = params;
 
@@ -257,18 +260,22 @@ useEffect(()=>{
       <div className="mx-5 ">
           <div className=" row justify-content-start gap-5 m-auto">
             {products.length > 0 ? (
-              products.map((product) => (
-              <ProductCard 
+              products.map((product) => {
+                const canManage = hasPermission('products' , 'manage')
+                return(
+                  <ProductCard 
                 dataProvider={product}
                 supportBreadCumb={true}
+                permission={canManage}
                 handleFunctions={
                   {editModal : ()=>handleShowEditModal(product),
                   deleteModal : ()=>handleDelete(product)
                   }
-                
-                } 
-                productKey={product._id} />
-              ))
+                  } 
+                productKey={product._id}
+                />
+                );
+              })
             ) : (
               <div className=" d-flex flex-column justify-content-center align-items-center">
                 <Image
