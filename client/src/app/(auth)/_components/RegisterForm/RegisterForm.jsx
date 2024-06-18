@@ -32,11 +32,10 @@ export const RegisterForm = async ({ userName }) => {
         email: data.email,
       });
       if (res.data.status === 'pending') {
-        push('/pending');
-        return;
+        push('/');
       }
     } catch (error) {
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         notify({ message: 'User already exist', status: 'warning' });
         return;
       }
