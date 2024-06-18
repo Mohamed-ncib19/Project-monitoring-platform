@@ -1,30 +1,40 @@
 import { useEffect } from 'react';
-import Select from 'react-select';
-import { yupResolver } from '@hookform/resolvers/yup';
-import clsx from 'clsx';
-import { useNotifications } from 'reapop';
 import axios from 'axios';
+import clsx from 'clsx';
 import { Modal } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import Select from 'react-select';
+import { useNotifications } from 'reapop';
 
+import WarningIcon from '@/../../public/icons/warning-icon';
 import { PositionOptions } from '@/app/(authenticated)/_selectOptions/positions.options';
 import { RolesOptions } from '@/app/(authenticated)/_selectOptions/role.options';
-
-import CoreButton from '@/components/buttons/CoreButton';
-import WarningIcon from '@/../../public/icons/warning-icon';
 import { EditSchema } from '@/app/(authenticated)/permissions/_schemas/permission.schema';
+import CoreButton from '@/components/buttons/CoreButton';
 import CoreInput from '@/components/Inputs/CoreInput';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-
-export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, setActiveTab }) => {
+export const EditModal = ({
+  show,
+  handleClose,
+  headerTitle,
+  buttonLabel,
+  user,
+  setActiveTab,
+}) => {
   const { notify } = useNotifications();
 
-  
   const methods = useForm({
     resolver: yupResolver(EditSchema),
   });
 
-  const { handleSubmit, formState: { errors }, control, register, reset } = methods;
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+    register,
+    reset,
+  } = methods;
 
   const EditUser = async (id, data) => {
     try {
@@ -40,16 +50,11 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
   };
 
   const checkChanges = (data) => {
-    return Object.keys(data).every(key => data[key] === user[key]);
+    return Object.keys(data).every((key) => data[key] === user[key]);
   };
 
-
-
-
-
-
   useEffect(() => {
-    if (user) { 
+    if (user) {
       reset({
         firstname: user.firstname || '',
         lastname: user.lastname || '',
@@ -61,25 +66,22 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
       });
     }
   }, [user, reset, RolesOptions]);
-  
 
   const handleEdit = handleSubmit(async (formData) => {
-   
     try {
-      if(checkChanges(formData)){
-        notify({message : 'no changes' , status:'warning'});
+      if (checkChanges(formData)) {
+        notify({ message: 'no changes', status: 'warning' });
         handleClose();
-        return;
-       }else{
-      const response = await EditUser(user?._id, formData);
-      if (response.message === 'Account setted up successfuly') {
-        notify({ message: response.message, status: 'success' });
-        handleClose();
-        setActiveTab('requests')
       } else {
-        notify({ message: response.message, status: 'danger' });
+        const response = await EditUser(user?._id, formData);
+        if (response.message === 'Account setted up successfuly') {
+          notify({ message: response.message, status: 'success' });
+          handleClose();
+          setActiveTab('requests');
+        } else {
+          notify({ message: response.message, status: 'danger' });
+        }
       }
-    }
     } catch (error) {
       notify({ message: error.msg, status: 'danger' });
     }
@@ -103,8 +105,9 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
           <i className="fs-4">
             <WarningIcon />
           </i>
-          <p className="alert-content">
-            Alert: setting a user's role will adjust their access to information and actions
+          <p className="alert-content m-0">
+            Alert: setting a user's role will adjust their access to information
+            and actions
           </p>
         </div>
 
@@ -149,20 +152,28 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
 
             <div className="d-flex justify-content-between align-items-center gap-2 border-top border-bottom py-4">
               <div className="col-6">
-                <p className="fs-6 mb-2 py-1 text-soft-black">Business Position</p>
+                <p className="fs-6 mb-2 py-1 text-soft-black">
+                  Business Position
+                </p>
                 <Controller
                   name="businessPosition"
                   control={control}
                   render={({ field }) => (
                     <Select
-                    {...field}
-                    isClearable
+                      {...field}
+                      isClearable
                       className={clsx(' ', {
-                        'is-invalid border-2 border-danger': !!errors.businessPosition,
+                        'is-invalid border-2 border-danger':
+                          !!errors.businessPosition,
                       })}
                       options={PositionOptions}
-                      onChange={(option) => field.onChange(option ? option.value : '')}
-                      value={PositionOptions.find((businessPosition) => businessPosition.value === field.value)}
+                      onChange={(option) =>
+                        field.onChange(option ? option.value : '')
+                      }
+                      value={PositionOptions.find(
+                        (businessPosition) =>
+                          businessPosition.value === field.value,
+                      )}
                     />
                   )}
                 />
@@ -197,9 +208,18 @@ export const EditModal = ({ show, handleClose, headerTitle, buttonLabel, user, s
                     })}
                     {...field}
                     options={RolesOptions}
-                    onChange={(option) => field.onChange(option ? option.value : '')}
-                    value={RolesOptions.find((role) => role.value === field.value) || { value: 'manager', label: 'Manager' }}
-                    />
+                    onChange={(option) =>
+                      field.onChange(option ? option.value : '')
+                    }
+                    value={
+                      RolesOptions.find(
+                        (role) => role.value === field.value,
+                      ) || {
+                        value: 'manager',
+                        label: 'Manager',
+                      }
+                    }
+                  />
                 )}
               />
               {errors.role && (

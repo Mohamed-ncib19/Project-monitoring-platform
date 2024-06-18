@@ -1,4 +1,4 @@
-const   CoreButton = ({
+const CoreButton = ({
   label,
   type,
   onClick,
@@ -8,7 +8,7 @@ const   CoreButton = ({
     <button
       type={type}
       onClick={onClick}
-      className={`btn col-lg-6 col-md-8 col-sm-8 col-10 m-auto py-3 ${variant} border-none rounded text-light  d-flex flex-row justify-content-center align-items-center gap-2 shadow`}
+      className={`btn col-lg-6 col-md-8 col-sm-8 col-10 m-auto py-3 ${variant} border-none rounded text-light  d-flex flex-row justify-content-center align-items-center gap-2 `}
     >
       {label}
     </button>

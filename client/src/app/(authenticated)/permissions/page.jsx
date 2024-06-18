@@ -1,30 +1,26 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import axios from 'axios';
+import clsx from 'clsx';
 import { useNotifications } from 'reapop';
 
-import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
-import DataTable from '@/layout/DataTable';
-import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import ViewIcon from '@/../../public/icons/ViewIcon';
-import {AddModal} from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
-import {EditModal} from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
-import {ConfirmModal} from '@/app/(authenticated)/_components/Modals/ConfirmModal/ConfirmModal';
-
-import EditDotsIcon from '@/../public/icons/edit-dots-icon';
-import requestsNotFound from '@/../../public/images/requests-not-found.png'; 
+import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png';
+import requestsNotFound from '@/../../public/images/requests-not-found.png';
 import usersNotFound from '@/../../public/images/users-not-found.png';
-import bannedUsersNotFound from '@/../../public/images/banned-users-not-found.png'; 
-import clsx from 'clsx';
-
-
+import EditDotsIcon from '@/../public/icons/edit-dots-icon';
+import { Avatar } from '@/app/(authenticated)/_components/Avatar';
+import { ToggleDropdown } from '@/app/(authenticated)/_components/Dropdown';
+import { ConfirmModal } from '@/app/(authenticated)/_components/Modals/ConfirmModal/ConfirmModal';
+import { AddModal } from '@/app/(authenticated)/permissions/_components/modals/AddModal/';
+import { EditModal } from '@/app/(authenticated)/permissions/_components/modals/EditModal/';
+import DataTable from '@/layout/DataTable';
 
 const Permissions = () => {
-
-  const {notify} = useNotifications();
+  const { notify } = useNotifications();
 
   const [users, setUsers] = useState([]);
   const [userRequests, setUserRequests] = useState([]);
@@ -40,13 +36,11 @@ const Permissions = () => {
 
   const [isDesactivateModalOpen, setIsDesactivateModalOpen] = useState(false);
 
-  const [isRestoreModalOpen,setIsRestoreModalOpen] = useState(false);
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
 
-
-const [restoreType,setRestoreType] = useState(null);
+  const [restoreType, setRestoreType] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState(null);
-
 
   const handleClose = () => setIsModalOpen(false);
   const handleShow = (user) => {
@@ -63,8 +57,8 @@ const [restoreType,setRestoreType] = useState(null);
   const handleCloseDesactivateModal = () => setIsDesactivateModalOpen(false);
   const handleShowDesactivateModal = (user) => {
     setIsDesactivateModalOpen(true);
-    setSelectedUser(user)
-  }
+    setSelectedUser(user);
+  };
 
   const handleCloseEditModal = () => setIsEditModalOpen(false);
   const handleEditShow = (user) => {
@@ -72,13 +66,9 @@ const [restoreType,setRestoreType] = useState(null);
     setIsEditModalOpen(true);
   };
 
-  
   const handleCloseRestoreModal = () => setIsRestoreModalOpen(false);
   const handleRestoreShow = (user) => {
-    setRestoreType(
-      user.role != undefined ? 'account'
-      :'request'
-    )
+    setRestoreType(user.role != undefined ? 'account' : 'request');
     setSelectedUser(user);
     setIsRestoreModalOpen(true);
   };
@@ -86,7 +76,6 @@ const [restoreType,setRestoreType] = useState(null);
   const handleRestoreMethod = () => {
     return restoreType === 'account' ? handleRestoreUser : handleRestoreRequest;
   };
-  
 
   const api = {
     async getPendingUsers() {
@@ -132,20 +121,11 @@ const [restoreType,setRestoreType] = useState(null);
         );
       }
     },
-  
-
-
-
-
-  
-
   };
 
-  const deleteRequest = async(id) => {
+  const deleteRequest = async (id) => {
     try {
-      const response = await axios.delete(
-        `/users/${id}/ban?type=request`,
-      );
+      const response = await axios.delete(`/users/${id}/ban?type=request`);
       return response.data;
     } catch (error) {
       return Promise.reject({
@@ -168,7 +148,7 @@ const [restoreType,setRestoreType] = useState(null);
     }
   };
 
-  const restoreRequest =async (id) => {
+  const restoreRequest = async (id) => {
     try {
       const response = await axios.put(`/users/${id}/restore?type=request`);
       return response.data;
@@ -193,7 +173,6 @@ const [restoreType,setRestoreType] = useState(null);
       });
     }
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -238,8 +217,7 @@ const [restoreType,setRestoreType] = useState(null);
             month: 'long',
             day: 'numeric',
             year: 'numeric',
-            timeZone : 'UTC'
-
+            timeZone: 'UTC',
           });
           const formattedTime = date.toLocaleTimeString('en-US', {
             hour: 'numeric',
@@ -322,7 +300,7 @@ const [restoreType,setRestoreType] = useState(null);
           month: 'long',
           day: 'numeric',
           year: 'numeric',
-          timeZone : 'UTC'
+          timeZone: 'UTC',
         });
         const formattedTime = date.toLocaleTimeString(undefined, {
           hour: 'numeric',
@@ -338,19 +316,22 @@ const [restoreType,setRestoreType] = useState(null);
     },
     {
       Header: 'Statut',
-      Cell: ({ row }) => {   
+      Cell: ({ row }) => {
         return (
           <div
-            className={clsx('text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
-              'manager' : row.original.role === 'Manager',
-              'tl' : row.original.role === 'teamlead',
-              'dev' : row.original.role === 'teammember'
-            })}
+            className={clsx(
+              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
+              {
+                manager: row.original.role === 'Manager',
+                tl: row.original.role === 'teamlead',
+                dev: row.original.role === 'teammember',
+              },
+            )}
           >
             {`${clsx({
-              'Manager' : row.original.role === 'Manager',
-              'Team Lead' : row.original.role === 'teamlead',
-              'Team Member' : row.original.role === 'teammember'
+              Manager: row.original.role === 'Manager',
+              'Team Lead': row.original.role === 'teamlead',
+              'Team Member': row.original.role === 'teammember',
             })}`}
           </div>
         );
@@ -359,11 +340,10 @@ const [restoreType,setRestoreType] = useState(null);
     {
       Header: ' ',
       Cell: ({ row }) => {
-          return (
+        return (
           <Link
             className="view-profile p-2 rounded-2"
             href={`/profile/${row.original._id}`}
-            
           >
             View profile <ViewIcon />
           </Link>
@@ -437,7 +417,7 @@ const [restoreType,setRestoreType] = useState(null);
           month: 'long',
           day: 'numeric',
           year: 'numeric',
-          timeZone : 'UTC'
+          timeZone: 'UTC',
         });
         const formattedTime = date.toLocaleTimeString('en-US', {
           hour: 'numeric',
@@ -456,14 +436,17 @@ const [restoreType,setRestoreType] = useState(null);
       Cell: ({ row }) => {
         return (
           <div
-          className={clsx('text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',{
-            'manager' : row.original.role === 'Manager',
-            'tl' : row.original.role === 'teamlead',
-            'dev' : row.original.role === 'teamleadmember'
-          })}
-        >
-          {`${row.original.role || '-----' }`}
-        </div>
+            className={clsx(
+              'text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
+              {
+                manager: row.original.role === 'Manager',
+                tl: row.original.role === 'teamlead',
+                dev: row.original.role === 'teamleadmember',
+              },
+            )}
+          >
+            {`${row.original.role || '-----'}`}
+          </div>
         );
       },
     },
@@ -495,8 +478,8 @@ const [restoreType,setRestoreType] = useState(null);
             items={[
               {
                 content: 'Restore account',
-                onclick: () =>{
-                  handleRestoreShow(row.original)
+                onclick: () => {
+                  handleRestoreShow(row.original);
                 },
               },
             ]}
@@ -507,55 +490,48 @@ const [restoreType,setRestoreType] = useState(null);
     },
   ]);
 
-
-
-
   const handleDesactivateUser = async () => {
     if (selectedUser?._id) {
       try {
         const response = await desactivateUser(selectedUser?._id);
-        if(response.message === 'User banned successfuly'){
-          notify({message : response.message, status:'success'})
+        if (response.message === 'User banned successfuly') {
+          notify({ message: response.message, status: 'success' });
           handleCloseDesactivateModal();
           setActiveTab('bannedUsers');
-        }else{
-          notify({message : response.message, status:'danger'})
+        } else {
+          notify({ message: response.message, status: 'danger' });
         }
       } catch (error) {
         notify({ message: 'Something went wrong', status: 'danger' });
-
       }
     }
   };
 
-  const handleDeleteRequest = async () =>{
+  const handleDeleteRequest = async () => {
     try {
-        const response = await deleteRequest(selectedUser?._id);
-        if(response.message === 'User banned successfuly'){
-            notify({message : response.message , status:'success'});
-            handleCloseDeleteModal();
-            setActiveTab('bannedUsers')
-        }else{
-            notify({message : response.message , status:'danger'});
-        }
+      const response = await deleteRequest(selectedUser?._id);
+      if (response.message === 'User banned successfuly') {
+        notify({ message: response.message, status: 'success' });
+        handleCloseDeleteModal();
+        setActiveTab('bannedUsers');
+      } else {
+        notify({ message: response.message, status: 'danger' });
+      }
     } catch (error) {
       notify({ message: 'Something went wrong', status: 'danger' });
     }
-}
-
-
+  };
 
   const handleRestoreRequest = async (id) => {
     if (id) {
       try {
         const response = await restoreRequest(id);
-        if(response.message === 'User Restored successfuly'){
+        if (response.message === 'User Restored successfuly') {
           handleCloseRestoreModal();
-          notify({message : response.message, status : 'success'});
-          setActiveTab('requests')
-        }else{
-          notify({message : response.message, status : 'danger'});
-
+          notify({ message: response.message, status: 'success' });
+          setActiveTab('requests');
+        } else {
+          notify({ message: response.message, status: 'danger' });
         }
       } catch (error) {
         notify({ message: 'Something went wrong', status: 'danger' });
@@ -567,29 +543,28 @@ const [restoreType,setRestoreType] = useState(null);
     if (id) {
       try {
         const response = await restoreUser(id);
-        if(response.message === 'User Restored successfuly'){
+        if (response.message === 'User Restored successfuly') {
           handleCloseRestoreModal();
-          notify({message : response.message, status : 'success'});
-          setActiveTab('users')
-        }else{
-          notify({message : response.message, status : 'danger'});
+          notify({ message: response.message, status: 'success' });
+          setActiveTab('users');
+        } else {
+          notify({ message: response.message, status: 'danger' });
         }
       } catch (error) {
         notify({ message: 'Something went wrong', status: 'danger' });
-
       }
     }
   };
 
-
-
   return (
     <>
       <div className="pb-2 fs-6">
-        <p className="light-text-custom-color">Users</p>
         <p className=" fs-5 fw-bold">Permission</p>
       </div>
-      <div id="nav-links" className=' d-flex flex-md-row flex-column justify-content-start align-items-start'>
+      <div
+        id="nav-links"
+        className=" d-flex flex-md-row flex-column justify-content-start align-items-start"
+      >
         <button
           className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold p-2`}
           onClick={() => setActiveTab('requests')}
@@ -624,49 +599,51 @@ const [restoreType,setRestoreType] = useState(null);
           (userRequests.length > 0 ? (
             <DataTable columns={Requestcolumns} data={userRequests} />
           ) : (
-            <div className='m-auto d-flex flex-column justify-content-start align-items-center'>
-            <Image
-              src={requestsNotFound}
-              alt='Not Found'
-              className='image'
-              loading='lazy'
-              placeholder='blur'
-              draggable={false}
-            />
-            <p className='text-center fs-1 fw-bold text-muted'>No requests found</p>
-          </div>
-            ))}
+            <div className="m-auto d-flex flex-column justify-content-start align-items-center">
+              <Image
+                src={requestsNotFound}
+                alt="Not Found"
+                className="image"
+                loading="lazy"
+                placeholder="blur"
+                draggable={false}
+              />
+              <p className="text-center fs-3 text-muted">No requests found</p>
+            </div>
+          ))}
         {activeTab === 'users' &&
           (users.length > 0 ? (
             <DataTable columns={UsersColumns} data={users} />
           ) : (
-            <div  className=' m-auto d-flex flex-column justify-content-center align-items-center' >
-            <Image
-              src={usersNotFound}
-              alt='Not Found'
-              className='image'
-              loading='lazy'
-              placeholder='blur'
-              draggable={false}
-            />
-          <p className=" text-center fs-1 fw-bold text-muted">no users found</p>
-          </div>  
-         ))}
+            <div className=" m-auto d-flex flex-column justify-content-center align-items-center">
+              <Image
+                src={usersNotFound}
+                alt="Not Found"
+                className="image"
+                loading="lazy"
+                placeholder="blur"
+                draggable={false}
+              />
+              <p className=" text-center fs-3 text-muted">No users found</p>
+            </div>
+          ))}
         {activeTab === 'bannedUsers' &&
           (bannedUsers.length > 0 ? (
             <DataTable columns={BannedUsersColumns} data={bannedUsers} />
           ) : (
-            <div  className='m-auto d-flex flex-column justify-content-center align-items-center' >
+            <div className="m-auto d-flex flex-column justify-content-center align-items-center">
               <Image
-              src={bannedUsersNotFound}
-              alt='Not Found'
-              className='image'
-              loading='lazy'
-              placeholder='blur'
-              draggable={false}
-            />
-            <p className=" text-center fs-1 fw-bold text-muted">no banned users found</p>
-            </div>  
+                src={bannedUsersNotFound}
+                alt="Not Found"
+                className="image"
+                loading="lazy"
+                placeholder="blur"
+                draggable={false}
+              />
+              <p className=" text-center fs-3 text-muted">
+                No banned users found
+              </p>
+            </div>
           ))}
       </>
       <AddModal
@@ -678,20 +655,17 @@ const [restoreType,setRestoreType] = useState(null);
         setActiveTab={setActiveTab}
       />
 
-
       <ConfirmModal
         headerTitle="Delete request"
         show={isDeleteModalOpen}
         handleClose={handleCloseDeleteModal}
-       handleClick={handleDeleteRequest}
+        handleClick={handleDeleteRequest}
       >
         <div className="text-muted fs-5 m-auto px-3">
           <p>Are you sure you want to delete this request?</p>
           <p>You can undo in the banned list</p>
         </div>
       </ConfirmModal>
-
-
 
       <EditModal
         headerTitle={'Edit account'}
@@ -702,8 +676,6 @@ const [restoreType,setRestoreType] = useState(null);
         setActiveTab={setActiveTab}
       />
 
-
-   
       <ConfirmModal
         headerTitle="Deactivate acount"
         show={isDesactivateModalOpen}
@@ -716,23 +688,16 @@ const [restoreType,setRestoreType] = useState(null);
         </div>
       </ConfirmModal>
 
-
-
-   <ConfirmModal
-  headerTitle={`Restore ${restoreType}`}
-  show={isRestoreModalOpen}
-  handleClose={handleCloseRestoreModal}
-  handleClick={() => handleRestoreMethod()(selectedUser?._id)}
->
-  <div className="text-muted fs-5 m-auto px-3">
-    <p>Are you sure you want to re-activate this {restoreType}?</p>
-  </div>
-</ConfirmModal>
-
-
-
-
-
+      <ConfirmModal
+        headerTitle={`Restore ${restoreType}`}
+        show={isRestoreModalOpen}
+        handleClose={handleCloseRestoreModal}
+        handleClick={() => handleRestoreMethod()(selectedUser?._id)}
+      >
+        <div className="text-muted fs-5 m-auto px-3">
+          <p>Are you sure you want to re-activate this {restoreType}?</p>
+        </div>
+      </ConfirmModal>
     </>
   );
 };
