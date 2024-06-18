@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import axios from 'axios';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
@@ -10,7 +9,6 @@ import CoreInput from '@/components/Inputs/CoreInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 export const RegisterForm = async ({ userName }) => {
-  const { push } = useRouter();
   const { notify } = useNotifications();
   const form = useForm({
     resolver: yupResolver(RegisterSchema),
