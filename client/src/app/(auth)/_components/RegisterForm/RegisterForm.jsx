@@ -1,6 +1,7 @@
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import axios from 'axios';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { useNotifications } from 'reapop';
 
 import { RegisterSchema } from '@/app/(auth)/_schemas/auth.schema';
@@ -15,15 +16,21 @@ export const RegisterForm = async ({ userName }) => {
     resolver: yupResolver(RegisterSchema),
   });
 
+  const formLogin = useFormContext();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = form;
 
+  const { watch } = formLogin;
+
   const onSubmit = async (data) => {
+    const credentials = watch();
+
     try {
-      const res = await axios.post('/register', {
+      const signUpResponse = await axios.post('/register', {
         username: userName,
         firstname: data.firstname,
         lastname: data.lastname,
@@ -31,8 +38,16 @@ export const RegisterForm = async ({ userName }) => {
         phone: data.phoneNumber,
         email: data.email,
       });
-      if (res.data.status === 'pending') {
-        push('/');
+      if (signUpResponse.status === 200) {
+        await signIn('credentials', {
+          redirect: true,
+          ...credentials,
+          callbackUrl:
+            signUpResponse.data.status === 'pending'
+              ? '/pending'
+              : '/dashboard',
+        });
+        notify({ message: 'Welcome Back', status: 'success' });
       }
     } catch (error) {
       if (error.response?.status === 403) {

@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useFormContext } from 'react-hook-form';
 import { useNotifications } from 'reapop';
 
-import { LoginSchema } from '@/app/(auth)/_schemas/auth.schema';
 import CoreButton from '@/components/buttons/CoreButton';
 import CoreInput from '@/components/Inputs/CoreInput';
 import PasswordInput from '@/components/Inputs/PasswordInput';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 export const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
@@ -25,9 +23,7 @@ export const LoginForm = () => {
     }
   }, [data]);
 
-  const form = useForm({
-    resolver: yupResolver(LoginSchema),
-  });
+  const form = useFormContext();
 
   const {
     register,
@@ -46,17 +42,15 @@ export const LoginForm = () => {
         push(`/?username=${data.username}`);
         return;
       }
-   
 
       if (error && error.status !== 200) {
         setIsValid(false);
         notify({ message: 'User not Found', status: 'danger' });
       }
-      
-      if(response.ok){
-        notify({message: 'Welcome Back', status:'success'});
-      }
 
+      if (response.ok) {
+        notify({ message: 'Welcome Back', status: 'success' });
+      }
     } catch (error) {
       if (error.response.status === 422) {
         push(`/username=${data.username}`);
