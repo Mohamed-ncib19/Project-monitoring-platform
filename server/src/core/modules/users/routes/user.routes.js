@@ -1,46 +1,53 @@
 require("dotenv").config();
 const userController = require("../controllers/user.controller");
-const autheticate = require("../../../middlewares/autheticate");
+const verifyJWT = require("../../../middlewares/verifyJWT");
+const checkUserActive = require("../../../middlewares/checkUserActive ");
+
 async function routes(fastify, options) {
   // Get all users
-  fastify.get("/users", {
-    preHandler: autheticate,
-    handler: userController.getUsers,
+  fastify.get("/users/status/:status", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: userController.getUsersByStatus,
+  });
+
+  fastify.get("/users/roles/:role", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: userController.getUsersByRole,
   });
 
   // Get a specific user by username
-  fastify.get("/users/:username", {
-    preHandler: autheticate,
+  fastify.get("/users/:id", {
+    preHandler: [verifyJWT, checkUserActive],
     handler: userController.getUser,
   });
 
   // Get the current authenticated user's profile
   fastify.get("/users/me", {
-    preHandler: autheticate,
+    preHandler: [verifyJWT, checkUserActive],
     handler: userController.getCurrentUser,
   });
 
   // Setup or update a specific user by username (by manager)
-  fastify.put("/users/:username", {
-    preHandler: autheticate,
+  fastify.put("/users/:id", {
+    preHandler: [verifyJWT, checkUserActive],
     handler: userController.setUpUser,
   });
 
   // Update the current authenticated user's profile
   fastify.put("/users/me", {
-    preHandler: autheticate,
+    preHandler: [verifyJWT, checkUserActive],
     handler: userController.updateProfile,
   });
 
   // Ban a specific user by username
-  fastify.delete("/users/:username/ban", {
-    preHandler: autheticate,
+  fastify.delete("/users/:id/ban", {
+    preHandler: [verifyJWT, checkUserActive],
     handler: userController.banUser,
   });
 
   // Unban a specific user by username
-  fastify.put("/users/:username/restore", {
-    preHandler: autheticate,
+  fastify.put("/users/:id/restore", {
+    preHandler: [verifyJWT],
     handler: userController.restoreUser,
   });
 }

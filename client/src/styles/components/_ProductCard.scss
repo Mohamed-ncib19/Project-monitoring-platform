@@ -1,0 +1,42 @@
+
+.edit-product{
+  background-color: transparent;
+}
+.edit-product:hover{
+  background-color: rgba(217, 217, 217, 0.485);
+}
+
+  .product-card {
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.182);
+    height: calc(20 * 2.5);
+  }
+  
+  .product-card:hover {
+    background-color: rgba(255, 255, 255, 0.665);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgb(217, 83, 79,0.65);
+  }
+  
+  .product-card:hover .check-products {
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.198);
+    cursor: pointer;
+  }
+
+  .portfolio-name{
+    background-color: #14a44ea8;
+  }
+.portfolio-name:hover{
+  background-color: #14a44ecf;
+  transition: all 300ms ease-in-out;
+}
+
+.date{
+  font-size: .9rem;
+}
+
+.add-portfolio-description:hover{
+  background-color: antiquewhite;
+}

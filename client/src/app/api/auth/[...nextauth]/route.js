@@ -19,7 +19,6 @@ const authenticate = async (username, password) => {
       }),
     );
   }
-
   return response.data;
 };
 
@@ -29,18 +28,22 @@ const getMe = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   });
-
   return data;
 };
 
 const refreshAccessToken = async (token) => {
   try {
-    const  { data } = await axios.post(`${endPoint}/refresh_token`, {
-      refreshToken: token.refreshToken,
-    });
-
-    console.log(data)
-    
+    const { data } = await axios.post(
+      `${endPoint}/refresh_token`,
+      {
+        refreshToken: token?.refreshToken,
+      },
+      {
+        headers: {
+          Authorization: ` ${token?.accessToken}`,
+        },
+      }
+    );
     return {
       ...token,
       accessToken: data.accessToken,
@@ -86,31 +89,24 @@ export const authOptions = {
     },  
 
     async jwt({ token, user, account, trigger }) {
-    
-  console.log(token)
       if (trigger === 'update') {
-        console.log(trigger)
         if (Date.now() < new Date(token.accessToken?.expiresAt)?.getTime()) {
           token = await refreshAccessToken(token);
           console.log(token)
         }
         try {
           const data = await getMe(token?.accessToken);
-          console.log(data)
-          token.username = user.username;
           token.email = data?.email.address;
         } catch (e) {}
       }
       if (user && account) {
         token.accessToken = user.accessToken.token;
         token.refreshToken = user.refreshToken.token;
-        token.username = user.username;
         token.profile = {
           ...user.profile,
         };
         token.status = user.status;
       }
-
       
       if (Date.now() < new Date(token.exp)?.getTime()) {
         return token;
@@ -120,8 +116,8 @@ export const authOptions = {
     },
 
     async session({ session, token }) {
+
       session.accessToken = token.accessToken;
-      session.username = token.username;
       session.error = token.error;
       session.profile = {
         ...token.profile,

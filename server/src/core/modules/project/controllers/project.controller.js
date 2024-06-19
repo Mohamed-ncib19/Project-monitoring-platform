@@ -2,59 +2,138 @@ require("dotenv").config();
 
 const httpStatus = require("http-status");
 const projectServices = require("../services/project.services");
+const productServices = require("../../product/services/product.services");
+
 const projectController = {
-  async createProject(request, reply) {
+  async createProject(req, res) {
     try {
-      const projectData = request.body;
-      const existResponse = await projectServices.projectExists(
-        projectData.name
+      const { body, user } = req;
+      if (!body || !body.name) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project data or name" });
+      }
+      const { exists } = await projectServices.projectExists(body.name);
+      if (exists) {
+        return res
+          .status(httpStatus.CONFLICT)
+          .send({ message: "Project name already taken" });
+      }
+      const product = await productServices.getProductById(body.product);
+      const createResponse = await projectServices.createProject(
+        body,
+        user.id,
+        product.zentaoId
       );
-      if (!existResponse.exists) {
-        const createResponse = await projectServices.createProject(projectData);
-        if (createResponse.ok) {
-          return reply
-            .status(httpStatus.OK)
-            .send({ message: "Project created successfuly" });
-        } else {
-          return reply.status(httpStatus.NOT_FOUND).send({
-            error: { message: "Failed to create project" },
-          });
-        }
-      } else {
-        return reply.status(httpStatus.CONFLICT).send({
-          error: { message: "project name already taken" },
+      if (createResponse.ok) {
+        return res.status(httpStatus.CREATED).send({
+          message: "Project created successfully",
         });
+      } else {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "Failed to create project" });
       }
     } catch (error) {
-      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        error: { message: "Internal server error", details: error.message },
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error,
       });
     }
   },
 
-  async getProjects(request, reply) {
+  async getProjects(req, res) {
     try {
-      const { product = "all" } = request.query;
-      //check if product exists
-      const response = await projectServices.getProjects(product);
-      if (!response.ok) {
-        return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-          error: { message: "Internal server error", details: error.message },
-          data: null,
-        });
-      } else if (response.projects.length == 0) {
-        return reply
-          .status(httpStatus.NOT_FOUND)
-          .send({ error: { message: "can't find projects" }, data: null });
+      let projectsRes;
+      const { productId = null } = req.params;
+      if (!productId) {
+        projectsRes = await projectServices.getProjects();
       } else {
-        return reply
+        projectsRes = await projectServices.getProjects(productId);
+      }
+
+      if (projectsRes.ok) {
+        return res
           .status(httpStatus.OK)
-          .send({ error: null, data: response.projects });
+          .send({ projects: projectsRes.projects });
+      } else {
+        return res
+          .status(httpStatus.NOT_FOUND)
+          .send({ message: "No projects found" });
       }
     } catch (error) {
-      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-        error: { message: "Internal server error", details: error.message },
-        data: null,
+      console.error(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+
+  async editProject(req, res) {
+    try {
+      const { projectId } = req.params;
+      const { body } = req;
+
+      if (!projectId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project ID" });
+      }
+
+      if (!body) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project data" });
+      }
+
+      const { exists } = await projectServices.projectExists(body.name);
+      if (exists) {
+        return res
+          .status(httpStatus.CONFLICT)
+          .send({ message: "project name already taken" });
+      }
+      const editResponse = await projectServices.editProject(projectId, body);
+      if (editResponse.ok) {
+        return res
+          .status(httpStatus.OK)
+          .send({ message: "project edited successfully" });
+      } else {
+        console.log(editResponse);
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "project not found" });
+      }
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
+
+  async deleteProject(req, res) {
+    try {
+      const { projectId } = req.params;
+      if (!projectId) {
+        return res
+          .status(httpStatus.BAD_REQUEST)
+          .send({ message: "Missing project ID" });
+      }
+      const deleteResponse = await projectServices.deleteProject(projectId);
+      if (deleteResponse.ok) {
+        return res
+          .status(httpStatus.OK)
+          .send({ message: "project deleted successfully" });
+      } else {
+        return res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .send({ message: "Failed to delete project" });
+      }
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
       });
     }
   },

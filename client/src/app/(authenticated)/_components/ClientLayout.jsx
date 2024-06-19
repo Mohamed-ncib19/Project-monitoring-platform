@@ -6,14 +6,22 @@ const endpointUrl = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 axios.defaults.baseURL = endpointUrl;
 const ClientLayout = ({ children, data }) => {
   const session = useSession();
+  console.log(session)
+
+  console.log(data)
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
-      Authorization: `${data?.accessToken?.token}`,
+      Authorization: ` ${data?.accessToken.token}`,
     };
 
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {
+        console.log(err)
+        if(err?.request.status === 403 && JSON.parse(err?.request.response)?.error === 'Banned'){
+              await signOut({ redirect: true });
+          
+        }
         const originalConfig = err.config;
         if (err.response?.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
@@ -28,6 +36,8 @@ const ClientLayout = ({ children, data }) => {
             };
             return axios(originalConfig);
           }
+        }else if(err?.request.status === 401 && originalConfig?._retry){
+          await signOut({redirect : true});
         }
         return Promise.reject(err);
       },

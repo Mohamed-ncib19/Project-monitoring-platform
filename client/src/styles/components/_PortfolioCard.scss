@@ -1,0 +1,45 @@
+.line {
+    background-color: #275EBD;
+    height: 5px;
+  }
+  
+  .edit-protfolio{
+    background-color: transparent;
+  }
+  .edit-protfolio:hover{
+    background-color: rgba(217, 217, 217, 0.485);
+  }
+
+
+  .edit-button:hover {
+    background-color: rgba(113, 113, 113, 0.244);
+    backdrop-filter: blur(5px);
+  }
+  .protfolio-children-length{
+    color: #275EBD;
+  }
+  
+  
+  .portfolio-card {
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.182);
+    height: calc(20vh* 2.5);
+  }
+  
+  .portfolio-card:hover {
+    background-color: rgba(255, 255, 255, 0.665);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(24, 99, 41, 0.65);
+  }
+  
+  .portfolio-card:hover .check-products {
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.198);
+    cursor: pointer;
+  }
+  
+  .larger-tooltip .tooltip-inner {
+    font-size: 16px; /* Adjust the font size as needed */
+    max-width: 400px; /* Adjust the maximum width as needed */
+  }

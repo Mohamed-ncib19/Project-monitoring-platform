@@ -7,6 +7,9 @@ const CoreInput = ({
   readOnly = false,
   errors,
   register,
+  defaultValue,
+  value,
+  onChange
 }) => {
   return (
     <>
@@ -17,10 +20,15 @@ const CoreInput = ({
           name={name}
           readOnly={readOnly}
           placeholder={placeholder}
-          className={clx('form-control focus-blue-bottom-border rounded z-0', {
+          className={clx('form-control focus-blue-bottom-border rounded', {
             'is-invalid': !readOnly && errors[name],
+            'text-muted' : readOnly,
+            'bg-light' : readOnly
           })}
-          {...register(name)}
+          {...(readOnly ? {} : register(name))}
+          defaultValue={defaultValue}
+          value={value} 
+          onChange={onChange || (() => {})}
         />
 
         {!readOnly && (

@@ -2,7 +2,16 @@
   flex: 0 0 auto;
 }
 
-.main-content {
-  flex: 1 1 auto;
-  overflow-y: auto;
+.custom-dropdown-toggle{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.custom-dropdown-toggle:focus{
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0);
+}
+
+.notifications-container{
+ 
+  width: max-content;
 }

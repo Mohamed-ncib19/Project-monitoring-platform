@@ -1,54 +1,38 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import Swal from 'sweetalert2';
 
-
-import { EditProfileForm } from './_components/EditProfileForm';
+import { EditProfileForm } from '@/app/(authenticated)/profile/_components/EditProfileForm/';
 import axios from 'axios';
+import { useNotifications } from 'reapop';
 
 
 const Profile = () => {
+
+const { notify } = useNotifications();
+
 
 const [userData,setUserData] = useState(null);
 
   const getUser = async () =>{
     try {
       const response = await axios.get('/users/me');
-      console.log(response)
       setUserData(response.data.user);
     } catch (error) {
-        alert('internal server error');
-        return;
+      notify({ message: 'Failed to load information. Please try again later.', status: 'danger' });
     }
   }
 
   useEffect(()=>{
     getUser();
-  },[])
-
-console.log(userData)
+  },[]);
 
 
-  const editUserInfo = async (userData) => {
-    try {
-      const response = await axios.put('/users/me', userData);
-      return response.data.data;
-    } catch (error) {
-      throw new Error(
-        JSON.stringify({
-          status: error.response?.status,
-          code: error?.code,
-          data: error.response?.data,
-        })
-      );
-    }
-  };
+
   return (
     <div className="px-3 d-flex flex-column gap-2 col-11 m-auto">
       <div className="">
-        <h1 className="fs-1">Profile</h1>
-        <p className="light-text-custom-color fw-bold">
+        <h1 className="fs-2">Profile</h1>
+        <p className="light-text-custom-color fw-bold profile-page-label  ">
           Update your profile and personal details here
         </p>
       </div>

@@ -14,10 +14,7 @@ const authServices = {
           ok: false,
         };
       } else {
-        const tokenObject = generateToken(
-          user.username,
-          user.exists ? user.role : null
-        );
+        const tokenObject = generateToken(createdUser.userId);
         const token = tokenObject.token;
         const tokenExpiresIn = tokenObject.expiresIn;
         const refreshTokenObject = generateRefreshToken(
@@ -56,22 +53,23 @@ const authServices = {
           message: userBind.message,
         };
       }
-      const userExistsResponse = await userServices.userExists(username);
+      const userExistsResponse = await userServices.userExists(username, 1);
       if (userExistsResponse.exists) {
+        const user = userExistsResponse.user;
         const tokenObject = generateToken(
-          username,
-          userExistsResponse.exists ? userExistsResponse.user.role : null
+          user._id,
+          userExistsResponse.exists ? user.role : null
         );
         const token = tokenObject.token;
         const tokenExpiresIn = tokenObject.expiresIn;
 
         const refreshTokenObject = generateRefreshToken(
-          username,
-          userExistsResponse.exists ? userExistsResponse.user.role : null
+          user._id,
+          userExistsResponse.exists ? user.role : null
         );
         const refreshToken = refreshTokenObject.refreshToken;
         const refreshTokenExpiresIn = refreshTokenObject.expiresIn;
-        if (userExistsResponse.user.status == "approved") {
+        if (user.status == "approved") {
           return {
             ok: true,
             statusCode: httpStatus.OK,

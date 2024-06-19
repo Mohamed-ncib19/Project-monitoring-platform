@@ -1,35 +1,33 @@
 require("dotenv").config();
 const projectController = require("../controllers/project.controller");
+const verifyJWT = require("../../../middlewares/verifyJWT");
+const checkUserActive = require("../../../middlewares/checkUserActive ");
 
 async function routes(fastify, options) {
   //Create project
-  fastify.post("/projects", projectController.createProject);
-  //Get projects
-  fastify.get("/projects", projectController.getProjects);
+  fastify.post("/projects", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.createProject,
+  }); //Get projects
 
-  fastify.post("/webhook", async (request, reply) => {
-    try {
-      // Process the webhook payload
-      const payload = request.body;
+  fastify.get("/projects", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.getProjects,
+  });
 
-      // Perform actions based on the payload
-      console.log("Received webhook payload:", payload);
+  fastify.get("/:productId/projects", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.getProjects,
+  });
 
-      // Send a response back to the webhook provider
-      reply.code(200).send({ success: true });
-    } catch (error) {
-      console.error("Error processing webhook:", error);
-      reply.code(500).send({ success: false, error: "Internal Server Error" });
-    }
-  }); /*
-  //Get project by id0
-  fastify.get("/projects/:id");
+  fastify.put("/projects/:projectId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.editProject,
+  });
 
-  //Edit project
-  fastify.put("/projects/:id");
-
-  //delete project
-  fastify.delete("/projects/:id"); */
+  fastify.delete("/projects/:projectId", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.deleteProject,
+  });
 }
-
 module.exports = routes;
