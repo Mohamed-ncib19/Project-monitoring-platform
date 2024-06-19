@@ -11,25 +11,28 @@ const taskServices = {
         "zentaoId",
         task.assignedTo.id
       );
-      console.log(user);
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
       }
+      console.log(user);
       const taskResult = await taskCollection.insertOne({
         _id: id,
+        name: task.name,
+        zentaoId: task.id,
         sprint: sprintId,
         sprintZentaoId,
         status: task.status,
         assignedTo: user._id,
         assignedDate: task.assignedDate,
-        deadline: task.dealine,
-        estimated: task.estimated,
+        deadline: task.deadline,
+        estimated: task.estimate,
         consumed: task.consumed,
         left: task.left,
         type: task.type,
         status: task.status,
         realStarted: task.realStarted,
         progress: task.progress,
+        desc: task.desc,
       });
       if (taskResult.acknowledged) {
         return {
@@ -63,17 +66,19 @@ const taskServices = {
         { sprintZentaoId: sprintZentaoId },
         {
           $set: {
+            name: task.name,
             status: task.status,
             assignedTo: user._id,
             assignedDate: task.assignedDate,
             deadline: task.deadline,
-            estimated: task.estimated,
+            estimated: task.estimate,
             consumed: task.consumed,
             left: task.left,
             type: task.type,
             status: task.status,
             realStarted: task.realStarted,
             progress: task.progress,
+            desc: task.desc,
           },
         }
       );

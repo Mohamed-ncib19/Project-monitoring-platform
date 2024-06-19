@@ -12,7 +12,6 @@ const verifyJWT = async (request, reply) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     request.user = decoded;
   } catch (error) {
-    console.log(error);
     return reply
       .status(httpStatus.UNAUTHORIZED)
       .send({ error: "Unauthorized" });
