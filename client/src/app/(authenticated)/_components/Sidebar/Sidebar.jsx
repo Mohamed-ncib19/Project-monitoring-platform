@@ -2,25 +2,25 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import clx from 'clsx';
 
 import ArrowRightIcon from '@/../public/icons/arrows/arrow-right-icon';
-import Logo from '@/../../public/Logo/Logo.svg';
-import LogoSvg from '@/../../public/Logo/Logo-icon.svg';
+import CalendarIcon from '@/../public/icons/sidebar-icons/calendar-icon';
+import CompanyBalanceIcon from '@/../public/icons/sidebar-icons/compony-balance-icon';
+import DashboardIcon from '@/../public/icons/sidebar-icons/dashboard-icon';
+import PermissionIcon from '@/../public/icons/sidebar-icons/permission-Icon';
+import ProductIcon from '@/../public/icons/sidebar-icons/product-icon';
+import ProgramIcon from '@/../public/icons/sidebar-icons/program-icon';
+import ProjectIcon from '@/../public/icons/sidebar-icons/project-icon';
+import ScoreBoardIcon from '@/../public/icons/sidebar-icons/score-board-icon';
+import ZentaoIcon from '@/../public/icons/sidebar-icons/zentao-icon';
+import Logo from '@/../public/images/Logo.svg';
+import LogoSvg from '@/../public/images/Logo-icon.svg';
 
-import CalendarIcon from '../../../../../public/icons/sidebar-icons/calendar-icon';
-import CompanyBalanceIcon from '../../../../../public/icons/sidebar-icons/compony-balance-icon';
-import DashboardIcon from '../../../../../public/icons/sidebar-icons/dashboard-icon';
-import PermissionIcon from '../../../../../public/icons/sidebar-icons/permission-Icon';
-import ProductIcon from '../../../../../public/icons/sidebar-icons/product-icon';
-import ProgramIcon from '../../../../../public/icons/sidebar-icons/program-icon';
-import ProjectIcon from '../../../../../public/icons/sidebar-icons/project-icon';
-import ScoreBoardIcon from '../../../../../public/icons/sidebar-icons/score-board-icon';
-import ZentaoIcon from '../../../../../public/icons/sidebar-icons/zentao-icon';
-import { useAuth } from "@/app/(authenticated)/_context/AuthContext";
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { hasPermission } = useAuth();
+  const [userRole, setUserRole] = useState('');
 
   const handleOpenSideBar = () => {
     setIsOpen((isOpen) => !isOpen);
@@ -45,28 +45,19 @@ export const Sidebar = () => {
   }, [isOpen]);
   return (
     <>
-      <div
-        className={`${isOpen ? 'sidebar-backdrop' : ''} position-fixed z-index-999`}
-      >
-        <div className={`backdrop-background  position-fixed`} ref={sidebarRef}>
-          <div
-            className={`custom-sidebar border-end-5 border shadow float-start d-flex flex-column justify-content-between   align-items-center min-vh-100 ${
-              isOpen
-                ? 'col-xl-2 col-lg-2 col-md-4 col-sm-4 col-xs-4 col-7 w-100 '
-                : ''
-            }  `}
-          >
-            <div className="w-100   ">
-              <div className="p-3  w-100">
+      <div>
+        <div ref={sidebarRef} className="backdrop-background position-sticky">
+          <div className="custom-sidebar-background border-end-5 border shadow float-start d-flex flex-column justify-content-between align-items-center min-vh-100">
+            <div>
+              <div className="p-3">
                 <Suspense fallback={<p>laoding</p>}>
                   <Link href="/dashboard">
                     <Image
                       src={isOpen ? Logo : LogoSvg}
+                      width={isOpen ? 100 : 30}
                       alt="logo"
-                      width={!isOpen && 30 }
                       loading="lazy"
                       className="w-100"
-                      draggable={false}
                     />
                   </Link>
                 </Suspense>
@@ -76,9 +67,12 @@ export const Sidebar = () => {
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
                     href="/dashboard"
-                    className={`d-flex text-center justify-content-between ${
-                      !isOpen ? 'justify-content-center' : ''
-                    } align-items-center gap-2 p-2`}
+                    className={clx(
+                      'd-flex text-center justify-content-between align-items-center gap-2 p-2',
+                      {
+                        'justify-content-center': !isOpen,
+                      },
+                    )}
                   >
                     {isOpen ? (
                       <div className="d-flex align-items-center gap-2 justify-content-center">
@@ -94,10 +88,10 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
-                  { hasPermission('sidebar' , 'Portfolio') &&
-                    <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+                {userRole === 'manager' && (
+                  <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
-                      href="/portfolio"
+                      href="/programs"
                       className={`d-flex text-center justify-content-between ${
                         !isOpen ? 'justify-content-center' : ''
                       } align-items-center gap-2 p-2`}
@@ -106,7 +100,7 @@ export const Sidebar = () => {
                         <div className="d-flex align-items-center gap-2 justify-content-center">
                           <ProgramIcon />
                           <span className="h5 text-custom-color mt-2 text-decoration-none">
-                            Portfolio
+                            Program
                           </span>
                         </div>
                       ) : (
@@ -114,9 +108,10 @@ export const Sidebar = () => {
                       )}
                       {isOpen && <ArrowRightIcon />}
                     </Link>
-                  </div>}
-                
+                  </div>
+                )}
 
+                {userRole !== 'developper' && (
                   <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
                       href="/products"
@@ -137,7 +132,7 @@ export const Sidebar = () => {
                       {isOpen && <ArrowRightIcon />}
                     </Link>
                   </div>
-                
+                )}
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
@@ -183,7 +178,7 @@ export const Sidebar = () => {
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
-                    href="/scoreboard"
+                    href="/dashboard"
                     className={`d-flex text-center justify-content-between ${
                       !isOpen ? 'justify-content-center' : ''
                     } align-items-center gap-2 p-2`}
@@ -223,7 +218,6 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
-              { hasPermission('sidebar','CompanyBalance') && 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
                     href="/dashboard"
@@ -243,12 +237,10 @@ export const Sidebar = () => {
                     )}
                     {isOpen && <ArrowRightIcon />}
                   </Link>
-                </div>}
-
+                </div>
               </div>
 
-             { hasPermission('sidebar' , 'Permissions') &&
-               <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+              <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
                   href="/permissions"
                   className={`d-flex text-center justify-content-between ${
@@ -268,8 +260,6 @@ export const Sidebar = () => {
                   {isOpen && <ArrowRightIcon />}
                 </Link>
               </div>
-                    }
-
             </div>
 
             <div className=" close-sidebar px-2 py-2 fs-5 mb-4 d-flex justify-content-center align-items-center">

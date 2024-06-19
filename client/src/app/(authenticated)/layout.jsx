@@ -5,7 +5,6 @@ import ClientLayout from '@/app/(authenticated)/_components/ClientLayout';
 import { Navbar } from '@/app/(authenticated)/_components/Navbar';
 import { Sidebar } from '@/app/(authenticated)/_components/Sidebar';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { AuthProvider } from './_context/AuthContext';
 
 const Layout = async ({ children }) => {
   const user = await getServerSession(authOptions);
@@ -14,13 +13,13 @@ const Layout = async ({ children }) => {
 
   return (
     <ClientLayout data={user}>
-      <AuthProvider>
-      <div className="sidebar">
+      <div className="d-flex">
         <Sidebar />
+        <div className="w-100">
+          <Navbar user={user} />
+          <div className="layout">{children}</div>
+        </div>
       </div>
-        <Navbar user={user} />
-      <div className="layout m-0">{children}</div>
-      </AuthProvider>
     </ClientLayout>
   );
 };
