@@ -31,6 +31,7 @@ const ProjectsByProducts = ({ params }) => {
   
   const { ProductId } = params;
 
+
   const { hasPermission } = useAuth();
 
   const { breadCumbItem,setShow } = useBreadCumb();
@@ -65,7 +66,7 @@ const ProjectsByProducts = ({ params }) => {
   } = methods;
 
   useEffect(() => {
-    if (selectedProject) {      
+    if (selectedProject) {  
      const teamProject = userOptions.filter(member => selectedProject?.members.includes(member?.value));
       reset({
         product : ProductId,
@@ -280,7 +281,7 @@ const ProjectsByProducts = ({ params }) => {
   return (
     <>
     <div>
-      <ProjectHeader color={'warning'} name="Project" />
+      <ProjectHeader color={'warning'} name="Project" productId={ProductId} projectRootLayer={false} />
       <div className="mx-5 ">
         <div className=" row justify-content-start gap-5">
           {ProjectsData.length > 0 ? (

@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import Select from 'react-select';
+import { useState } from 'react';
 
 import CoreButton from '@/components/buttons/CoreButton';
 import { AddModal } from '@/app/(authenticated)/_components/Modals/AddModal/';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import CoreInput from '@/components/Inputs/CoreInput';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TextareaInput from '@/components/Inputs/Textarea';
@@ -26,8 +25,9 @@ export const PortfolioHeader = ({ color, name,handleRefresh, setHandleRefresh })
   const { handleSubmit,
           formState: { errors },
           register,
-          reset
         } = methods;
+
+  
 
         const addPortfolio = async (data) =>{
           try {

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, FormProvider, Controller } from 'react-hook-form';
-import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CoreButton from '@/components/buttons/CoreButton';
 import { AddModal } from '@/app/(authenticated)/_components/Modals/AddModal/';
@@ -11,7 +10,6 @@ import Select from 'react-select';
 import axios from 'axios';
 import { useNotifications } from 'reapop';
 import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 
@@ -177,7 +175,7 @@ const onSubmit = handleSubmit(async (formData) => {
                       className='custom-select-container'
                       classNamePrefix='custom-select'
                       options={portfoliosOptions}
-                      isDisabled={!productRootLayer && true}
+                      isDisabled={!productRootLayer}
                       onChange={(option) => field.onChange(option ? option.value : '')}
                       onBlur={field.onBlur}
                       value={portfoliosOptions.find((option) => option.value === field.value) || ''}

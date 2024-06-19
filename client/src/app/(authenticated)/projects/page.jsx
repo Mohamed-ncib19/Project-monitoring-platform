@@ -26,7 +26,6 @@ const Projects = () => {
   const [ProjectsData, setProjectsData] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const [product,setProduct] = useState(null);
   
 
   const [productOptions, setProductOption] = useState([]);
@@ -285,7 +284,6 @@ const Projects = () => {
                   dataProvider={project}
                   supportBreadCumb={false}
                   projectsRootLayer={true}
-                  setProduct={setProduct}
                   team={userOptions}
                   permission={canManage}
                   handleFunctions={ canManage && {
