@@ -19,7 +19,7 @@ const webhooksController = {
       default:
         return res
           .status(httpStatus.NOT_FOUND)
-          .message({ message: "unkown webhook type" });
+          .send({ message: "unkown webhook type" });
     }
     if (response.ok) {
       console.log("webhook handled successfuly");

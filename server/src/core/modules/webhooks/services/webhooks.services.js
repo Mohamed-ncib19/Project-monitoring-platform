@@ -26,7 +26,7 @@ const webhooksServices = {
               sprintZentaoId,
               zentaoSprint
             );
-            if (!createSprint) {
+            if (!createSprint.ok) {
               return { ok: false, message: "failed to create sprint" };
             }
             sprintId = createSprint.id;

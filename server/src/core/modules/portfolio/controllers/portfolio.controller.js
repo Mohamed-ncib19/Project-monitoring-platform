@@ -6,6 +6,7 @@ const portfolioController = {
   async createPortfolio(req, res) {
     try {
       const { body, user } = req;
+
       if (!body || !body.name) {
         return res
           .status(httpStatus.BAD_REQUEST)

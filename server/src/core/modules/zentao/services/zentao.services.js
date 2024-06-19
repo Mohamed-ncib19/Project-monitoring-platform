@@ -157,6 +157,7 @@ const zentaoServices = {
         model: project.model,
         products: [null],
       };
+      console.log("data: ", data);
       let config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -245,7 +246,7 @@ const zentaoServices = {
   },
   async getTask(taskId) {
     try {
-      console.log(taskId)
+      console.log(taskId);
       let config = {
         method: "get",
         maxBodyLength: Infinity,
