@@ -14,10 +14,14 @@ import ProgramIcon from '@/../public/icons/sidebar-icons/program-icon';
 import ProjectIcon from '@/../public/icons/sidebar-icons/project-icon';
 import ScoreBoardIcon from '@/../public/icons/sidebar-icons/score-board-icon';
 import ZentaoIcon from '@/../public/icons/sidebar-icons/zentao-icon';
-import Logo from '@/../public/images/Logo.svg';
-import LogoSvg from '@/../public/images/Logo-icon.svg';
+import Logo from '@/../public/Logo/Logo.svg';
+import LogoSvg from '@/../public/Logo/Logo-icon.svg';
+import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 export const Sidebar = () => {
+  
+  const { hasPermission } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const [userRole, setUserRole] = useState('');
@@ -45,9 +49,9 @@ export const Sidebar = () => {
   }, [isOpen]);
   return (
     <>
-      <div>
-        <div ref={sidebarRef} className="backdrop-background position-sticky">
-          <div className="custom-sidebar-background border-end-5 border shadow float-start d-flex flex-column justify-content-between align-items-center min-vh-100">
+      <div className='' >
+        <div ref={sidebarRef} className="position-sticky">
+          <div className="custom-sidebar border-end-5 border shadow float-start d-flex flex-column justify-content-between align-items-center">
             <div>
               <div className="p-3">
                 <Suspense fallback={<p>laoding</p>}>
@@ -88,10 +92,10 @@ export const Sidebar = () => {
                   </Link>
                 </div>
 
-                {userRole === 'manager' && (
-                  <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+                { hasPermission('sidebar' , 'Portfolio') &&
+                    <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
-                      href="/programs"
+                      href="/portfolio"
                       className={`d-flex text-center justify-content-between ${
                         !isOpen ? 'justify-content-center' : ''
                       } align-items-center gap-2 p-2`}
@@ -100,7 +104,7 @@ export const Sidebar = () => {
                         <div className="d-flex align-items-center gap-2 justify-content-center">
                           <ProgramIcon />
                           <span className="h5 text-custom-color mt-2 text-decoration-none">
-                            Program
+                            Portfolio
                           </span>
                         </div>
                       ) : (
@@ -108,10 +112,9 @@ export const Sidebar = () => {
                       )}
                       {isOpen && <ArrowRightIcon />}
                     </Link>
-                  </div>
-                )}
+                  </div>}
 
-                {userRole !== 'developper' && (
+                
                   <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                     <Link
                       href="/products"
@@ -132,7 +135,7 @@ export const Sidebar = () => {
                       {isOpen && <ArrowRightIcon />}
                     </Link>
                   </div>
-                )}
+                
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
@@ -157,7 +160,8 @@ export const Sidebar = () => {
 
                 <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                   <Link
-                    href="http://localhost/zentao"
+                    href={process.env.NEXT_PUBLIC_ZENTTAO_URL}
+                    target='_blank'
                     className={`d-flex text-center justify-content-between ${
                       !isOpen ? 'justify-content-center' : ''
                     } align-items-center gap-2 p-2`}
@@ -240,7 +244,8 @@ export const Sidebar = () => {
                 </div>
               </div>
 
-              <div className="sidebar-items px-1 py-1 w-100 rounded-3">
+              { hasPermission('sidebar' , 'Permissions') &&
+               <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
                   href="/permissions"
                   className={`d-flex text-center justify-content-between ${
@@ -260,6 +265,9 @@ export const Sidebar = () => {
                   {isOpen && <ArrowRightIcon />}
                 </Link>
               </div>
+                    }
+
+
             </div>
 
             <div className=" close-sidebar px-2 py-2 fs-5 mb-4 d-flex justify-content-center align-items-center">

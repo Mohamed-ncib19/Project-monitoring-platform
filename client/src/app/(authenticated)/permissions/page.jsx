@@ -77,8 +77,8 @@ const Permissions = () => {
     return restoreType === 'account' ? handleRestoreUser : handleRestoreRequest;
   };
 
-  const api = {
-    async getPendingUsers() {
+
+    const getPendingUsers = async () => {
       try {
         const response = await axios.get('/users/status/pending');
         return response.data.users;
@@ -91,9 +91,9 @@ const Permissions = () => {
           }),
         );
       }
-    },
+    };
 
-    async getUsers() {
+    const getUsers = async () => {
       try {
         const response = await axios.get('/users/status/active');
         return response.data.users;
@@ -106,8 +106,9 @@ const Permissions = () => {
           }),
         );
       }
-    },
-    async getBannedUsers() {
+    };
+
+    const getBannedUsers = async () => {
       try {
         const response = await axios.get('/users/status/banned');
         return response.data.users;
@@ -120,8 +121,8 @@ const Permissions = () => {
           }),
         );
       }
-    },
-  };
+    };
+  
 
   const deleteRequest = async (id) => {
     try {
@@ -178,9 +179,9 @@ const Permissions = () => {
     const fetchData = async () => {
       try {
         const [pendingUsers, bannedUsers, activeUsers] = await Promise.all([
-          api.getPendingUsers(),
-          api.getBannedUsers(),
-          api.getUsers(),
+          getPendingUsers(),
+          getBannedUsers(),
+          getUsers(),
         ]);
 
         setUserRequests(pendingUsers || []);
@@ -410,9 +411,9 @@ const Permissions = () => {
     },
     {
       Header: 'Banned Date',
-      accessor: 'bannedDate  ',
-      Cell: ({ value }) => {
-        const date = new Date(value);
+      accessor: 'bannedAt  ',
+      Cell: ({ row }) => {
+        const date = new Date(row?.original.bannedAt);
         const formattedDate = date.toLocaleDateString('en-US', {
           month: 'long',
           day: 'numeric',
@@ -437,15 +438,19 @@ const Permissions = () => {
         return (
           <div
             className={clsx(
-              'text-secondary text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
+              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
               {
                 manager: row.original.role === 'Manager',
                 tl: row.original.role === 'teamlead',
-                dev: row.original.role === 'teamleadmember',
+                dev: row.original.role === 'teammember',
               },
             )}
           >
-            {`${row.original.role || '-----'}`}
+            {`${clsx({
+              Manager: row.original.role === 'Manager',
+              'Team Lead': row.original.role === 'teamlead',
+              'Team Member': row.original.role === 'teammember',
+            })}`}
           </div>
         );
       },
@@ -559,7 +564,7 @@ const Permissions = () => {
   return (
     <>
       <div className="pb-2 fs-6">
-        <p className=" fs-5 fw-bold">Permission</p>
+        <span className=" fs-5 fw-bold">Permission</span>
       </div>
       <div
         id="nav-links"

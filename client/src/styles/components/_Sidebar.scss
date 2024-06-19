@@ -1,6 +1,4 @@
-.backdrop-background{
-    height: 100vh;
-}
+
 .sidebar-backdrop{
     width: 100%;
     height: 100%;
@@ -29,6 +27,7 @@
 
 .custom-sidebar {
   background-color: #fbfafd;
+    height: 100vh;
 }
 
 @media screen and (max-width: 728px) {
