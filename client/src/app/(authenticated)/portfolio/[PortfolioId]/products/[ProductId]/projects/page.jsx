@@ -31,6 +31,7 @@ const ProjectsByProducts = ({ params }) => {
   
   const { ProductId } = params;
 
+
   const { hasPermission } = useAuth();
 
   const { breadCumbItem,setShow } = useBreadCumb();
@@ -65,7 +66,7 @@ const ProjectsByProducts = ({ params }) => {
   } = methods;
 
   useEffect(() => {
-    if (selectedProject) {      
+    if (selectedProject) {  
      const teamProject = userOptions.filter(member => selectedProject?.members.includes(member?.value));
       reset({
         product : ProductId,
@@ -147,6 +148,7 @@ const ProjectsByProducts = ({ params }) => {
       notify({ message: 'Failed to fetch users', status: 'danger' });
     }
   };
+  
   const getProductsOptions = async () => {
     
       const response = await axios.get(`/products/${ProductId}`);
@@ -280,7 +282,7 @@ const ProjectsByProducts = ({ params }) => {
   return (
     <>
     <div>
-      <ProjectHeader color={'warning'} name="Project" />
+      <ProjectHeader color={'warning'} name="Project" productId={ProductId} projectRootLayer={false} />
       <div className="mx-5 ">
         <div className=" row justify-content-start gap-5">
           {ProjectsData.length > 0 ? (
@@ -411,7 +413,7 @@ const ProjectsByProducts = ({ params }) => {
                     isDisabled
                     onBlur={field.onBlur}
                     value={
-                      productOptions[0]
+                      productOptions
                     }
                   />
                 )}

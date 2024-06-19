@@ -151,7 +151,7 @@ const onSubmit = handleSubmit(async (formData) => {
       <div className={`bg-light flex-md-row flex-column p-3 px-5 m-3 border-4 border-start border-${color} d-flex justify-content-md-between justify-content-center `}>
         <div className="text-center text-md-start mb-3 mb-md-0">
           <p className="fw-bolder fs-4">{name}</p>
-          <p className="text-secondary fs-6">Hi, welcome to client {name} management</p>
+          <p className="text-secondary fs-6">Hi, welcome to {name} management</p>
         </div>
         
         { hasPermission('portfolio' , 'manage') &&

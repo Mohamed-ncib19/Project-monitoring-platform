@@ -321,7 +321,7 @@ const Permissions = () => {
         return (
           <div
             className={clsx(
-              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
+              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6',
               {
                 manager: row.original.role === 'Manager',
                 tl: row.original.role === 'teamlead',
@@ -438,7 +438,7 @@ const Permissions = () => {
         return (
           <div
             className={clsx(
-              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6 custom-letter-spacing-small',
+              'text-secondary fw-semibold text-center m-auto col-11 p-2 rounded-5 fw-normal fs-6',
               {
                 manager: row.original.role === 'Manager',
                 tl: row.original.role === 'teamlead',
