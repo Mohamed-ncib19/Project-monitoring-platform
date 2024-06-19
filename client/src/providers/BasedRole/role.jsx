@@ -1,4 +1,3 @@
-// roles.js
 
 export const roles = {
     MANAGER: process.env.NEXT_PUBLIC_MANAGER_ROLE,

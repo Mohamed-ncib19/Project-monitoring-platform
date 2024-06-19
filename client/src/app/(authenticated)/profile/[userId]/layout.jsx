@@ -10,7 +10,7 @@ const ProfileLayout = ({ children }) => {
 
   return (
     <div className="profile-layout-container">
-      <header className="profile-header rounded-5 rounded-md-0 p-4 mb-5">
+      <div className="profile-header rounded-5 rounded-md-0 p-4 mb-5">
         <button
           onClick={handleGoBack}
           className="back fs-3 d-flex justify-content-center align-items-center text-white font-bold rounded-4 border-0 px-3"
@@ -18,7 +18,7 @@ const ProfileLayout = ({ children }) => {
           <span><i class="bi bi-arrow-left"></i> Back</span>
         </button>
         <p className="text-center h1 mb-5 font-bold text-white">Profile</p>
-      </header>
+      </div>
       <main className="profile-content">
         {children}
       </main>

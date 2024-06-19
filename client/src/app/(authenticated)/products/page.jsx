@@ -18,7 +18,6 @@ import { ProductSchema } from '@/app/(authenticated)/_shcemas/product.shcema';
 import Select from 'react-select';
 import { ConfirmModal } from '../_components/Modals/ConfirmModal';
 import { AlertModal } from '../_components/Modals/AlertModal';
-import withAuth from '@/providers/BasedRole/withAuth';
 import { useAuth } from '../_context/AuthContext';
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -39,9 +38,7 @@ const Products = () => {
   const [handleRefresh, setHandleRefresh] = useState(false);
 
   const { hasPermission } = useAuth();
-
-  
-
+ 
   const handleShowEditModal = (product) => {
     setShowEditModal(true);
     setCurrentProduct(product);

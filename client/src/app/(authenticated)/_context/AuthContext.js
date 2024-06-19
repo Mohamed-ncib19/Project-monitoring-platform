@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
           sessionStorage.setItem('userRole', userRole);
         }
         
-        }
+      }
       setAuthorized(true);
     };
 
