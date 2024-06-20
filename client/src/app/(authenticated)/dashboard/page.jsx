@@ -1,14 +1,24 @@
 'use client';
-import Link from 'next/link';
+
+
+
+const MemeberDashboard = () =>{
+
+  return(
+    <>
+    test
+    </>
+  );
+}
 
 const Dashboard = () => {
   return (
     <>
-      <h1>Dashboard</h1>
-
-      <>
-        <Link href="/dashboard/members/approve">approve members</Link>
-      </>
+    <div>
+      <span className="text-muted" >OVERVIEW</span>
+      <p className=" fw-bold" >Your Dashboard</p>
+      </div>
+    <MemeberDashboard />
     </>
   );
 };

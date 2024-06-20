@@ -52,14 +52,6 @@ const Step1Form = ({
   const [defaultPortfolioParent, setDefaultPortfolioParent] = useState(null);
   const [defaultProductParent, setDefaultProductParent] = useState(null);
 
-  console.log(productId)
-
-  console.log(defaultPortfolioParent);
-
-  console.log(defaultProductParent);
-
-
-
   const getProjectParents = async (id) => {
     try {
       const response = await axios.get(`/products/${id}`);
