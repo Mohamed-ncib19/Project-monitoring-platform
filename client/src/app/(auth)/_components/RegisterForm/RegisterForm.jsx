@@ -59,7 +59,7 @@ export const RegisterForm = async ({ userName }) => {
   return (
     <>
       <div className=" col-10 mt-5">
-        <p className="welcome custom-letter-spacing-wider text-dark h2">
+        <p className="welcome text-dark h2">
           Welcome Back, <span className="text-custom-primary">{userName}!</span>
         </p>
         <p className="content light-text-custom-color">

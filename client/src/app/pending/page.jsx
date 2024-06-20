@@ -13,7 +13,7 @@ const Pending = () => {
   };
   return (
     <div className=" vh-100 ">
-      <div className=" d-flex flex-column gap-2 justify-content-center align-items-center custom-letter-spacing-wider pending-content">
+      <div className=" d-flex flex-column gap-2 justify-content-center align-items-center pending-content">
         <Image src={submittedIllustration} width={400} draggable={false} alt="submited" />
         <p className="d-flex gap-2 justify-content-center align-items-center">
           <i className="check-icon text-white rounded-2 px-1 h2">

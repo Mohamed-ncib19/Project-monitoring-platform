@@ -1,4 +1,4 @@
-import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Dropdown, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import EditDotsIcon from '@/../../public/icons/edit-dots-icon';
 import { Avatar } from '@/app/(authenticated)/_components/Avatar';
 import Image from 'next/image';
@@ -282,26 +282,32 @@ export const ProjectCard = ({
             </span>
             <span>{dataProvider?.sprintCount}</span>
           </p>
-
+            {
+            }
           <p className="fw-bold col-xl-6 col-12 text-lg-start text-center">
             <span className="sprint-count-label">Current sprint: </span>
-            <span>
-              {dataProvider?.description ? (
-                dataProvider.description.length > 50 ? (
-                  `${dataProvider.description.slice(0, 50)}...`
-                ) : (
-                  dataProvider.description
+            <span className='text-muted'>
+              {
+                dataProvider?.sprints.length > 0
+                ? (
+                  dataProvider.sprints.find(sprint => sprint.status === 'doing')?.name
                 )
-              ) : (
-                <span className=" text-dark-gray">no sprints...</span>
-              )}
+                : (
+                  <>No sprints is currently available</>
+                )
+              }
             </span>
+
           </p>
         </div>
 
-        <div className="d-flex flex-column px-4 ">
+        <div className="d-flex flex-column px-4 gap-3 ">
+          <div className='d-flex justify-content-between' >
           <span>current sprint progress</span>
-          <span>progress bar</span>
+          <span>05%</span>
+          </div>
+          <ProgressBar now={20} />
+
         </div>
 
         <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center px-4 py-3">

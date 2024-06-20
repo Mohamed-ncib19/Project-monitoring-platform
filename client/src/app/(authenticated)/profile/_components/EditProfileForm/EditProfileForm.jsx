@@ -47,7 +47,7 @@ export const EditProfileForm = ({ dataProvider }) => {
   const onSubmit = async (data) => {
     try {
       if (checkChanges(data)) {
-        notify({ message: 'no chnages', status: 'warning' });
+        notify({ message: 'No changes detected.', status: 'warning' });
         return;
       } else {
         if (data.firstname === '') {
