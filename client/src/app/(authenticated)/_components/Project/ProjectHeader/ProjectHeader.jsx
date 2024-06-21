@@ -151,6 +151,8 @@ const Step1Form = ({
 
     setProjectCode(generateProjectCode(projectName));
   }, [projectName]);
+
+
   return (
     <>
       <div className="d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center">
@@ -451,27 +453,29 @@ const Step2Form = ({ control, notify, setValue }) => {
 
 const Step3Form = ({ register, setValue }) => (
   <>
-    <div className="d-flex flex-lg-row flex-column justify-content-center align-items-center">
-      <div className=" d-flex flex-lg-row flex-column">
-        <CustomRadio
-          label="Scrum"
-          description="Agile Development Management"
-          register={register}
-          name="model"
-          imageSrc={ScrumImage}
-          value="scrum"
-          onChange={(v) => setValue('model', v)}
-        />
+    <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center">
+      <div className=" d-flex flex-lg-row flex-column justify-content-around col">
+      <CustomRadio
+  label="Scrum"
+  description="Agile Development Management"
+  register={register}
+  name="model"
+  imageSrc={ScrumImage}
+  value="scrum"
+  onChange={(v) => setValue('model', v)}
+/>
 
-        <CustomRadio
-          label="Kanban"
-          description="Kanban Project Management"
-          register={register}
-          name="model"
-          imageSrc={KanbanImage}
-          value="kanban"
-          onChange={(v) => setValue('model', v)}
-        />
+<CustomRadio
+  label="Kanban"
+  description="Kanban Project Management"
+  register={register}
+  name="model"
+  imageSrc={KanbanImage}
+  value="kanban"
+  onChange={(v) => setValue('model', v)}
+/>
+
+
       </div>
     </div>
   </>
@@ -528,8 +532,11 @@ export const ProjectHeader = ({
     setValue,
   } = methods;
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {
+    setShow(false);
+    refresh();
+  };
+    const handleShow = () => setShow(true);
 
   useEffect(() => {
     const fetchPortfolios = async () => {
@@ -620,6 +627,9 @@ export const ProjectHeader = ({
         handleClose={handleClose}
         headerTitle="Create Project"
         onSubmit={onSubmit}
+        stepsButton={true}
+        nbSteps={currentStep}
+        stepsButtonLabel={['Continue','Continue','Confirme']}
       >
         <StepsBar
           listLength={3}

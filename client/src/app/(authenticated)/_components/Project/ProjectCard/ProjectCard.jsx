@@ -203,14 +203,6 @@ export const ProjectCard = ({
           )}
 
             <div className="d-flex gap-2">
-              {projectsRootLayer && (
-                <span
-                  id="portfolio-name"
-                  className="portfolio-name d-flex justify-content-center align-items-center px-3 py-2 text-white text-center rounded-5 "
-                >
-                  {portfolioData?.name || ''}
-                </span>
-              )}
 
               {projectsRootLayer && (
                 <span

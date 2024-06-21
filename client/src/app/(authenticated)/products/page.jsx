@@ -278,7 +278,7 @@ const Products = () => {
 
   return (
     <>
-      <ProductHeader color={'danger'} name={'Products'} />
+      <ProductHeader color={'danger'} name={'Product'} />
       <div className="mx-5 ">
         <div className=" row justify-content-start m-auto gap-5">
           {products.length > 0 ? (
