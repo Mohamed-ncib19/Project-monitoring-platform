@@ -48,7 +48,7 @@ export const PortfolioCard = ({ dataProvider, handleFunctions,portfolioKey }) =>
         <Avatar
           name={dataProvider.name}
           variant='portfolio-avatar'
-          rounded={'1'}
+        
           textColor='dark'
         />
         <span className="fw-bold fs-5 text-dark">{dataProvider.name}</span>

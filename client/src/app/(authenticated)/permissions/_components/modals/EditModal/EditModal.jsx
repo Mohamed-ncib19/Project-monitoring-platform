@@ -70,7 +70,7 @@ export const EditModal = ({
   const handleEdit = handleSubmit(async (formData) => {
     try {
       if (checkChanges(formData)) {
-        notify({ message: 'no changes', status: 'warning' });
+        notify({ message: 'There are no Modifications', status: 'warning' });
         handleClose();
       } else {
         const response = await EditUser(user?._id, formData);

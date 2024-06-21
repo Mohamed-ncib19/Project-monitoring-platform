@@ -1,5 +1,5 @@
 :root {
-  --header-height: 15em;
+  --header-height: 13em;
   --card-top-offset: 2em;
 }
 
@@ -9,7 +9,6 @@
   height: var(--header-height);
 }
 
-
 .profile-card {
   position: absolute;
   z-index: 10;
@@ -17,6 +16,7 @@
   height: max-content;
   left: 0;
   right: 0;
+  margin: auto;
 }
 
 .card-section h4 {

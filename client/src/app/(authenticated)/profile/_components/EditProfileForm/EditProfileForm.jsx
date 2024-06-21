@@ -41,13 +41,19 @@ export const EditProfileForm = ({ dataProvider }) => {
   };
 
   const checkChanges = (data) => {
-    return Object.values(data).every((value) => value === '');
+    const fieldsToCheck = ['firstname', 'lastname', 'bio'];
+    for (const field of fieldsToCheck) {
+      if (data[field] !== dataProvider[field]) {
+        return false;
+      }
+    }
+    return true;
   };
 
   const onSubmit = async (data) => {
     try {
       if (checkChanges(data)) {
-        notify({ message: 'No changes detected.', status: 'warning' });
+        notify({ message: 'There are no Modifications', status: 'warning' });
         return;
       } else {
         if (data.firstname === '') {
@@ -58,28 +64,17 @@ export const EditProfileForm = ({ dataProvider }) => {
           data.lastname = dataProvider?.lastname;
         }
 
-        if (data.bio === '') {
-          data.bio = dataProvider?.bio;
-        }
-
-        if (Object.keys(data).length > 0) {
-          const resUpdateUser = await editUserInfo(data);
-          if (resUpdateUser.status === 200) {
-            notify({
-              message: 'Your profile updated successfully',
-              status: 'success',
-            });
-            refresh();
-          } else {
-            notify({
-              message: 'Profile update failed. Please try again',
-              status: 'danger',
-            });
-          }
+        const resUpdateUser = await editUserInfo(data);
+        if (resUpdateUser.status === 200) {
+          notify({
+            message: 'Your profile updated successfully',
+            status: 'success',
+          });
+          refresh();
         } else {
           notify({
-            message: 'No updates made to your profile',
-            status: 'warning',
+            message: 'Profile update failed. Please try again',
+            status: 'danger',
           });
         }
       }
@@ -87,6 +82,7 @@ export const EditProfileForm = ({ dataProvider }) => {
       notify({ message: 'An unexpected error occurred', status: 'danger' });
     }
   };
+
   return (
     <>
       <FormProvider {...{ register, errors }}>

@@ -121,7 +121,6 @@ const renderTooltip = (props) => (
           <Avatar
             name={dataProvider.name}
             variant='product-avatar'
-            rounded={'1'}
             textColor='dark'
           />
           <p className="fw-bold fs-5 text-dark ">{dataProvider.name}</p>
