@@ -261,18 +261,20 @@ useEffect(()=>{
           <div className=" row justify-content-start gap-5 m-auto">
             {products.length > 0 ? (
               products.map((product) => {
-                const canManage = hasPermission('products' , 'manage')
+                const canManage = hasPermission('products' , 'manage');
                 return(
-                  <ProductCard 
-                dataProvider={product}
-                supportBreadCumb={true}
-                permission={canManage}
-                handleFunctions={
-                  {editModal : ()=>handleShowEditModal(product),
-                  deleteModal : ()=>handleDelete(product)
-                  }
-                  } 
-                productKey={product._id}
+                  <ProductCard
+                    productKey={product?._id}
+                    dataProvider={product}
+                    supportBreadCumb={true}
+                    permission={canManage}
+                    handleFunctions={
+                      {
+                        editModal : ()=>handleShowEditModal(product),
+                        deleteModal : ()=>handleDelete(product)
+                      }
+                      }
+                
                 />
                 );
               })
@@ -294,7 +296,7 @@ useEffect(()=>{
 
 
         <EditModal show={showEditModal} handleClose={handleCloseEditModal} headerTitle='Edit Product' onSubmit={onSubmit} >
-        <FormProvider {...methods}>
+          <FormProvider {...methods}>
           <form className='d-flex flex-column gap-5 py-5' >
 
           <div className='d-flex flex-lg-row flex-column justify-content-lg-around justify-content-center col-lg-10 col-12 gap-4 align-items-center'>
@@ -409,12 +411,12 @@ useEffect(()=>{
             </div>
 
           </form>
-        </FormProvider>
+          </FormProvider>
         </EditModal>
 
         <ConfirmModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} headerTitle="Delete Portfolio"  handleClick={DeleteEmptyProduct} >
-        <p className='text-muted' >This Project is empty. Are you sure you want to delete it?</p>
-      </ConfirmModal>
+          <p className='text-muted' >This Project is empty. Are you sure you want to delete it?</p>
+        </ConfirmModal>
 
       <AlertModal show={showAlertModal} handleClose={()=>setShowAlertModal(false)} headerTitle='Portfolio Not Empty' >
         <p className='text-muted' >The portfolio cannot be deleted because it currently contains <b>Projects</b>. To delete the Portfolio, you'll need to remove all associated Projects first.</p>

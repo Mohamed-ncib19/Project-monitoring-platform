@@ -6,9 +6,6 @@ const endpointUrl = process.env.NEXT_PUBLIC_ENDPOINTS_URL;
 axios.defaults.baseURL = endpointUrl;
 const ClientLayout = ({ children, data }) => {
   const session = useSession();
-  console.log(session)
-
-  console.log(data)
   if (!axios.defaults.headers.common.Authorization) {
     axios.defaults.headers.common = {
       Authorization: ` ${data?.accessToken.token}`,
@@ -17,7 +14,6 @@ const ClientLayout = ({ children, data }) => {
     axios.interceptors.response.use(
       (res) => res,
       async (err) => {
-        console.log(err)
         if(err?.request.status === 403 && JSON.parse(err?.request.response)?.error === 'Banned'){
               await signOut({ redirect: true });
           

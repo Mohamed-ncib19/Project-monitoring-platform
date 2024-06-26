@@ -14,6 +14,7 @@ export const ProductCard = ({
   permission
 }) => {
 
+  console.log(productKey);
 
   const { setBreadCumbItem } = useBreadCumb();
 

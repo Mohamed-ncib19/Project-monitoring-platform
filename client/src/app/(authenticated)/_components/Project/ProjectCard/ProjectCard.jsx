@@ -73,7 +73,6 @@ export const ProjectCard = ({
   permission
 }) => {
 
-  console.log(dataProvider)
 
   const handleShowEditModal = handleFunctions.editModal;
   const handleShowDelete = handleFunctions.deleteModal;
@@ -142,7 +141,6 @@ export const ProjectCard = ({
       const response = await axios.get(`/users/${userId}`);
       return response?.data?.user || {};
     } catch (error) {
-      console.error(error);
       return {};
     }
   };
@@ -203,6 +201,7 @@ export const ProjectCard = ({
           )}
 
             <div className="d-flex gap-2">
+
 
               {projectsRootLayer && (
                 <span
