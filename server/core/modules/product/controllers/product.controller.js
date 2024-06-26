@@ -20,6 +20,7 @@ const productController = {
           .status(httpStatus.CONFLICT)
           .send({ message: "Product name already taken" });
       }
+      console.log(body);
       const { portfolio } = await portfolioServices.getPortfolioById(
         body.portfolio
       );
@@ -28,6 +29,7 @@ const productController = {
         user.id,
         portfolio.zentaoId
       );
+
       if (createResponse.ok) {
         return res.status(httpStatus.CREATED).send({
           message: "Product created successfully",
