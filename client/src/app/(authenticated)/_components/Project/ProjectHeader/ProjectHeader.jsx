@@ -485,6 +485,8 @@ export const ProjectHeader = ({
   name,
   projectRootLayer = true,
   productId,
+  handleRefresh,
+  setHandleRefresh
 }) => {
 
 
@@ -589,7 +591,7 @@ export const ProjectHeader = ({
         if (response.ok) {
           notify({ message: response.message, status: 'success' });
           handleClose();
-          refresh();
+          setHandleRefresh(!handleRefresh);
         } else {
           notify({ message: response?.message, status: 'danger' });
         }

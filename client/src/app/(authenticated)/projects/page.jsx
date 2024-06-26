@@ -273,7 +273,7 @@ const Projects = () => {
   return (
     <>
       <div>
-        <ProjectHeader color='warning' name="Project" />
+        <ProjectHeader color='warning' name="Project" setHandleRefresh={setHandleRefresh} handleRefresh={handleRefresh} />
         <div className="mx-5 ">
           <div className=" row justify-content-start gap-5">
             {ProjectsData.length > 0 ? (
