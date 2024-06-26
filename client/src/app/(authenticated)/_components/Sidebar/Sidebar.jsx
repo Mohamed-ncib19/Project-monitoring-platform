@@ -70,7 +70,7 @@ export const Sidebar = () => {
               </Link>
             </div>
 
-            <div className="d-flex flex-column gap-1 mt-5 justify-content-center align-items-center m-auto p-2 border-bottom">
+            <div className="d-flex flex-column gap-1 mt-5 justify-content-center align-items-center m-auto p-2">
               <SidebarItem
                 isOpen={isOpen}
                 href="/dashboard"
@@ -130,6 +130,7 @@ export const Sidebar = () => {
                 label="Company Balance"
                 onClick={handleItemClick}
               />
+              <div className='border-top w-100 my-2 py-2' >
               {hasPermission('sidebar', 'Permissions') && (
                 <SidebarItem
                   isOpen={isOpen}
@@ -139,6 +140,7 @@ export const Sidebar = () => {
                   onClick={handleItemClick}
                 />
               )}
+              </div>
             </div>
           </div>
 
@@ -168,12 +170,12 @@ const SidebarItem = ({ isOpen, href, icon, label, target = '_self', onClick }) =
     <Link
       href={href}
       target={target}
-      className={`d-flex text-center justify-content-between ${!isOpen ? 'justify-content-center' : ''} align-items-center gap-2 p-2`}
+      className={`sidebar-label d-flex text-center justify-content-between ${!isOpen ? 'justify-content-center' : ''} align-items-center gap-2 p-2`}
     >
       {isOpen ? (
         <div className="d-flex align-items-center gap-2 justify-content-center">
           {icon}
-          <span className="h5 text-custom-color mt-2 text-decoration-none">
+          <span className="text-custom-color mt-2 ">
             {label}
           </span>
         </div>

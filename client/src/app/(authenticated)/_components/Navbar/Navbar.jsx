@@ -44,7 +44,7 @@ export const Navbar = ({ user }) => {
   ];
 
   return (
-    <div className="custom-bg-primary custom-navbar py-2 d-flex justify-content-end align-items-center">
+    <div className="custom-bg-primary py-2 d-flex justify-content-end align-items-center">
       <div className="col-10 d-flex d-flex flex-md-row flex-column justify-content-between align-items-center">
         <input
           type="text"
