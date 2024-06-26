@@ -50,6 +50,7 @@ const productController = {
     try {
       let productsRes;
       const { portfolioId = null } = req.params;
+      const userId = req.user._id;
       if (!portfolioId) {
         productsRes = await productServices.getProducts();
       } else {
@@ -76,7 +77,7 @@ const productController = {
   async getProduct(req, res) {
     try {
       const { productId } = req.params;
-      console.log(productId)
+      console.log(productId);
       const productRes = await productServices.getProductById(productId);
       if (!productRes.ok) {
         return res

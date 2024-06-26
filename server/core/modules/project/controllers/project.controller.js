@@ -137,6 +137,26 @@ const projectController = {
       });
     }
   },
+
+  async getProjectTasks(req, res) {
+    try {
+      const { projectId } = req.params;
+      const tasksRes = await projectServices.getProjectTasks(projectId);
+      if (!tasksRes.ok) {
+        return res.status(httpStatus.NOT_FOUND).send({
+          message: "failed to load project tasks",
+          details: tasksRes.message,
+        });
+      }
+      return res.status(httpStatus.OK).send({ tasks: tasksRes.tasks });
+    } catch (error) {
+      console.error(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
 };
 
 module.exports = projectController;

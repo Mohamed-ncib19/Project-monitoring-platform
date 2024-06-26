@@ -51,6 +51,8 @@ const webhooksServices = {
           }
           return { ok: false };
         case "edited":
+        case "started":
+        case "finished":
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
             console.log("error getting task from zentao");
