@@ -1,22 +1,16 @@
-.checked {
-    box-shadow: 0 0 10px 3px #66afe9;
-  }
+.custom-radio-label.checked {
+  box-shadow: 0 0 10px 3px #66afe9;
+}
+.custom-radio-label {
+  box-shadow: none;
+}
 
-  .custom-radio-label {
-    box-shadow: 0 0 10px #ffffff ;
-  }
-  
-  .checkbox-label {
-    display: inline-block;
-    cursor: pointer;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-    transition: box-shadow 0.3s ease-in-out;
-  }
-  
-  .read-only {
-    pointer-events: none;
-    opacity: 0.6;
-  }
-  
+.checkbox-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.read-only {
+  pointer-events: none;
+  opacity: 0.6;
+}

@@ -13,13 +13,8 @@ const CustomRadio = ({
 }) => {
   const [isChecked, setIsChecked] = useState(false);
 
-  useEffect(() => {
-    if (register(name).value === value) {
-      setIsChecked(isChecked => !isChecked);
-    }
-  }, [register, name, value]);
-
   const handleChange = (e) => {
+    console.log(e.target.checked);
     setIsChecked(e.target.checked);
     onChange(e.target.value);
   };
@@ -27,7 +22,7 @@ const CustomRadio = ({
   return (
     <label
       htmlFor={`${name}-${value}`}
-      className={` border p-2 rounded checkbox-label d-flex flex-column justify-content-center align-items-center ${readOnly ? 'read-only' : ''} ${isChecked ? 'checked' : 'custom-radio-label'}`}
+      className={`custom-radio-label border p-2 rounded checkbox-label d-flex flex-column justify-content-center align-items-center ${readOnly? 'ead-only' : ''} ${isChecked? 'checked' : 'custom-radio-label'}`}
     >
       <input
         type="radio"

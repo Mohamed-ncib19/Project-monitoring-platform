@@ -1,5 +1,5 @@
 'use client';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import clx from 'clsx';
@@ -54,7 +54,6 @@ export const Sidebar = () => {
           <div className="custom-sidebar border-end-5 border shadow float-start d-flex flex-column justify-content-between align-items-center">
             <div>
               <div className="p-3">
-                <Suspense fallback={<p>laoding</p>}>
                   <Link href="/dashboard">
                     <Image
                       src={isOpen ? Logo : LogoSvg}
@@ -64,7 +63,6 @@ export const Sidebar = () => {
                       className="w-100"
                     />
                   </Link>
-                </Suspense>
               </div>
 
               <div className=" d-flex flex-column gap-1 mt-5 justify-content-center align-items-center m-auto p-2  border-bottom ">
@@ -248,13 +246,13 @@ export const Sidebar = () => {
                <div className="sidebar-items px-1 py-1 w-100 rounded-3">
                 <Link
                   href="/permissions"
-                  className={`d-flex text-center justify-content-between ${
+                  className={` d-flex text-center justify-content-between ${
                     !isOpen ? 'justify-content-center' : ''
                   } align-items-center gap-2 p-2`}
                 >
                   {isOpen ? (
                     <div className="d-flex align-items-center gap-2 justify-content-center">
-                      <PermissionIcon />
+                      <PermissionwIcon />
                       <span className="h5 text-custom-color mt-2 text-decoration-none">
                         Permissions
                       </span>

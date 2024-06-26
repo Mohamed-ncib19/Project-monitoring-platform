@@ -456,25 +456,24 @@ const Step3Form = ({ register, setValue }) => (
     <div className="d-flex flex-lg-row flex-column justify-content-between align-items-center">
       <div className=" d-flex flex-lg-row flex-column justify-content-around col">
       <CustomRadio
-  label="Scrum"
-  description="Agile Development Management"
-  register={register}
-  name="model"
-  imageSrc={ScrumImage}
-  value="scrum"
-  onChange={(v) => setValue('model', v)}
-/>
+      label="Scrum"
+      description="Agile Development Management"
+      register={register}
+      name="model"
+      imageSrc={ScrumImage}
+      value="scrum"
+      onChange={(v) => setValue('model', v)}
+    />
 
-<CustomRadio
-  label="Kanban"
-  description="Kanban Project Management"
-  register={register}
-  name="model"
-  imageSrc={KanbanImage}
-  value="kanban"
-  onChange={(v) => setValue('model', v)}
-/>
-
+    <CustomRadio
+      label="Kanban"
+      description="Kanban Project Management"
+      register={register}
+      name="model"
+      imageSrc={KanbanImage}
+      value="kanban"
+      onChange={(v) => setValue('model', v)}
+    />
 
       </div>
     </div>
