@@ -20,6 +20,7 @@ const projectController = {
           .send({ message: "Project name already taken" });
       }
       const { product } = await productServices.getProductById(body.product);
+      console.log(product);
       const createResponse = await projectServices.createProject(
         body,
         user.id,
