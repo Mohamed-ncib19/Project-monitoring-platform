@@ -1,5 +1,5 @@
 const SprintModel = require("../models/sprint");
-const TaskModel = require("../../tasks/modules/task.js");
+const TaskModel = require("../../tasks/models/task.js");
 
 const { v4: uuidv4 } = require("uuid");
 const projectServices = require("../../project/services/project.services");
@@ -68,9 +68,8 @@ const sprintServices = {
       return { ok: false, message: error };
     }
   },
-  async getSprints(project){
-
-  }
+  async getSprints(project) {},
+  async updateSprint() {},
 };
 
 module.exports = sprintServices;

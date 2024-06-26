@@ -15,6 +15,11 @@ async function routes(fastify, options) {
     handler: projectController.getProjects,
   });
 
+  fastify.get("/projects/:projectId/tasks", {
+    preHandler: [verifyJWT, checkUserActive],
+    handler: projectController.getProjectTasks,
+  });
+
   fastify.get("/:productId/projects", {
     preHandler: [verifyJWT, checkUserActive],
     handler: projectController.getProjects,

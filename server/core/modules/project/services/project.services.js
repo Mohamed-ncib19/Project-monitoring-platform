@@ -1,7 +1,8 @@
 const ProjectModel = require("../models/project");
+const SprintModel = require("../../sprint/models/sprint");
+const taskModel = require("../../tasks/models/task");
 const zentaoServices = require("../../zentao/services/zentao.services");
 const { v4: uuidv4 } = require("uuid");
-const SprintModel = require("../../sprint/models/sprint");
 const projectServices = {
   async projectExists(name) {
     try {
@@ -22,7 +23,6 @@ const projectServices = {
       const query = { active: true };
       query[field] = value;
       const project = await projectCollection.findOne(query);
-
       if (project) {
         return { ok: true, project: project };
       }
@@ -189,6 +189,29 @@ const projectServices = {
         message: "Internal server error",
         details: error.message,
       };
+    }
+  },
+  async getProjectTasks(projectId) {
+    try {
+      const taskCollection = await taskModel();
+      const sprintCollection = await SprintModel();
+      const sprints = await sprintCollection
+        .find({ project: projectId }, { projection: { _id: 1 } })
+        .toArray();
+      if (sprints.length === 0) {
+        return {
+          ok: false,
+          message: "project not found or project does not have sprints",
+        };
+      }
+      const sprintIds = sprints.map((sprint) => sprint._id);
+      const tasks = await taskCollection
+        .find({ sprint: { $in: sprintIds } })
+        .toArray();
+      return { ok: true, tasks };
+    } catch (error) {
+      console.log(error);
+      return { ok: false };
     }
   },
 };

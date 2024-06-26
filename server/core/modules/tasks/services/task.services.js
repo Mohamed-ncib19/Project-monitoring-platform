@@ -1,4 +1,4 @@
-const TaskModel = require("../modules/task");
+const TaskModel = require("../models/task");
 const { v4: uuidv4 } = require("uuid");
 const projectServices = require("../../project/services/project.services");
 const userServices = require("../../users/services/user.services");
@@ -8,13 +8,14 @@ const taskServices = {
       const taskCollection = await TaskModel();
       const id = uuidv4();
       const { user, ok } = await userServices.getUser(
-        "zentaoId",
-        task.assignedTo.id
+        "username",
+        task.assignedTo.account
       );
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
       }
-      console.log(user);
+      console.log("user: ", user);
+      console.log("task: ", task);
       const taskResult = await taskCollection.insertOne({
         _id: id,
         name: task.name,
@@ -41,7 +42,7 @@ const taskServices = {
           id: taskResult.insertedId,
         };
       } else {
-        return { ok: false, message: "failed to created task" };
+        return { ok: false, message: "failed to create task" };
       }
     } catch (error) {
       console.log(error.message);
@@ -50,15 +51,11 @@ const taskServices = {
   },
   async updateTask(task, sprintZentaoId) {
     try {
-      console.log("task :", task);
-      console.log("sprintZentaoId :", sprintZentaoId);
-
       const taskCollection = await TaskModel();
       const { user, ok } = await userServices.getUser(
         "zentaoId",
         task.assignedTo.id
       );
-      console.log("user: ", user);
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
       }

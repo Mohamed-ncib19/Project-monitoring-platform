@@ -92,6 +92,7 @@ const zentaoServices = {
         },
         data: data,
       };
+
       const response = await axios.request(config);
       if (response.status === 201 || response.status === 200) {
         return { ok: true, data: response.data };
@@ -155,9 +156,8 @@ const zentaoServices = {
         begin: project.startDate,
         end: project.endDate,
         model: project.model,
-        products: [null],
+        products: [productZentaoId],
       };
-      console.log("data: ", data);
       let config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -246,7 +246,6 @@ const zentaoServices = {
   },
   async getTask(taskId) {
     try {
-      console.log(taskId);
       let config = {
         method: "get",
         maxBodyLength: Infinity,
