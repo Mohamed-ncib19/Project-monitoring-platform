@@ -6,7 +6,7 @@ const httpStatus = require("http-status");
 const ldapServices = require("../../users/services/ldap.services");
 
 const authServices = {
-  async registrationService(user) {
+  async register(user) {
     try {
       const createdUser = await userServices.createUser(user);
       if (!createdUser.ok) {
@@ -42,7 +42,7 @@ const authServices = {
       };
     }
   },
-  async loginService(username, password) {
+  async login(username, password) {
     try {
       const userBind = await ldapServices.bindUser(username, password);
       if (!userBind.ok) {

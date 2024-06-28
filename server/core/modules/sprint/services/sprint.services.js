@@ -1,6 +1,5 @@
 const SprintModel = require("../models/sprint");
 const TaskModel = require("../../tasks/models/task.js");
-
 const { v4: uuidv4 } = require("uuid");
 const projectServices = require("../../project/services/project.services");
 const sprintServices = {
@@ -8,9 +7,8 @@ const sprintServices = {
     try {
       const sprintCollection = await SprintModel();
       const taskCollection = await TaskModel();
-
       const query = {};
-      query[type] = sprintId;
+      query[type] = Number(sprintId);
       const sprint = await sprintCollection.findOne(query);
       if (sprint) {
         const tasks = await taskCollection
@@ -19,7 +17,7 @@ const sprintServices = {
           })
           .toArray();
         sprint.tasks = tasks;
-        return { ok: true, sprint };
+        return { ok: true, data: sprint };
       } else {
         return { ok: false, message: "sprint not found" };
       }
@@ -54,7 +52,7 @@ const sprintServices = {
         status: data.status,
         desc: data.desc,
         createdAt: data.openedDate,
-        tasks: [],
+        progress: 0,
       });
       if (insertSprint.acknowledged) {
         return {
@@ -68,8 +66,38 @@ const sprintServices = {
       return { ok: false, message: error };
     }
   },
-  async getSprints(project) {},
-  async updateSprint() {},
+  async updateSprintProgress(sprintId) {
+    try {
+      const taskCollection = await TaskModel();
+      const sprintCollection = await SprintModel();
+      const sprint = await this.getSprintById(sprintId, "zentaoId");
+      const tasks = await taskCollection
+        .find({ sprint: sprint.data._id })
+        .toArray();
+      const totalTasks = tasks.length;
+      const doneTasks = tasks.filter((task) => task.status === "done").length;
+      const progress = totalTasks === 0 ? 0 : (doneTasks / totalTasks) * 100;
+      if (progress > 0 && sprint.data.status == "wait") {
+        const updateSprintStatus = await sprintCollection.updateOne(
+          { _id: sprint.data._id },
+          { $set: { status: "doing" } }
+        );
+        if (!updateSprintStatus) {
+          console.log("failed to update sprint status");
+        }
+      }
+      const updateSprintProgress = await sprintCollection.updateOne(
+        { _id: sprint.data._id },
+        { $set: { progress } }
+      );
+      if (!updateSprintProgress) {
+        console.log("failed to update sprint progress");
+      }
+      return { ok: true };
+    } catch (err) {
+      console.log(err);
+      return { ok: false, message: err };
+    }
+  },
 };
-
 module.exports = sprintServices;

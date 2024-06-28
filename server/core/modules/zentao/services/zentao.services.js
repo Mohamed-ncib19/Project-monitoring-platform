@@ -2,6 +2,7 @@ require("dotenv").config();
 const formatDate = require("../utils/functions");
 const axios = require("axios");
 const zentaoServices = {
+  //portfolio services
   async createPortfolio(name) {
     try {
       let data = {
@@ -72,6 +73,7 @@ const zentaoServices = {
       return { ok: false, message: error.response.data.error };
     }
   },
+  //product services
   async createProduct(product, porfolioZentaoId) {
     try {
       let data = {
@@ -146,6 +148,8 @@ const zentaoServices = {
       return { ok: false, message: error.response.data.error };
     }
   },
+  //project services
+
   async createProject(project, productZentaoId) {
     try {
       let data = {
@@ -222,6 +226,8 @@ const zentaoServices = {
       return { ok: false, message: error.response.data };
     }
   },
+  //webhooks services
+
   async getExecution(executionId) {
     try {
       let config = {

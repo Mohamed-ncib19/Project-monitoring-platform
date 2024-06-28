@@ -68,8 +68,10 @@ const userServices = {
           ? { active: true }
           : option === "pending"
           ? { status: option }
-          : {};
-
+          : null;
+      if (!query) {
+        return { ok: false, message: "invalid query options" };
+      }
       users = await userModel.find(query).toArray();
       return { ok: true, users: users };
     } catch (error) {

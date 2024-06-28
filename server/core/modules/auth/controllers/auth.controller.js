@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const authServices = require("../services/auth.services");
+const authService = require("../services/auth.services");
 const jwt = require("jsonwebtoken");
 const generateToken = require("../utils/generateToken");
 const userService = require("../../users/services/user.services");
@@ -10,7 +10,7 @@ const authController = {
   async login(request, reply) {
     try {
       const { username, password } = request.body;
-      const response = await authServices.loginService(username, password);
+      const response = await authService.login(username, password);
       if (!response.ok) {
         if (response.status) {
           return reply.status(httpStatus.UNPROCESSABLE_ENTITY).send({
@@ -69,7 +69,7 @@ const authController = {
           error: { message: "The user does not exist in the LDAP" },
         });
       }
-      const registerResponse = await authServices.registrationService(userData);
+      const registerResponse = await authService.register(userData);
       if (!registerResponse.ok) {
         return reply.status(httpStatus.FORBIDDEN).send({
           error: { message: "User Already Exists" },

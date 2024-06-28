@@ -14,14 +14,12 @@ const taskServices = {
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
       }
-      console.log("user: ", user);
-      console.log("task: ", task);
       const taskResult = await taskCollection.insertOne({
         _id: id,
         name: task.name,
         zentaoId: task.id,
         sprint: sprintId,
-        sprintZentaoId,
+        sprintZentaoId: Number(sprintZentaoId),
         status: task.status,
         assignedTo: user._id,
         assignedDate: task.assignedDate,
@@ -49,7 +47,7 @@ const taskServices = {
       return { ok: false, message: error };
     }
   },
-  async updateTask(task, sprintZentaoId) {
+  async updateTask(task) {
     try {
       const taskCollection = await TaskModel();
       const { user, ok } = await userServices.getUser(
@@ -60,7 +58,7 @@ const taskServices = {
         return { ok: false, message: "failed to get assignedTo user" };
       }
       const taskResult = await taskCollection.updateOne(
-        { sprintZentaoId: sprintZentaoId },
+        { zentaoId: task.id },
         {
           $set: {
             name: task.name,
@@ -79,14 +77,14 @@ const taskServices = {
           },
         }
       );
-      if (taskResult.acknowledged) {
+      if (taskResult.modifiedCount) {
         console.log("task updated successfully");
         return {
           ok: true,
           message: "task updated successfully",
         };
       } else {
-        return { ok: false, message: "failed to created task" };
+        return { ok: false, message: "failed to create task" };
       }
     } catch (error) {
       console.log(error.message);

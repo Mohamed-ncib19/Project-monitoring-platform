@@ -31,7 +31,7 @@ const webhooksServices = {
             }
             sprintId = createSprint.id;
           } else {
-            sprintId = sprintExists.sprint._id;
+            sprintId = sprintExists.data._id;
           }
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
@@ -47,11 +47,56 @@ const webhooksServices = {
             sprintZentaoId
           );
           if (createTask.ok) {
+            const updateProgress = await sprintServices.updateSprintProgress(
+              sprintZentaoId
+            );
+            console.log(updateProgress);
             return { ok: true };
           }
           return { ok: false };
         case "edited":
+          task = await zentaoServices.getTask(taskZentaoId);
+          if (!task.ok) {
+            console.log("error getting task from zentao");
+            return {
+              ok: false,
+              message: "error getting task from zentao",
+              details: task.message,
+            };
+          }
+          const updateTask = await taskServices.updateTask(task.data);
+          if (updateTask.ok) {
+            const updateProgress = await sprintServices.updateSprintProgress(
+              sprintZentaoId
+            );
+            console.log(updateProgress);
+            return { ok: true };
+          }
+          console.log("failed to update task");
+          return { ok: false, message: "failed to update task" };
         case "started":
+          task = await zentaoServices.getTask(taskZentaoId);
+          if (!task.ok) {
+            console.log("error getting task from zentao");
+            return {
+              ok: false,
+              message: "error getting task from zentao",
+              details: task.message,
+            };
+          }
+          const startTask = await taskServices.updateTask(
+            task.data,
+            sprintZentaoId
+          );
+          if (startTask.ok) {
+            const updateProgress = await sprintServices.updateSprintProgress(
+              sprintZentaoId
+            );
+            console.log(updateProgress);
+            return { ok: true };
+          }
+          console.log("failed to update task");
+          return { ok: false, message: "failed to update task" };
         case "finished":
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
@@ -62,16 +107,48 @@ const webhooksServices = {
               details: task.message,
             };
           }
-          const updateTask = await taskServices.updateTask(
+          const finishTask = await taskServices.updateTask(
             task.data,
             sprintZentaoId
           );
-          if (updateTask.ok) {
+          if (finishTask.ok) {
+            const updateProgress = await sprintServices.updateSprintProgress(
+              sprintZentaoId
+            );
+            console.log(updateProgress);
             return { ok: true };
           }
           console.log("failed to update task");
           return { ok: false, message: "failed to update task" };
+        case "closed":
+          task = await zentaoServices.getTask(taskZentaoId);
+          console.log(task);
+          if (!task.ok) {
+            console.log("error getting task from zentao");
+            return {
+              ok: false,
+              message: "error getting task from zentao",
+              details: task.message,
+            };
+          }
+          const closeTask = await taskServices.updateTask(
+            task.data,
+            sprintZentaoId
+          );
+          if (closeTask.ok) {
+            const updateProgress = await sprintServices.updateSprintProgress(
+              sprintZentaoId
+            );
+            console.log(updateProgress);
+            return { ok: true };
+          }
+          console.log("failed to update task");
+          return { ok: false, message: "failed to update task" };
+        default:
+          break;
       }
+
+      console.log(updateProgress);
     } catch (error) {
       console.log(error);
       return {
