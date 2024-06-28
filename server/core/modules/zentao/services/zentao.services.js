@@ -242,7 +242,6 @@ const zentaoServices = {
       };
       const response = await axios.request(config);
       if (response.status === 201 || response.status === 200) {
-        console.log("zentao request ended...");
         return { ok: true, data: response.data };
       }
     } catch (error) {
