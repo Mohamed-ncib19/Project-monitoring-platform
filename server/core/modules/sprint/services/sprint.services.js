@@ -13,7 +13,7 @@ const sprintServices = {
       if (sprint) {
         const tasks = await taskCollection
           .find({
-            sprint: sprintId,
+            sprint: sprint._id,
           })
           .toArray();
         sprint.tasks = tasks;
@@ -66,7 +66,7 @@ const sprintServices = {
       return { ok: false, message: error };
     }
   },
-  async updateSprintProgress(sprintId) {
+  async updateSprintProgress(sprintId, action) {
     try {
       const taskCollection = await TaskModel();
       const sprintCollection = await SprintModel();
@@ -77,7 +77,7 @@ const sprintServices = {
       const totalTasks = tasks.length;
       const doneTasks = tasks.filter((task) => task.status === "done").length;
       const progress = totalTasks === 0 ? 0 : (doneTasks / totalTasks) * 100;
-      if (progress > 0 && sprint.data.status == "wait") {
+      if (action === "started" && sprint.data.status === "wait") {
         const updateSprintStatus = await sprintCollection.updateOne(
           { _id: sprint.data._id },
           { $set: { status: "doing" } }

@@ -18,6 +18,7 @@ const webhooksServices = {
             "zentaoId"
           );
           let sprintId;
+          console.log(sprintExists);
           if (!sprintExists.ok) {
             const zentaoSprint = await zentaoServices.getExecution(
               sprintZentaoId
@@ -26,11 +27,13 @@ const webhooksServices = {
               sprintZentaoId,
               zentaoSprint
             );
+            console.log(createSprint);
             if (!createSprint.ok) {
               return { ok: false, message: "failed to create sprint" };
             }
             sprintId = createSprint.id;
           } else {
+            console.log("sprint exists :", sprintExists.data);
             sprintId = sprintExists.data._id;
           }
           task = await zentaoServices.getTask(taskZentaoId);
@@ -48,7 +51,8 @@ const webhooksServices = {
           );
           if (createTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId
+              sprintZentaoId,
+              payload.action
             );
             console.log(updateProgress);
             return { ok: true };
@@ -67,7 +71,8 @@ const webhooksServices = {
           const updateTask = await taskServices.updateTask(task.data);
           if (updateTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId
+              sprintZentaoId,
+              payload.action
             );
             console.log(updateProgress);
             return { ok: true };
@@ -90,7 +95,8 @@ const webhooksServices = {
           );
           if (startTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId
+              sprintZentaoId,
+              payload.action
             );
             console.log(updateProgress);
             return { ok: true };
@@ -113,7 +119,8 @@ const webhooksServices = {
           );
           if (finishTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId
+              sprintZentaoId,
+              payload.action
             );
             console.log(updateProgress);
             return { ok: true };
@@ -137,7 +144,8 @@ const webhooksServices = {
           );
           if (closeTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId
+              sprintZentaoId,
+              payload.action
             );
             console.log(updateProgress);
             return { ok: true };
