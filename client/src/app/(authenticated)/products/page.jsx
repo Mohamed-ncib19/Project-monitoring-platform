@@ -155,7 +155,6 @@ const Products = () => {
 
   useEffect(() => {
     if (currentProduct) {
-      console.log(currentProduct)
       const startDate = currentProduct?.startDate.split('T')[0];
       const endDate = currentProduct?.endDate.split('T')[0];
 
@@ -187,13 +186,11 @@ const Products = () => {
       const formatedData = await changeToDate(Saved);
       const changedFields = {};
       const editedKeys = Object.keys(Edited);
-
       for (const key of editedKeys) {
         if (Edited[key] !== formatedData[key]) {
-          changedFields[key] = Edited[key];
+         changedFields[key] = Edited[key];
         }
       }
-
       return { ok: Object.keys(changedFields).length > 0, changedFields };
     } catch (error) {
       console.error(error);
@@ -204,7 +201,7 @@ const Products = () => {
   const EditProduct = async (currentProduct, data) => {
     try {
       const { ok, changedFields } = await checkChanges(data, currentProduct);
-      if (!ok) {
+      if (!ok ) {
         return {
           ok: false,
           message: 'No changes',
@@ -237,6 +234,7 @@ const Products = () => {
         setHandleRefresh(!handleRefresh);
       } else if (!response?.ok && response?.message === 'No changes') {
         notify({ message: 'There are no notifications', status: 'warning' });
+        setShowEditModal(!showEditModal);
       } else {
         notify({ message: response?.message, status: 'danger' });
       }
@@ -478,6 +476,7 @@ const Products = () => {
         handleClose={() => setShowDeleteModal(false)}
         headerTitle="Delete Portfolio"
         handleClick={DeleteEmptyProduct}
+        deleteModal={true}
       >
         <p className="text-muted">
           This Project is empty. Are you sure you want to delete it?

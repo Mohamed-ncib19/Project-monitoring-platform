@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
 import { pagePermissions } from '@/providers/BasedRole/role';
 
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

@@ -213,9 +213,13 @@ const Projects = () => {
     try {
       const changedFields = {};
       const editedKeys = Object.keys(Edited);
-  
+      
       for (const key of editedKeys) {
-        if (Edited[key] !== Saved[key]) {
+        if (key === 'members') {
+          if (Saved.members.length !== Edited.members.length) {
+            changedFields[key] = Edited[key];
+          }
+        } else if (Edited[key] !== Saved[key]) {
           changedFields[key] = Edited[key];
         }
       }
@@ -226,18 +230,18 @@ const Projects = () => {
       return { ok: false, changedFields: {} };
     }
   };
+  
 
   const EditProject = async (data) =>{
     try {
       const {ok , changedFields} = await checkChanges(data , selectedProject);
+      console.log(changedFields);
       if(!ok){
         return {
           ok: false,
           message: 'No changes'
         }; 
       }else{
-
-      
       const response = await axios.put(`/projects/${selectedProject?._id}`,changedFields);
       if(response?.status === 200 || response?.status === 201 ){
         return {ok:true , message : response?.data?.message };
@@ -249,26 +253,32 @@ const Projects = () => {
   }
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
     try {
-      const newMembersArray = data.members.map((member) => member.value );
+      const newMembersArray = data.members.map((member) => member.value);
       const reformedData = {
         ...data,
-        members : newMembersArray
+        members: newMembersArray,
       };
-      const EditProjectResponse = await EditProject(reformedData);
-      handleCloseEditModal();
-      handleCloseEditMembersModal();
-      setHandleRefresh(!handleRefresh);
-      if(EditProjectResponse.ok){
-        notify({message : EditProjectResponse?.message , status : 'success'});
+      const response = await EditProject(reformedData);
+      
+      console.log(response)
+      if (response?.ok) {
+        notify({ message: response?.message, status: 'success' });
+        setShowEditModal(false);
+        setShowEditMembersModal(false);
+        setHandleRefresh(!handleRefresh);
+      } else if (!response?.ok && response?.message === 'No changes') {
+        notify({ message: 'There are no Modifications', status: 'warning' });
+        setShowEditModal(false);
+        setShowEditMembersModal(false);
+      } else {
+        notify({ message: response?.message, status: 'danger' });
       }
-
     } catch (error) {
-      console.log(error);
-      notify({message : error?.message , status : 'danger'});
+      notify({ message: error?.message, status: 'danger' });
     }
   });
+  
 
   return (
     <>
@@ -481,6 +491,7 @@ const Projects = () => {
         handleClose={() => setShowDeleteModal(false)}
         headerTitle="Delete project"
         handleClick={DeleteProject}
+        deleteModal={true}
       >
         <p className="text-muted">
           Are you sure you want to delete this Project?

@@ -13,8 +13,8 @@ export const EditModal = ({headerTitle,show,handleClose, children,onSubmit}) =>{
             </Modal.Body>
             <Modal.Footer >
               <div className=" col-6 d-flex flex-md-row flex-column justify-content-end m-auto align-items-end gap-4 " >
+                <CoreButton  label='Cancel' variant='custom-bg text-dark' onClick={handleClose} />
                 <CoreButton label='Save' onClick={onSubmit} />
-                <CoreButton  label='Cancel' variant='bg-light text-dark' onClick={handleClose} />
                 </div>
             </Modal.Footer>
         </Modal>

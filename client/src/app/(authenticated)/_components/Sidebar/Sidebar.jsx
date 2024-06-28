@@ -26,23 +26,7 @@ export const Sidebar = () => {
     setIsOpen((isOpen) => !isOpen);
   };
 
-  const sidebarRef = useRef(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('click', handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, [isOpen]);
+  
 
   const handleItemClick = () => {
     setIsOpen(false);
@@ -54,7 +38,6 @@ export const Sidebar = () => {
         className={clx('sidebar-container', {
           open: isOpen,
         })}
-        ref={sidebarRef}
       >
         <div className="custom-sidebar d-flex flex-column justify-content-between align-items-center">
           <div className='w-100' >
@@ -130,7 +113,7 @@ export const Sidebar = () => {
                 label="Company Balance"
                 onClick={handleItemClick}
               />
-              <div className='border-top w-100 my-2 py-2' >
+              <div className='border-top w-100 ' >
               {hasPermission('sidebar', 'Permissions') && (
                 <SidebarItem
                   isOpen={isOpen}
@@ -170,10 +153,10 @@ const SidebarItem = ({ isOpen, href, icon, label, target = '_self', onClick }) =
     <Link
       href={href}
       target={target}
-      className={`sidebar-label d-flex text-center justify-content-between ${!isOpen ? 'justify-content-center' : ''} align-items-center gap-2 p-2`}
+      className={`sidebar-label d-flex text-center justify-content-between align-items-center gap-2 p-2`}
     >
       {isOpen ? (
-        <div className="d-flex align-items-center gap-2 justify-content-center">
+        <div className="d-flex gap-2 align-items-center justify-content-center">
           {icon}
           <span className="text-custom-color mt-2 ">
             {label}

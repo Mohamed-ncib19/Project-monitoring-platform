@@ -77,52 +77,50 @@ const Permissions = () => {
     return restoreType === 'account' ? handleRestoreUser : handleRestoreRequest;
   };
 
+  const getPendingUsers = async () => {
+    try {
+      const response = await axios.get('/users/status/pending');
+      return response.data.users;
+    } catch (error) {
+      throw new Error(
+        JSON.stringify({
+          status: error.response?.status,
+          code: error?.code,
+          data: error.response?.data,
+        }),
+      );
+    }
+  };
 
-    const getPendingUsers = async () => {
-      try {
-        const response = await axios.get('/users/status/pending');
-        return response.data.users;
-      } catch (error) {
-        throw new Error(
-          JSON.stringify({
-            status: error.response?.status,
-            code: error?.code,
-            data: error.response?.data,
-          }),
-        );
-      }
-    };
+  const getUsers = async () => {
+    try {
+      const response = await axios.get('/users/status/active');
+      return response.data.users;
+    } catch (error) {
+      throw new Error(
+        JSON.stringify({
+          status: error.response?.status,
+          code: error?.code,
+          data: error.response?.data,
+        }),
+      );
+    }
+  };
 
-    const getUsers = async () => {
-      try {
-        const response = await axios.get('/users/status/active');
-        return response.data.users;
-      } catch (error) {
-        throw new Error(
-          JSON.stringify({
-            status: error.response?.status,
-            code: error?.code,
-            data: error.response?.data,
-          }),
-        );
-      }
-    };
-
-    const getBannedUsers = async () => {
-      try {
-        const response = await axios.get('/users/status/banned');
-        return response.data.users;
-      } catch (error) {
-        throw new Error(
-          JSON.stringify({
-            status: error.response?.status,
-            code: error?.code,
-            data: error.response?.data,
-          }),
-        );
-      }
-    };
-  
+  const getBannedUsers = async () => {
+    try {
+      const response = await axios.get('/users/status/banned');
+      return response.data.users;
+    } catch (error) {
+      throw new Error(
+        JSON.stringify({
+          status: error.response?.status,
+          code: error?.code,
+          data: error.response?.data,
+        }),
+      );
+    }
+  };
 
   const deleteRequest = async (id) => {
     try {
@@ -356,6 +354,7 @@ const Permissions = () => {
       Cell: ({ row }) => (
         <div>
           <ToggleDropdown
+            
             button={
               <button className="edit fs-4 text-dark-gray border-0 p-1 rounded-2">
                 <EditDotsIcon />
@@ -371,7 +370,8 @@ const Permissions = () => {
                 onclick: () => handleShowDesactivateModal(row.original),
               },
             ]}
-            lastItemDivide={false}
+            lastItemDivide={true}
+            nbItemsAfterDivide={1}
           />
         </div>
       ),
@@ -563,12 +563,15 @@ const Permissions = () => {
 
   return (
     <>
-      <div className="pb-2 fs-6">
+      <div>
         <span className=" fs-5 fw-bold">Permission</span>
       </div>
+
+      <div className='d-flex flex-column gap-3'>
+
       <div
         id="nav-links"
-        className=" d-flex flex-md-row flex-column justify-content-start align-items-start"
+        className=" d-flex flex-md-row flex-column justify-content-start align-items-lg-start align-items-center"
       >
         <button
           className={`${activeTab === 'requests' ? 'requests' : 'border-0'}  fw-bold p-2`}
@@ -599,10 +602,12 @@ const Permissions = () => {
         </button>
       </div>
 
-      <>
+      <div className='col-11 m-auto' >
         {activeTab === 'requests' &&
           (userRequests.length > 0 ? (
-            <DataTable columns={Requestcolumns} data={userRequests} />
+            
+              <DataTable columns={Requestcolumns} data={userRequests} />
+              
           ) : (
             <div className="m-auto d-flex flex-column justify-content-start align-items-center">
               <Image
@@ -618,7 +623,7 @@ const Permissions = () => {
           ))}
         {activeTab === 'users' &&
           (users.length > 0 ? (
-            <DataTable columns={UsersColumns} data={users} />
+                <DataTable columns={UsersColumns} data={users} />
           ) : (
             <div className=" m-auto d-flex flex-column justify-content-center align-items-center">
               <Image
@@ -634,7 +639,8 @@ const Permissions = () => {
           ))}
         {activeTab === 'bannedUsers' &&
           (bannedUsers.length > 0 ? (
-            <DataTable columns={BannedUsersColumns} data={bannedUsers} />
+              <DataTable columns={BannedUsersColumns} data={bannedUsers} />
+            
           ) : (
             <div className="m-auto d-flex flex-column justify-content-center align-items-center">
               <Image
@@ -650,7 +656,10 @@ const Permissions = () => {
               </p>
             </div>
           ))}
-      </>
+      </div>
+
+    </div>
+
       <AddModal
         headerTitle="Setup account"
         show={isModalOpen}
@@ -665,6 +674,7 @@ const Permissions = () => {
         show={isDeleteModalOpen}
         handleClose={handleCloseDeleteModal}
         handleClick={handleDeleteRequest}
+        deleteModal={true}
       >
         <div className="text-muted fs-5 m-auto px-3">
           <p>Are you sure you want to delete this request?</p>
@@ -686,6 +696,7 @@ const Permissions = () => {
         show={isDesactivateModalOpen}
         handleClose={handleCloseDesactivateModal}
         handleClick={handleDesactivateUser}
+        deleteModal={true}
       >
         <div className="text-muted fs-5 m-auto px-3">
           <p>Are you sure you want to deactivate this account ? </p>

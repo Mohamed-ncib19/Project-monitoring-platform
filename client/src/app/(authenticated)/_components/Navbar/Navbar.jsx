@@ -18,12 +18,6 @@ export const Navbar = ({ user }) => {
       name: 'adem zerri',
     },
     {
-      id: 2,
-      type: 'group',
-      status: 'unread',
-      name: 'mohamed ncib',
-    },
-    {
       id: 3,
       type: 'project',
       status: 'unread',
