@@ -276,18 +276,20 @@ export const ProjectCard = ({
             {
             }
           <p className="fw-bold col-xl-6 col-12 text-lg-start text-center">
-            <span className="sprint-count-label">Current sprint: </span>
-            <span className='text-muted'>
-              {
-                dataProvider?.sprints.length > 0
-                ? (
-                  dataProvider.sprints.find(sprint => sprint.status === 'doing')?.name
-                )
-                : (
-                  <>No sprints is currently available</>
-                )
-              }
-            </span>
+          <span className="sprint-count-label">Current sprint: </span>
+          {
+            dataProvider?.sprints.length > 0
+            ? (
+              dataProvider.sprints.find(sprint => sprint.status === 'doing')
+              ? <span className='text-muted'>{dataProvider.sprints.find(sprint => sprint.status === 'doing').name}</span>
+              : <span className='text-secondary'>There is no active sprint</span>
+            )
+            : (
+              <span className='text-secondary'>No sprints are currently available</span>
+            )
+          }
+
+            
 
           </p>
         </div>

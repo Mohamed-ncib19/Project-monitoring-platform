@@ -42,8 +42,6 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (currentPortfolio) {
-      console.log(currentPortfolio);
-
       reset({
         name: currentPortfolio?.name,
         description: currentPortfolio?.description || '',
@@ -79,7 +77,6 @@ const Portfolio = () => {
 
       return { ok: Object.keys(changedFields).length > 0, changedFields };
     } catch (error) {
-      console.error(error);
       return { ok: false, changedFields: {} };
     }
   };
@@ -103,7 +100,6 @@ const Portfolio = () => {
         };
       }
     } catch (error) {
-      console.error(error);
       return {
         ok: false,
         message: JSON.parse(error?.request.response).message,
@@ -151,7 +147,6 @@ const Portfolio = () => {
 
   const DeleteEmptyPortfolio = async () => {
     try {
-      console.log(currentPortfolio);
       const response = await axios.delete(
         `/portfolios/${currentPortfolio?._id}`,
       );
@@ -253,6 +248,7 @@ const Portfolio = () => {
         handleClose={() => setShowDeleteModal(false)}
         headerTitle="Delete Portfolio"
         handleClick={DeleteEmptyPortfolio}
+        deleteModal={true}
       >
         <p className="text-muted">
           This Portfolio is empty. Are you sure you want to delete it?
