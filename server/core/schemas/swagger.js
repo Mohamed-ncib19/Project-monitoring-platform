@@ -1,8 +1,8 @@
 const swaggerDescription = {
-  routePrefix: "/documentation",
+  rout0ePrefix: "/documentation",
   swagger: {
     info: {
-      title: "My API",
+      title: "WeHiveOn API",
       description: "API documentation",
       version: "1.0.0",
     },
@@ -10,7 +10,7 @@ const swaggerDescription = {
       url: "https://swagger.io",
       description: "Find more info here",
     },
-    host: "localhost:" + (process.env.PORT || 3000),
+    host: "localhost:" + (process.env.PORT || 5000),
     schemes: ["http"],
     consumes: ["application/json"],
     produces: ["application/json"],
