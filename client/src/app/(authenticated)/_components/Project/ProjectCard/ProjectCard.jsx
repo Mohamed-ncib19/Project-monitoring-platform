@@ -65,13 +65,13 @@ export const renderMembers = (
 
 export const ProjectCard = ({
   dataProvider,
-  team,
   handleFunctions,
   projectKey,
   supportBreadCumb = false,
   projectsRootLayer,
   permission
 }) => {
+
 
 
   const handleShowEditModal = handleFunctions.editModal;
@@ -83,6 +83,9 @@ export const ProjectCard = ({
   const [portfolioData, setPortfolioData] = useState([]);
   const [productData, setProductData] = useState(null);
   const [membersData, setMembersData] = useState([]);
+  const [sprintProgress, setSprintProgress] = useState(null);
+
+  console.log(dataProvider.sprints)
 
   const renderDescriptionTooltip = (props) => (
     <Tooltip id="description-tooltip" {...props} className="larger-tooltip">
@@ -281,7 +284,11 @@ export const ProjectCard = ({
             dataProvider?.sprints.length > 0
             ? (
               dataProvider.sprints.find(sprint => sprint.status === 'doing')
-              ? <span className='text-muted'>{dataProvider.sprints.find(sprint => sprint.status === 'doing').name}</span>
+              ? (
+                setSprintProgress(dataProvider.sprints.find(sprint => sprint.status === 'doing').progress || 0),
+              <span className='text-muted'>{dataProvider.sprints.find(sprint => sprint.status === 'doing').name}</span>
+            
+            )
               : <span className='text-secondary'>There is no active sprint</span>
             )
             : (
@@ -297,9 +304,9 @@ export const ProjectCard = ({
         <div className="d-flex flex-column px-4 gap-3 ">
           <div className='d-flex justify-content-between' >
           <span>current sprint progress</span>
-          <span>05%</span>
+          <span>{sprintProgress}</span>
           </div>
-          <ProgressBar now={20} />
+          <ProgressBar now={sprintProgress} />
 
         </div>
 
@@ -334,7 +341,7 @@ export const ProjectCard = ({
         headerTitle={`${dataProvider?.name} Team`}
         size="lg"
       >
-        <div className="project-team-list h-100 py-4  ">
+        <div className="project-team-list h-100 py-4 ">
           {membersData.map((user) => (
             <div
               key={user?._id}

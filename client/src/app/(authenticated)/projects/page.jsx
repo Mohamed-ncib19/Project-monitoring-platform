@@ -235,7 +235,6 @@ const Projects = () => {
   const EditProject = async (data) =>{
     try {
       const {ok , changedFields} = await checkChanges(data , selectedProject);
-      console.log(changedFields);
       if(!ok){
         return {
           ok: false,
@@ -261,7 +260,6 @@ const Projects = () => {
       };
       const response = await EditProject(reformedData);
       
-      console.log(response)
       if (response?.ok) {
         notify({ message: response?.message, status: 'success' });
         setShowEditModal(false);
@@ -296,7 +294,6 @@ const Projects = () => {
                   supportBreadCumb={false}
                   projectsRootLayer={true}
                   setProduct={setProduct}
-                  team={userOptions}
                   permission={canManage}
                   handleFunctions={ canManage && {
                     editModal: () => handleShowEditModal(project),
