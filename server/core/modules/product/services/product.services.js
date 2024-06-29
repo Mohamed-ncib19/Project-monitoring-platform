@@ -103,8 +103,9 @@ const productServices = {
       };
     }
   },
-  async getProductById(productId) {
+  async getProductById(productId, onlyId = null) {
     try {
+      console.log(productId);
       const productCollection = await ProductModel();
       const projectCollection = await ProjectModel();
       const product = await productCollection.findOne({
@@ -113,6 +114,10 @@ const productServices = {
       });
       if (!product) {
         return { ok: false, message: "product not found" };
+      }
+      if (onlyId == true) {
+        console.log(product);
+        return { ok: true, product: product };
       }
       const projectCount = await projectCollection.countDocuments({
         active: true,

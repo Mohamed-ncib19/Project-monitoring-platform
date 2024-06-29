@@ -19,8 +19,10 @@ const projectController = {
           .status(httpStatus.CONFLICT)
           .send({ message: "Project name already taken" });
       }
-      const { product } = await productServices.getProductById(body.product);
-      console.log(product);
+      const { product } = await productServices.getProductById(
+        body.product,
+        true
+      );
       const createResponse = await projectServices.createProject(
         body,
         user.id,
