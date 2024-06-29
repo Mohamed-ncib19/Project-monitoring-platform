@@ -55,9 +55,8 @@ const webhooksServices = {
               payload.action
             );
             console.log(updateProgress);
-            return { ok: true };
           }
-          return { ok: false };
+          break;
         case "edited":
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
@@ -75,10 +74,10 @@ const webhooksServices = {
               payload.action
             );
             console.log(updateProgress);
-            return { ok: true };
+          } else {
+            console.log("failed to update task");
           }
-          console.log("failed to update task");
-          return { ok: false, message: "failed to update task" };
+          break;
         case "started":
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
@@ -99,10 +98,10 @@ const webhooksServices = {
               payload.action
             );
             console.log(updateProgress);
-            return { ok: true };
+          } else {
+            console.log("failed to update task");
           }
-          console.log("failed to update task");
-          return { ok: false, message: "failed to update task" };
+          break;
         case "finished":
           task = await zentaoServices.getTask(taskZentaoId);
           if (!task.ok) {
@@ -123,15 +122,14 @@ const webhooksServices = {
               payload.action
             );
             console.log(updateProgress);
-            return { ok: true };
+          } else {
+            console.log("failed to update task");
           }
-          console.log("failed to update task");
-          return { ok: false, message: "failed to update task" };
+          break;
         default:
           break;
       }
-
-      console.log(updateProgress);
+      return { ok: true };
     } catch (error) {
       console.log(error);
       return {

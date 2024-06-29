@@ -11,10 +11,10 @@ const webhooksController = {
     let response;
     switch (type) {
       case "task":
-        response = webhooksServices.tasks(payload);
+        response = await webhooksServices.tasks(payload);
         break;
       case "bug":
-        response = webhooksServices.bugs(payload);
+        response = await webhooksServices.bugs(payload);
         break;
       default:
         return res
@@ -24,6 +24,9 @@ const webhooksController = {
     if (response.ok) {
       console.log("webhook handled successfuly");
       return res.status(httpStatus.OK);
+    }
+    else{
+      res.status(httpStatus.NOT_FOUND)
     }
   },
 };
