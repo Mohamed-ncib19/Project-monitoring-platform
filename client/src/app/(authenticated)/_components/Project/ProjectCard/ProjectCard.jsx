@@ -92,7 +92,7 @@ export const ProjectCard = ({
 
   const renderSprintProgressTooltip = (props) =>(
     <Tooltip id="sprint-progress-tooltip" {...props} className="larger-tooltip">
-      {sprintProgress}%
+      {`${sprintProgress || 0}%`}
       </Tooltip>
   );
 
@@ -300,7 +300,7 @@ export const ProjectCard = ({
         <div className="d-flex flex-column px-4 gap-3">
           <div className="d-flex justify-content-between">
             <span>Current sprint progress</span>
-            <span>{parseInt(sprintProgress)}%</span>
+            <span>{`${parseInt(sprintProgress) || 0}%`}</span>
           </div>
           <OverlayTrigger
             placement='top-start'
