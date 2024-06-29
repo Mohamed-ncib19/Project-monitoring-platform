@@ -127,31 +127,6 @@ const webhooksServices = {
           }
           console.log("failed to update task");
           return { ok: false, message: "failed to update task" };
-        case "closed":
-          task = await zentaoServices.getTask(taskZentaoId);
-          console.log(task);
-          if (!task.ok) {
-            console.log("error getting task from zentao");
-            return {
-              ok: false,
-              message: "error getting task from zentao",
-              details: task.message,
-            };
-          }
-          const closeTask = await taskServices.updateTask(
-            task.data,
-            sprintZentaoId
-          );
-          if (closeTask.ok) {
-            const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId,
-              payload.action
-            );
-            console.log(updateProgress);
-            return { ok: true };
-          }
-          console.log("failed to update task");
-          return { ok: false, message: "failed to update task" };
         default:
           break;
       }
