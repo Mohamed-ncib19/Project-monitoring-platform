@@ -53,8 +53,8 @@ const taskServices = {
       console.log(task);
       const taskCollection = await TaskModel();
       const { user, ok } = await userServices.getUser(
-        "zentaoId",
-        task.assignedTo.id
+        "username",
+        task.assignedTo.account
       );
       if (!ok) {
         return { ok: false, message: "failed to get assignedTo user" };
