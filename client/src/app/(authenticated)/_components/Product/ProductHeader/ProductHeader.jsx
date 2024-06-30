@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 
 
+
 export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPortfolio }) => {
   
   const { notify } = useNotifications();
@@ -25,10 +26,6 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
   const [teamleadsOptions , setTeamleadsOptions] = useState([]);
   const [productName, setProductName] = useState('');
   const [productCode, setProductCode] = useState('');
-
-
-
-
 
   const [show, setShow] = useState(false);
   
@@ -76,11 +73,12 @@ export const ProductHeader = ({ color, name, productRootLayer = true ,defaultPor
           }));
           setTeamleadsOptions(formatedTeamLeads)
       } catch (error) {
-        notify({message : JSON.parse(error?.request?.response).message,status : 'warning'})
+        notify({message : JSON.parse(error?.request?.response).message,status : 'warning'});
       }
     }
-
-    getTeamLeadsOptions();
+      if(hasPermission('products','manage')){
+        getTeamLeadsOptions();
+      }
   },[]);
 
   useEffect(() => {
@@ -140,7 +138,6 @@ const onSubmit = handleSubmit(async (formData) => {
         notify({message : response.message,status:'danger'});
       }
     } catch (error) {
-      console.log(error)
       notify({message : error?.message , status:'danger'});
     }
   }

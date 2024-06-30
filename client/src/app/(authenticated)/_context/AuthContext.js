@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       const savedRole = sessionStorage.getItem('userRole');
       
+      console.log(savedRole)
+      
       if (savedRole) {
         setRole(savedRole);
       } else {
