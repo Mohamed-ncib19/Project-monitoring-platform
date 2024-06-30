@@ -13,7 +13,7 @@ import ScrumSVG from '@/../../public/SVG/scrum.svg';
 import TasksIcon from '@/../../public/icons/tasks-icon';
 import BugsIcon from '@/../../public/icons/bugs-icon';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { notify } from 'reapop';
 import { AlertModal } from '../../Modals/AlertModal';
 
@@ -30,42 +30,35 @@ const getRandomBgColor = () => {
   return bgColors[randomIndex];
 };
 
-export const renderMembers = (
-  membersData,
-  maxVisible = 4,
-  setShowProjectTeam,
-) => {
-  return (
+export const renderMembers = (membersData = [], maxVisible = 4, setShowProjectTeam) => {
+  return(
     <button
-      className="avatar-container px-3 py-4 z-index-1000 border-0 rounded-4"
-      onClick={() => setShowProjectTeam(true)}
-    >
-      {membersData.slice(0, maxVisible).map((member) => {
-        const randomPalette = getRandomBgColor();
-        const tooltipId = `tooltip-${member._id}`;
+    className="avatar-container px-3 py-4 z-index-1000 border-0 rounded-4"
+    onClick={() => setShowProjectTeam(true)}
+  >
+    {membersData.slice(0, maxVisible).map((member) => {
+      const randomPalette = getRandomBgColor();
+      const tooltipId = `tooltip-${member._id}`;
 
-        return (
-          <OverlayTrigger
-            key={member._id}
-            placement="top"
-            overlay={
-              <Tooltip id={tooltipId}>
-                {`${member.firstname} ${member.lastname}`}
-              </Tooltip>
-            }
-          >
-            <div className="avatar-overlap z-index-999">
-              <Avatar
-                name={`${member.firstname} ${member.lastname}`}
-                rounded="circle"
-                variant={randomPalette?.variant}
-                textColor={randomPalette?.textColor}
-              />
-            </div>
-          </OverlayTrigger>
-        );
-      })}
-    </button>
+      return (
+        <OverlayTrigger
+          key={member._id}
+          placement="top"
+          overlay={<Tooltip id={tooltipId}>{`${member.firstname} ${member.lastname}`}</Tooltip>}
+        >
+          <div className="avatar-overlap z-index-999">
+            <Avatar
+              name={`${member.firstname} ${member.lastname}`}
+              rounded="circle"
+              variant={randomPalette?.variant}
+              textColor={randomPalette?.textColor}
+            />
+          </div>
+        </OverlayTrigger>
+      );
+    })}
+  </button>
+
   );
 };
 
@@ -83,7 +76,7 @@ export const ProjectCard = ({
   const [productData, setProductData] = useState(null);
   const [membersData, setMembersData] = useState([]);
   const [sprintProgress, setSprintProgress] = useState(null);
-  const [projectTasks, setProjectTasks] = useState(null);
+  const [projectTasks, setProjectTasks] = useState(0);
 
   const renderDescriptionTooltip = (props) => (
     <Tooltip id="description-tooltip" {...props} className="larger-tooltip">
@@ -110,9 +103,7 @@ export const ProjectCard = ({
   useEffect(() => {
     const getPortfolio = async () => {
       try {
-        const response = await axios.get(
-          `/portfolios/${dataProvider?.portfolio}`,
-        );
+        const response = await axios.get(`/portfolios/${dataProvider?.portfolio}`);
         if (response?.status === 200) {
           setPortfolioData(response?.data?.portfolio);
         }
@@ -130,9 +121,13 @@ export const ProjectCard = ({
 
   useEffect(() => {
     const getProduct = async () => {
-      const response = await axios.get(`/products/${dataProvider?.product}`);
-      if (response?.status === 200) {
-        setProductData(response?.data?.product);
+      try {
+        const response = await axios.get(`/products/${dataProvider?.product}`);
+        if (response?.status === 200) {
+          setProductData(response?.data?.product);
+        }
+      } catch (error) {
+        notify({ message: 'Failed to load product information', status: 'danger' });
       }
     };
     if (dataProvider?.product) {
@@ -140,46 +135,52 @@ export const ProjectCard = ({
     }
   }, [dataProvider]);
 
-  const getProjectTasks = async (id) => {
+  const getProjectTasks = useCallback(async (id) => {
     try {
       const response = await axios.get(`/projects/${id}/tasks`);
       if (response?.status === 200) {
         setProjectTasks(response?.data?.tasks.length);
       } else {
-        notify({ message: 'Failed to load project Tasks', status: 'danger' });
+        notify({ message: 'Failed to load project tasks', status: 'danger' });
       }
     } catch (error) {
-      notify({ message: 'Failed to load project Tasks', status: 'danger' });
+      notify({ message: 'Failed to load project tasks', status: 'danger' });
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (dataProvider) {
       getProjectTasks(dataProvider?._id);
     }
-  }, [dataProvider]);
+  }, [dataProvider, getProjectTasks]);
 
   const getUserData = async (userId) => {
     try {
       const response = await axios.get(`/users/${userId}`);
-      return response?.data?.user || {};
+      return response?.data.user || {};
     } catch (error) {
+      notify({ message: 'Failed to load user data', status: 'warning' });
       return {};
     }
   };
-
+  
   useEffect(() => {
-    const fetchMembers = async () => {
-      const data = await Promise.all(
-        dataProvider?.members.map((memberId) => getUserData(memberId)),
-      );
-      setMembersData(data);
+    const fetchMembers = async (dataProvider) => {
+      try {
+        const data = await Promise.all(
+          dataProvider?.members.map((memberId) => getUserData(memberId))
+        );
+        setMembersData(data);
+      } catch (error) {
+        notify({ message: 'Failed to load members data', status: 'warning' });
+      }
     };
-
-    if (dataProvider?.members.length > 0) {
-      fetchMembers();
+  
+    if (dataProvider?.members?.length > 0) {
+      fetchMembers(dataProvider);
     }
-  }, [dataProvider?.members]);
+  }, [dataProvider]);
+  
 
   const daysLeft = (date) => {
     const currentDate = new Date();
@@ -191,9 +192,7 @@ export const ProjectCard = ({
   };
 
   useEffect(() => {
-    const activeSprint = dataProvider.sprints.find(
-      (sprint) => sprint.status === 'doing',
-    );
+    const activeSprint = dataProvider.sprints.find((sprint) => sprint.status === 'doing');
     if (activeSprint) {
       setSprintProgress(activeSprint.progress || 0);
     }
@@ -252,8 +251,8 @@ export const ProjectCard = ({
                   dataProvider?.model === 'scrum'
                     ? ScrumSVG
                     : dataProvider?.model === 'kanban'
-                      ? KanbanSVG
-                      : null
+                    ? KanbanSVG
+                    : null
                 }
                 alt="Framework"
               />
@@ -284,35 +283,23 @@ export const ProjectCard = ({
         </div>
 
         <div className="d-flex flex-xl-row flex-column justify-content-between align-items-center px-4 fw-bold">
-          <p className=" ">
-            <span className="sprint-count-label">
-              Total number of sprints:{' '}
-            </span>
+          <p>
+            <span className="sprint-count-label">Total number of sprints: </span>
             <span>{dataProvider?.sprintCount}</span>
           </p>
 
-          <p className=" ">
+          <p>
             <span className="sprint-count-label">Current sprint: </span>
             {dataProvider?.sprints.length > 0 ? (
-              dataProvider.sprints.find(
-                (sprint) => sprint.status === 'doing',
-              ) ? (
+              dataProvider.sprints.find((sprint) => sprint.status === 'doing') ? (
                 <span className="text-muted">
-                  {
-                    dataProvider.sprints.find(
-                      (sprint) => sprint.status === 'doing',
-                    ).name
-                  }
+                  {dataProvider.sprints.find((sprint) => sprint.status === 'doing').name}
                 </span>
               ) : (
-                <span className="text-secondary">
-                  There is no active sprint
-                </span>
+                <span className="text-secondary">There is no active sprint</span>
               )
             ) : (
-              <span className="text-secondary">
-                No sprints are currently available
-              </span>
+              <span className="text-secondary">No sprints are currently available</span>
             )}
           </p>
         </div>
