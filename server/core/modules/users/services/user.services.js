@@ -2,6 +2,7 @@ const httpStatus = require("http-status");
 const { ObjectId } = require("mongodb");
 const UserModel = require("../models/user");
 const { v4: uuidv4 } = require("uuid");
+const taskModel = require("../../tasks/models/task");
 
 const userServices = {
   async userExists(username, byUsername = 0) {
@@ -226,6 +227,19 @@ const userServices = {
     } catch (error) {
       console.error("Error assigning manager to manage porfolio", error);
       return { ok: false, status: httpStatus.NOT_MODIFIED };
+    }
+  },
+
+  async getUserTasks(id) {
+    try {
+      const taskCollection = await taskModel();
+      const tasks = await taskCollection
+        .find({ assignedTo: id, status: "done" })
+        .toArray();
+      return { ok: true, tasks };
+    } catch (error) {
+      console.log(error);
+      return { ok: false, message: "failed to get user tasks" };
     }
   },
 };

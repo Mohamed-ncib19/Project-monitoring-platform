@@ -176,6 +176,25 @@ const userController = {
       });
     }
   },
+  async getUserTasks(request, reply) {
+    try {
+      const { id } = request.params;
+      const tasksRes = await userServices.getUserTasks(id);
+      if (!tasksRes.ok) {
+        return reply.status(httpStatus.NOT_FOUND).send({
+          message: "failed to load user tasks",
+          details: tasksRes.message,
+        });
+      }
+      return reply.status(httpStatus.OK).send({ tasks: tasksRes.tasks });
+    } catch (error) {
+      console.error(error);
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal server error",
+        details: error.message,
+      });
+    }
+  },
 };
 
 module.exports = userController;

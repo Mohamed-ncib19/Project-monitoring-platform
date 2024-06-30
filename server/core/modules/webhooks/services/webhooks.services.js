@@ -10,7 +10,8 @@ const webhooksServices = {
     try {
       const sprintZentaoId = payload.execution;
       const taskZentaoId = payload.objectID;
-      var task;
+      let task;
+
       switch (payload.action) {
         case "opened":
           const sprintExists = await sprintServices.getSprintById(
@@ -18,7 +19,7 @@ const webhooksServices = {
             "zentaoId"
           );
           let sprintId;
-          console.log(sprintExists);
+
           if (!sprintExists.ok) {
             const zentaoSprint = await zentaoServices.getExecution(
               sprintZentaoId
@@ -27,47 +28,59 @@ const webhooksServices = {
               sprintZentaoId,
               zentaoSprint
             );
-            console.log(createSprint);
+
             if (!createSprint.ok) {
-              return { ok: false, message: "failed to create sprint" };
+              return { ok: false, message: "Failed to create sprint" };
             }
+
             sprintId = createSprint.id;
           } else {
-            console.log("sprint exists :", sprintExists.data);
             sprintId = sprintExists.data._id;
           }
+
           task = await zentaoServices.getTask(taskZentaoId);
+
           if (!task.ok) {
             return {
               ok: false,
-              message: "error getting task from zentao",
+              message: "Error getting task from Zentao",
               details: task.message,
             };
           }
+
           const createTask = await taskServices.createTask(
             task.data,
             sprintId,
             sprintZentaoId
           );
+
           if (createTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
               sprintZentaoId,
               payload.action
             );
             console.log(updateProgress);
+          } else {
+            return { ok: false, message: "Failed to create task" };
           }
+
           break;
+
         case "edited":
+        case "started":
+        case "finished":
           task = await zentaoServices.getTask(taskZentaoId);
+
           if (!task.ok) {
-            console.log("error getting task from zentao");
             return {
               ok: false,
-              message: "error getting task from zentao",
+              message: "Error getting task from Zentao",
               details: task.message,
             };
           }
+
           const updateTask = await taskServices.updateTask(task.data);
+
           if (updateTask.ok) {
             const updateProgress = await sprintServices.updateSprintProgress(
               sprintZentaoId,
@@ -75,63 +88,19 @@ const webhooksServices = {
             );
             console.log(updateProgress);
           } else {
-            console.log("failed to update task");
+            return { ok: false, message: "Failed to update task" };
           }
+
           break;
-        case "started":
-          task = await zentaoServices.getTask(taskZentaoId);
-          if (!task.ok) {
-            console.log("error getting task from zentao");
-            return {
-              ok: false,
-              message: "error getting task from zentao",
-              details: task.message,
-            };
-          }
-          const startTask = await taskServices.updateTask(
-            task.data,
-            sprintZentaoId
-          );
-          if (startTask.ok) {
-            const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId,
-              payload.action
-            );
-            console.log(updateProgress);
-          } else {
-            console.log("failed to update task");
-          }
-          break;
-        case "finished":
-          task = await zentaoServices.getTask(taskZentaoId);
-          if (!task.ok) {
-            console.log("error getting task from zentao");
-            return {
-              ok: false,
-              message: "error getting task from zentao",
-              details: task.message,
-            };
-          }
-          const finishTask = await taskServices.updateTask(
-            task.data,
-            sprintZentaoId
-          );
-          if (finishTask.ok) {
-            const updateProgress = await sprintServices.updateSprintProgress(
-              sprintZentaoId,
-              payload.action
-            );
-            console.log(updateProgress);
-          } else {
-            console.log("failed to update task");
-          }
-          break;
+
         default:
-          break;
+          console.log("Unknown action type");
+          return { ok: false, message: "Unknown action type" };
       }
+
       return { ok: true };
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         ok: false,
         message: "Internal server error",

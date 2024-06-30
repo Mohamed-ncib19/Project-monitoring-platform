@@ -7,7 +7,11 @@ const checkRole = require("../../../middlewares/checkRole");
 async function routes(fastify, options) {
   // Get all users
   fastify.get("/users/status/:status", {
-    preHandler: [verifyJWT, checkUserActive, checkRole("Manager", "teamlead")],
+    preHandler: [
+      verifyJWT,
+      checkUserActive,
+      checkRole("Manager", "teamlead", "teammember"),
+    ],
     handler: userController.getUsersByStatus,
   });
 
@@ -58,6 +62,15 @@ async function routes(fastify, options) {
   fastify.put("/users/:id/restore", {
     preHandler: [verifyJWT, checkUserActive, checkRole("Manager")],
     handler: userController.restoreUser,
+  });
+
+  fastify.get("/users/:id/tasks", {
+    preHandler: [
+      verifyJWT,
+      checkUserActive,
+      checkRole(["Manager", "teamlead", "teammember"]),
+    ],
+    handler: userController.getUserTasks,
   });
 }
 module.exports = routes;
