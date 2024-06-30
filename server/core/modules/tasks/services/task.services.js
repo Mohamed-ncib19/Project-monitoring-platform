@@ -5,7 +5,6 @@ const userServices = require("../../users/services/user.services");
 const taskServices = {
   async createTask(task, sprintId, sprintZentaoId) {
     try {
-      console.log("task : ", task);
       const taskCollection = await TaskModel();
       const id = uuidv4();
       const { user, ok } = await userServices.getUser(
@@ -48,9 +47,8 @@ const taskServices = {
       return { ok: false, message: error };
     }
   },
-  async updateTask(task) {
+  async updateTask(task, bug = false) {
     try {
-      console.log(task);
       const taskCollection = await TaskModel();
       const { user, ok } = await userServices.getUser(
         "username",
