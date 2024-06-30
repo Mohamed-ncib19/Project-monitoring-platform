@@ -93,9 +93,8 @@ const Products = () => {
   };
 
   useEffect(() => {
-  
-    fetchPortfoliosOptions();
-    getTeamLeadsOptions();
+   
+    hasPermission('products', 'manage') && (fetchPortfoliosOptions() && getTeamLeadsOptions());
   }, []);
 
 

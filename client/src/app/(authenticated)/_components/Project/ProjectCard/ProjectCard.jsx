@@ -83,6 +83,7 @@ export const ProjectCard = ({
   const [productData, setProductData] = useState(null);
   const [membersData, setMembersData] = useState([]);
   const [sprintProgress, setSprintProgress] = useState(null);
+  const [projectTasks, setProjectTasks] = useState(null);
 
   const renderDescriptionTooltip = (props) => (
     <Tooltip id="description-tooltip" {...props} className="larger-tooltip">
@@ -90,10 +91,10 @@ export const ProjectCard = ({
     </Tooltip>
   );
 
-  const renderSprintProgressTooltip = (props) =>(
+  const renderSprintProgressTooltip = (props) => (
     <Tooltip id="sprint-progress-tooltip" {...props} className="larger-tooltip">
       {`${sprintProgress || 0}%`}
-      </Tooltip>
+    </Tooltip>
   );
 
   const formatDate = (value) => {
@@ -136,6 +137,25 @@ export const ProjectCard = ({
     };
     if (dataProvider?.product) {
       getProduct();
+    }
+  }, [dataProvider]);
+
+  const getProjectTasks = async (id) => {
+    try {
+      const response = await axios.get(`/projects/${id}/tasks`);
+      if (response?.status === 200) {
+        setProjectTasks(response?.data?.tasks.length);
+      } else {
+        notify({ message: 'Failed to load project Tasks', status: 'danger' });
+      }
+    } catch (error) {
+      notify({ message: 'Failed to load project Tasks', status: 'danger' });
+    }
+  };
+
+  useEffect(() => {
+    if (dataProvider) {
+      getProjectTasks(dataProvider?._id);
     }
   }, [dataProvider]);
 
@@ -270,7 +290,7 @@ export const ProjectCard = ({
             </span>
             <span>{dataProvider?.sprintCount}</span>
           </p>
-          
+
           <p className=" ">
             <span className="sprint-count-label">Current sprint: </span>
             {dataProvider?.sprints.length > 0 ? (
@@ -303,11 +323,15 @@ export const ProjectCard = ({
             <span>{`${parseInt(sprintProgress) || 0}%`}</span>
           </div>
           <OverlayTrigger
-            placement='top-start'
-            delay={{show : 250, hide:400}}
+            placement="top-start"
+            delay={{ show: 250, hide: 400 }}
             overlay={renderSprintProgressTooltip}
           >
-          <ProgressBar now={sprintProgress}  />
+            <ProgressBar
+              now={sprintProgress}
+              variant={sprintProgress === 100 ? 'success' : 'primary'}
+              animated={sprintProgress === 100}
+            />
           </OverlayTrigger>
         </div>
 
@@ -315,11 +339,11 @@ export const ProjectCard = ({
           <div className="d-flex gap-4">
             <div className="d-flex align-items-center gap-1">
               <TasksIcon />
-              <span className="text-muted">35</span>
+              <span className="text-muted">{projectTasks || 0}</span>
             </div>
             <div className="d-flex align-items-center gap-1">
               <BugsIcon />
-              <span className="text-muted">8</span>
+              <span className="text-muted">0</span>
             </div>
           </div>
 

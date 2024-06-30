@@ -1,5 +1,3 @@
-// withAuth.js
-
 import { useAuth } from '@/app/(authenticated)/_context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -12,6 +10,9 @@ const withAuth = (Component, page, action) => {
     const { push } = useRouter();
 
     useEffect(() => {
+      console.log(page);
+      console.log(action);
+      console.log(hasPermission(page,action));
       if (!hasPermission(page, action)) {
         notify({ message: 'You are not authorized', status: 'danger' });
         push('/');    
