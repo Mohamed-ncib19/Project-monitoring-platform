@@ -28,5 +28,8 @@ export const roles = {
       [process.env.NEXT_PUBLIC_TEAMLEAD_ROLE]: ['consult', 'manage'],
       [process.env.NEXT_PUBLIC_TEAMMEMBER_ROLE]: ['consult'],
     },
+    dashboard : {
+      
+    }
   };
   
