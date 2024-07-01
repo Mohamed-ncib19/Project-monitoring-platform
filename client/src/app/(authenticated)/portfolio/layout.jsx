@@ -15,4 +15,4 @@ const Layout = async ({ children }) => {
   );
 };
 
-export default withAuth(Layout, 'portfolio', 'manage');
+export default withAuth(Layout, 'portfolio', 'consult');
