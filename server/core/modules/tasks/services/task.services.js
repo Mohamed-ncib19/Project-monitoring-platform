@@ -32,6 +32,7 @@ const taskServices = {
         realStarted: task.realStarted,
         progress: task.progress,
         desc: task.desc,
+        priority: task.pri,
       });
       if (taskResult.acknowledged) {
         return {
