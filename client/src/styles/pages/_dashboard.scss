@@ -25,6 +25,12 @@
 
 .spent-estimate-shortcut-right{
     background-color: rgb(232, 187, 52);
-    clip-path: polygon(100% 0%, 100% 100%, 20% 100%, 0% 0%);
-    
+    clip-path: polygon(100% 0%, 100% 100%, 20% 100%, 0% 0%);   
+}
+
+.tasks-shortcut{
+    height: 12vh;
+}
+.bugs-shortcut{
+    height: 12vh;
 }

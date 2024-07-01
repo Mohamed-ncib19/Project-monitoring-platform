@@ -193,10 +193,10 @@ const TeamMemberDashboard = ({ user }) => {
         </div>
 
         
-        <div className="col-lg-2 col-md-4 col bg-light rounded-3 shadow">
+        <div className="tasks-shortcut col-lg-2 col-md-4 col bg-light rounded-3 shadow py-2">
           <div className="row d-flex flex-lg-row flex-column">
             <div className="col h1 m-auto d-flex justify-content-center align-items-center">
-              <ToDoTasksIcon  />
+              <ToDoTasksIcon height={110}  />
             </div>
             <div className="col d-flex flex-column justify-content-center align-items-lg-start align-items-center">
               <span className='h3 text-light fw-bold text-dark' >4</span>
@@ -205,7 +205,7 @@ const TeamMemberDashboard = ({ user }) => {
           </div>
         </div>
         
-        <div className="col-lg-2 col-md-4 col bg-light rounded-3 shadow">
+        <div className="bugs-shortcut col-lg-2 col-md-4 col bg-light rounded-3 shadow py-2">
           <div className="row d-flex flex-lg-row flex-column">
             <div className="col h1 m-auto d-flex justify-content-center align-items-center">
               <BugsIcon width={110} />
