@@ -15,34 +15,29 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
 
-  const getMe = useCallback(async (token) => {
-    try {
-      const response = await axios.get('/users/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(response);
-      if (response.status === 200) {
-        return { ok: true, data: response.data.user };
-      } else {
-        throw new Error('Failed to fetch user data');
-      }
-    } catch (error) {
-      console.error(error);
-      return { ok: false };
-    }
-  }, []);
 
+const getMe = async() =>{
+  try {
+    const response = await axios.get('/users/me');
+    if (response.status === 200) {
+      return { ok: true, data: response?.data.user};
+    } else {
+      throw new Error('Failed to fetch user data');
+    }
+  } catch (error) {
+    console.error(error);
+    return { ok: false };
+  }
+}
+ 
   useEffect(() => {
     const fetchUserData = async () => {
       if (session && !loading) {
         setLoading(true);
-        const result = await getMe(session.accessToken.token);
+        const result = await getMe();
         setLoading(false);
         if (result.ok) {
           setUserData(result.data);
-          sessionStorage.setItem('userRole', result.data.role); // Cache the role in sessionStorage
         } else {
           notify({
             message: 'Failed to load user information',
@@ -52,16 +47,14 @@ const Dashboard = () => {
       }
     };
 
-    const role = sessionStorage.getItem('userRole');
-    if (role) {
-      setUserRole(role);
-    } else {
+    if(session){
       fetchUserData();
     }
-  }, [session, getMe, notify, loading]);
+  }, [session]);
 
   const renderDashboard = () => {
-    switch (userRole) {
+    
+    switch (session?.profile.role) {
       case process.env.NEXT_PUBLIC_MANAGER_ROLE:
         return <ManagerDashboard user={userData} />;
       case process.env.NEXT_PUBLIC_TEAMLEAD_ROLE:

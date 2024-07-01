@@ -1,7 +1,7 @@
-const BugsIcon = (props) => (
+const BugsIcon = ({ width = 26, height = 26, ...props }) => (
   <svg
-    width={15}
-    height={15}
+    width={width}
+    height={height}
     viewBox="0 0 15 15"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
