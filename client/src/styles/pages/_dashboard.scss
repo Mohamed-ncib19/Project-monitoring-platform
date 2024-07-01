@@ -1,0 +1,30 @@
+.score-shortcut {
+    background-color: #E2E8F0;
+  }
+  
+  .score-shortcut:hover {
+    box-shadow: 1px 1px 5px 1px gray;
+    cursor: pointer;
+    transition: 200ms ease-in-out;
+  }
+  .rank-shortcut{
+    background-image: url('../../../public/images/ranking-background.png');
+    height: max-content;
+    background-position: center;
+    background-size: cover;
+  }
+
+.spent-estimate-shortcut-left{
+    clip-path: polygon(0% 100%, 0% 0%, 82.5% 0%, 100% 100%);
+    background-color: rgb(84, 195, 84);
+    height: 12vh;
+}
+.bg-green{
+    background-color: rgb(84, 195, 84);
+}
+
+.spent-estimate-shortcut-right{
+    background-color: rgb(232, 187, 52);
+    clip-path: polygon(100% 0%, 100% 100%, 20% 100%, 0% 0%);
+    
+}
