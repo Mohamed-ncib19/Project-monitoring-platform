@@ -16,7 +16,11 @@ async function routes(fastify, options) {
   });
 
   fastify.get("/users/roles/:role", {
-    preHandler: [verifyJWT, checkUserActive, checkRole(["Manager", "teamlead"])],
+    preHandler: [
+      verifyJWT,
+      checkUserActive,
+      checkRole(["Manager", "teamlead"]),
+    ],
     handler: userController.getUsersByRole,
   });
 
@@ -42,7 +46,7 @@ async function routes(fastify, options) {
 
   // Setup or update a specific user by username (by manager)
   fastify.put("/users/:id", {
-    preHandler: [verifyJWT, checkUserActive, checkRole("Manager")],
+    preHandler: [verifyJWT, checkUserActive, checkRole(["Manager"])],
     handler: userController.setUpUser,
   });
 
@@ -54,13 +58,13 @@ async function routes(fastify, options) {
 
   // Ban a specific user by username
   fastify.delete("/users/:id/ban", {
-    preHandler: [verifyJWT, checkUserActive, checkRole("Manager")],
+    preHandler: [verifyJWT, checkUserActive, checkRole(["Manager"])],
     handler: userController.banUser,
   });
 
   // Unban a specific user by username
   fastify.put("/users/:id/restore", {
-    preHandler: [verifyJWT, checkUserActive, checkRole("Manager")],
+    preHandler: [verifyJWT, checkUserActive, checkRole(["Manager"])],
     handler: userController.restoreUser,
   });
 
@@ -71,6 +75,15 @@ async function routes(fastify, options) {
       checkRole(["Manager", "teamlead", "teammember"]),
     ],
     handler: userController.getUserTasks,
+  });
+
+  fastify.get("/users/members/dashboard", {
+    preHandler: [
+      verifyJWT,
+      checkUserActive,
+      checkRole(["teammember", "Manager", "teamlead"]),
+    ],
+    handler: userController.memberDashboard,
   });
 }
 module.exports = routes;

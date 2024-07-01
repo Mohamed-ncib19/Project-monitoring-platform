@@ -5,9 +5,9 @@ const checkUserActive = require("../../../middlewares/checkUserActive ");
 
 async function routes(fastify, options) {
   //Create porfolio
-  fastify.get("/dashboard/developer/", {
+  fastify.get("/dashboard/member/", {
     preHandler: [verifyJWT, checkUserActive],
-    handler: portfolioController.createPortfolio,
+    handler: memberDashboardController.getData,
   });
 }
 

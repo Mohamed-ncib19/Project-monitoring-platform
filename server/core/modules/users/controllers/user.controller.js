@@ -195,6 +195,23 @@ const userController = {
       });
     }
   },
+  async memberDashboard(request, reply) {
+    try {
+      const { id } = request.user;
+      const response = await userServices.memberDashboard(id);
+      if (response.ok) {
+        return reply.status(httpStatus.OK).send({ data: response.data });
+      } else {
+        return reply
+          .status(httpStatus.NOT_FOUND)
+          .send({ error: { message: "Error getting user dashboard data" } });
+      }
+    } catch (error) {
+      return reply.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        error: { message: "Internal server error", details: error.message },
+      });
+    }
+  },
 };
 
 module.exports = userController;
