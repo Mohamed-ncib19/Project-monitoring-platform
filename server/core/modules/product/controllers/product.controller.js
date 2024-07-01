@@ -58,7 +58,6 @@ const productController = {
       } else {
         productsRes = await productServices.getProducts(portfolioId);
       }
-
       if (productsRes.ok) {
         return res
           .status(httpStatus.OK)
