@@ -10,13 +10,13 @@ async function routes(fastify, options) {
     preHandler: [
       verifyJWT,
       checkUserActive,
-      checkRole("Manager", "teamlead", "teammember"),
+      checkRole(["Manager", "teamlead", "teammember"]),
     ],
     handler: userController.getUsersByStatus,
   });
 
   fastify.get("/users/roles/:role", {
-    preHandler: [verifyJWT, checkUserActive, checkRole("Manager", "teamlead")],
+    preHandler: [verifyJWT, checkUserActive, checkRole(["Manager", "teamlead"])],
     handler: userController.getUsersByRole,
   });
 
@@ -25,7 +25,7 @@ async function routes(fastify, options) {
     preHandler: [
       verifyJWT,
       checkUserActive,
-      checkRole("Manager", "teamlead", "teammember"),
+      checkRole(["Manager", "teamlead", "teammember"]),
     ],
     handler: userController.getUser,
   });
@@ -35,7 +35,7 @@ async function routes(fastify, options) {
     preHandler: [
       verifyJWT,
       checkUserActive,
-      checkRole("Manager", "teamlead", "teammember"),
+      checkRole(["Manager", "teamlead", "teammember"]),
     ],
     handler: userController.getCurrentUser,
   });

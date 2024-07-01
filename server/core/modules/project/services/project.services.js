@@ -198,12 +198,6 @@ const projectServices = {
       const sprints = await sprintCollection
         .find({ project: projectId }, { projection: { _id: 1 } })
         .toArray();
-      if (sprints.length === 0) {
-        return {
-          ok: false,
-          message: "project not found or project does not have sprints",
-        };
-      }
       const sprintIds = sprints.map((sprint) => sprint._id);
       const tasks = await taskCollection
         .find({ sprint: { $in: sprintIds } })
